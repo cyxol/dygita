@@ -1796,10 +1796,10 @@ kbd {
 
 /* Excerpt focus styles */
 .excerpt .focus {
-  float: left;
   width: 200px;
   margin-right: 20px;
   margin-bottom: 10px;
+  flex-shrink: 0;
 }
 
 /* Hide focus if empty or create spacing */
@@ -1827,6 +1827,8 @@ kbd {
 
 /* 归档页面文章样式 */
 .excerpt-one {
+  display: flex;
+  flex-wrap: wrap;
   background: var(--content-bg-color);
   padding: 25px;
   margin-bottom: 20px;
@@ -1840,17 +1842,29 @@ kbd {
   transform: translateY(-2px);
 }
 
+.excerpt-one > header {
+  width: 100%;
+  margin-bottom: 15px;
+}
+
 .excerpt-one .note {
-  display: block;
+  display: -webkit-box;
+  -webkit-line-clamp: 5;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  text-overflow: ellipsis;
   margin-bottom: 15px;
   line-height: 1.6;
   color: var(--text-color);
-  padding: 0 20px;
+  padding: 0;
+  flex: 1;
+  min-width: 0;
 }
 
 .excerpt-one .auth-span {
   clear: both;
   display: block;
+  width: 100%;
   margin-top: 15px;
   font-size: 12px;
   color: var(--blockquote-color);
@@ -1916,7 +1930,7 @@ kbd {
 /* Override Container Width */
 .container-inner {
   width: 100%;
-  max-width: 1200px;
+  max-width: 1440px;
   margin: 0 auto;
   padding: 0;
   box-sizing: border-box;
@@ -3398,19 +3412,23 @@ kbd {
   }
 
   .m-nav {
-    padding: 10px 0;
+    padding: 0;
+    margin-top: 50px;
   }
 
   .m-nav-all {
-    flex-direction: column;
-    gap: 15px;
-    padding: 10px 20px;
+    flex-direction: row;
+    flex-wrap: wrap;
+    height: auto;
+    min-height: 44px;
+    gap: 0;
+    padding: 4px 8px;
   }
 
   .m-nav .nav {
     flex-wrap: wrap;
     justify-content: center;
-    gap: 10px;
+    gap: 0;
   }
 
   .m-nav .nav li a {
@@ -3429,10 +3447,6 @@ kbd {
 
   .m-header {
     display: flex;
-  }
-
-  .m-nav {
-    margin-top: 50px;
   }
 }
 

@@ -79,6 +79,25 @@ body > header:first-of-type {
     background-color: var(--header-bg-color, #E74C3C);
 }
 
+/* 主页文章列表 - 去掉卡片式布局，重新设置边距 */
+.index.posts-expand .excerpt-one {
+    background: transparent !important;
+    background-color: transparent !important;
+    box-shadow: none !important;
+    border-radius: 0 !important;
+    border: 0 !important;
+    padding: 0 40px !important;
+    margin-left: 0 !important;
+    margin-right: 0 !important;
+    margin-bottom: 40px !important;
+    margin-top: 0 !important;
+}
+
+.index.posts-expand .excerpt-one:hover {
+    box-shadow: none !important;
+    transform: none !important;
+}
+
 /* 调整 hdbg 元素，减少留白 */
 .l-header .hdbg {
     height: 100%;
@@ -186,8 +205,8 @@ pre[class*="language-json"]::before { content: "JSON"; }
     border-top: 1px dashed var(--border-color, #eee);
     margin-left: 30px;
     margin-right: 30px;
-    border-radius: 10px;
-    background-color: var(--card-bg-color, #f9f9f9);
+    border-radius: 0;
+    background-color: transparent;
     color: var(--blockquote-color, #666);
 }
 
@@ -203,16 +222,16 @@ pre[class*="language-json"]::before { content: "JSON"; }
 .related_posts .related-item {
     flex: 1 1 calc(33.333% - 10px);
     min-width: 200px;
-    background: var(--content-bg-color, #fff);
-    border-radius: 8px;
+    background: transparent;
+    border-radius: 0;
     overflow: hidden;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    box-shadow: none;
     transition: all 0.3s ease;
 }
 
 .related_posts .related-item:hover {
     transform: translateY(-5px);
-    box-shadow: 0 5px 15px rgba(0,0,0,0.15);
+    box-shadow: none;
 }
 
 .related_posts .related-item-title {
@@ -235,16 +254,16 @@ pre[class*="language-json"]::before { content: "JSON"; }
     border-top: 1px solid var(--border-color, #eee);
     margin-left: 0;
     margin-right: 0;
-    border-radius: 8px;
-    background-color: var(--content-bg-color, #fff);
+    border-radius: 0;
+    background-color: transparent;
 }
 
 /* 文章标签样式 */
 .article-footer .article-tags {
     margin-bottom: 20px;
     padding: 10px 15px;
-    border-radius: 6px;
-    background-color: var(--content-bg-color, #fff);
+    border-radius: 0;
+    background-color: transparent;
     display: inline-block;
 }
 
@@ -287,6 +306,16 @@ pre[class*="language-json"]::before { content: "JSON"; }
     background: #05A850;
     transform: translateY(-2px);
     box-shadow: 0 2px 8px rgba(7, 193, 96, 0.3);
+}
+
+/* 强制清除所有底部附属区块的卡片嵌套背景和外阴影 */
+.related-posts,
+.comments-area,
+#respond,
+#comments {
+    background: transparent !important;
+    box-shadow: none !important;
+    border-radius: 0 !important;
 }
 
 /* 微博分享按钮 */
@@ -606,6 +635,25 @@ body > div.fixed {
     top: auto ;
 }
 
+/* 取消 style.css 的上层正文壳，保留底层内容布局逻辑 */
+.content-wrap > .content,
+.single .content,
+.page .content {
+    background: transparent ;
+    border: 0 ;
+    border-radius: 0 ;
+    box-shadow: none ;
+    padding: 0 ;
+}
+
+.content-wrap > .content > .article-content,
+.content-wrap > .content > article.article-content {
+    background: transparent ;
+    border: 0 ;
+    border-radius: 0 ;
+    box-shadow: none ;
+}
+
 /* 归档页面文章样式 - 修复中间文章栏太靠边的问题 */
 .excerpt-one {
     background: var(--content-bg-color, #fff) ;
@@ -647,7 +695,7 @@ body > div.fixed {
     word-wrap: break-word ;
     padding: 0 30px ;
     margin: 0 auto ;
-    max-width: 800px ;
+    max-width: 1000px ;
     box-sizing: border-box ;
 }
 
@@ -655,7 +703,7 @@ body > div.fixed {
 .main-container .content-wrap .content .article-content {
     padding: 0 30px ;
     margin: 0 auto ;
-    max-width: 800px ;
+    max-width: 1000px ;
 }
 
 /* 直接针对文章内容的段落添加边距 */
@@ -882,24 +930,29 @@ html, body {
     text-align: center ;
 }
 
-/* 修改布局：左右侧边栏18%，中间自适应 */
+/* 修改布局：桌面端固定 540/1080/540，总宽 2160 */
+.container-inner {
+    margin-top: 0 ;
+}
+
 .main-container {
     display: flex ;
     flex-wrap: nowrap ;
     width: 100% ;
-    max-width: 1680px ;
+    max-width: 2160px ;
     margin: 0 auto ;
-    padding: 20px ;
-    gap: 20px ;
+    padding: 0 0 8px ;
+    gap: 0 ;
     box-sizing: border-box ;
     align-items: stretch ;
 }
 
 /* 左侧边栏 */
 .sidebar-left {
-    width: 18% ;
-    min-width: 18% ;
-    max-width: 18% ;
+    width: 540px ;
+    min-width: 540px ;
+    max-width: 540px ;
+    flex: 0 0 540px ;
     flex-shrink: 0 ;
     order: 1 ;
     box-sizing: border-box ;
@@ -907,9 +960,10 @@ html, body {
 
 /* 右侧边栏 */
 .sidebar-right {
-    width: 24% ;
-    min-width: 24% ;
-    max-width: 24% ;
+    width: 540px ;
+    min-width: 540px ;
+    max-width: 540px ;
+    flex: 0 0 540px ;
     flex-shrink: 0 ;
     order: 3 ;
     box-sizing: border-box ;
@@ -917,11 +971,31 @@ html, body {
 
 /* 中间内容区域 */
 .content-wrap {
-    flex: 1 ;
-    min-width: 0 ;
+    width: 1080px ;
+    min-width: 1080px ;
+    max-width: 1080px ;
+    flex: 0 0 1080px ;
     order: 2 ;
     box-sizing: border-box ;
     padding: 0 ;
+    overflow: visible ;
+}
+
+@media (max-width: 2160px) {
+    .sidebar-left,
+    .sidebar-right {
+        width: 25% ;
+        min-width: 0 ;
+        max-width: none ;
+        flex: 0 0 25% ;
+    }
+
+    .content-wrap {
+        width: 50% ;
+        min-width: 0 ;
+        max-width: none ;
+        flex: 0 0 50% ;
+    }
 }
 
 /* 响应式调整 */
@@ -937,10 +1011,47 @@ html, body {
 @media (max-width: 992px) {
     .sidebar-left,
     .sidebar-right {
-        width: 22% ;
-        min-width: 22% ;
-        max-width: 22% ;
+        width: 20% ;
+        min-width: 20% ;
+        max-width: 20% ;
     }
+}
+
+/* 防止正文元素横向溢出，覆盖右侧栏 */
+.content-wrap .content,
+.content-wrap .article-content {
+    min-width: 0 ;
+    max-width: 100% ;
+    overflow-wrap: anywhere ;
+    word-break: break-word ;
+}
+
+.content-wrap .article-content p,
+.content-wrap .article-content li,
+.content-wrap .article-content blockquote,
+.content-wrap .article-content td,
+.content-wrap .article-content th,
+.content-wrap .article-content a,
+.content-wrap .article-content code,
+.content-wrap .article-content kbd,
+.content-wrap .article-content samp {
+    overflow-wrap: anywhere ;
+    word-break: break-word ;
+}
+
+.content-wrap .article-content img,
+.content-wrap .article-content video,
+.content-wrap .article-content iframe,
+.content-wrap .article-content embed,
+.content-wrap .article-content object {
+    max-width: 100% ;
+    height: auto ;
+}
+
+.content-wrap .article-content pre,
+.content-wrap .article-content table {
+    max-width: 100% ;
+    overflow-x: auto ;
 }
 
 @media (max-width: 768px) {
@@ -1381,4 +1492,98 @@ html, body {
 .go-loading-message a {
     color: #4094EF;
     word-break: break-all;
+}
+
+/* ========================================
+   移动端 Header 修复 (≤ 992px)
+   问题：标题三重重复 / 头像被固定栏遮住 / 导航项被裁剪
+   ======================================== */
+@media (max-width: 992px) {
+    /* 1. 隐藏 hero 头部区域：#m-header 已显示站点标题，l-header 在移动端冗余 */
+    .l-header {
+        display: none !important;
+    }
+
+    /* 2. 隐藏 m-nav 内的 logo+标题行：与固定 #m-header 重复 */
+    .m-logo-url {
+        display: none !important;
+    }
+
+    /* 3. 导航栏高度自动，不固定在 50px，防止多行被裁剪；强制横排 */
+    .m-nav-all {
+        flex-direction: row !important;
+        flex-wrap: wrap !important;
+        height: auto !important;
+        min-height: 44px !important;
+        padding: 4px 8px !important;
+        gap: 0 !important;
+    }
+
+    /* 4. 导航容器允许溢出，item 可换行显示 */
+    .nav-container {
+        overflow: visible !important;
+        width: 100% !important;
+        flex-wrap: wrap !important;
+    }
+
+    .m-nav .nav {
+        flex-wrap: wrap !important;
+        width: 100% !important;
+        justify-content: center !important;
+        gap: 0 !important;
+    }
+
+    /* 5. sticky 导航吸顶时停在固定栏下方（#m-header 高 50px），而非叠在其后 */
+    .m-nav {
+        top: 50px !important;
+    }
+}
+
+/* 【强力祛除多余卡片层】 覆盖所有底层子组件背景和阴影，实现彻底扁平化 */
+.content-wrap .article-footer,
+.content-wrap .article-nav,
+.content-wrap .related_posts,
+.content-wrap .related-posts,
+.content-wrap .related-item,
+.content-wrap .comments-area,
+.content-wrap #respond,
+.content-wrap .respond,
+.content-wrap #comments,
+.content-wrap .comment-list,
+.content-wrap .comment-list li,
+.content-wrap .comment-body { background: transparent !important; background-color: transparent !important; box-shadow: none !important; }
+
+
+/* 【消除首页文章卡片双层嵌套】 */
+.index.posts-expand .excerpt,
+.index.posts-expand .excerpt-one,
+.archive.posts-expand .excerpt,
+.archive.posts-expand .excerpt-one,
+.content-wrap .excerpt,
+.content-wrap .excerpt-one {
+    background: transparent !important;
+    background-color: transparent !important;
+    box-shadow: none !important;
+    border-radius: 0 !important;
+    border: 0 !important;
+}
+
+.index.posts-expand .excerpt,
+.index.posts-expand .excerpt-one {
+    padding: 0 !important;
+    margin-bottom: 40px !important;
+}
+
+.excerpt,
+.excerpt-one {
+    background: transparent !important;
+    background-color: transparent !important;
+    box-shadow: none !important;
+    border-radius: 0 !important;
+    border: 0 !important;
+}
+
+.excerpt:hover {
+    box-shadow: none !important;
+    transform: none !important;
 }

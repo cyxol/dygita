@@ -41,7 +41,7 @@
   display: flex;
   flex-wrap: nowrap;
   width: 100%;
-  max-width: 1680px;
+  max-width: 2160px;
   margin: 0 auto;
   padding: 20px 0;
   justify-content: center;
@@ -52,9 +52,9 @@
 
 /* 左侧边栏 */
 .sidebar-left {
-  width: 18%;
-  min-width: 18%;
-  max-width: 18%;
+  width: 20%;
+  min-width: 20%;
+  max-width: 20%;
   flex-shrink: 0;
   order: 1;
   box-sizing: border-box;
@@ -66,9 +66,9 @@
 
 /* 右侧边栏 */
 .sidebar-right {
-  width: 24%;
-  min-width: 24%;
-  max-width: 24%;
+  width: 20%;
+  min-width: 20%;
+  max-width: 20%;
   flex-shrink: 0;
   order: 3;
   box-sizing: border-box;
@@ -107,9 +107,9 @@
 @media (max-width: 992px) {
   .sidebar-left,
   .sidebar-right {
-    width: 22%;
-    min-width: 22%;
-    max-width: 22%;
+    width: 20%;
+    min-width: 20%;
+    max-width: 20%;
   }
 }
 
