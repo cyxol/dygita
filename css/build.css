@@ -1,4 +1,4 @@
-/* Dygita Theme - Build: 2026-03-15T15:18:14.843Z */
+/* Dygita Theme - Build: 2026-03-17T11:44:59.000Z */
 
 /* === css/variables.css === */
 /* Dygita CSS 层次：变量层（设计令牌，仅定义 CSS 变量） */
@@ -83,7 +83,6 @@
   --post-bg-color: #2d2d2d;
   --post-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
 }
-
 /* === css/base.css === */
 /* Dygita CSS 层次：基础层（Reset + HTML 元素默认样式） */
 
@@ -324,14 +323,6 @@ body {
     padding-left: 0;
     padding-right: 0;
   }
-}
-
-/* 全局暗色主题样式 - 确保所有元素都受到影响 */
-body {
-  background-color: #f5f7f9;
-  color: #555;
-  background-color: var(--body-bg-color);
-  color: var(--text-color);
 }
 
 /* 确保所有容器元素都使用暗色主题 */
@@ -623,11 +614,6 @@ button:hover,
   color: var(--text-color);
 }
 
-/* 暗色主题下的分隔线调整 */
-hr {
-  background-image: repeating-linear-gradient(-45deg, var(--border-color), var(--border-color) 4px, transparent 4px, transparent 8px);
-}
-
 /* 暗色主题下的代码块调整 */
 .highlight-container {
   background: var(--code-bg-color);
@@ -642,25 +628,6 @@ pre {
 code {
   background: var(--code-bg-color);
   color: var(--code-text-color);
-}
-
-/* 暗色主题下的表格调整 */
-th,
-td {
-  border-color: var(--border-color);
-}
-
-/* 暗色主题下的按钮调整 */
-.btn {
-  background: var(--btn-default-bg);
-  border-color: var(--btn-default-border-color);
-  color: var(--btn-default-color);
-}
-
-.btn:hover {
-  background: var(--btn-default-hover-bg);
-  border-color: var(--btn-default-hover-border-color);
-  color: var(--btn-default-hover-color);
 }
 
 /* 暗色主题下的导航栏调整 */
@@ -748,6 +715,7 @@ video {
 /* Horizontal Rule Styles */
 hr {
   background-image: repeating-linear-gradient(-45deg, #ddd, #ddd 4px, transparent 4px, transparent 8px);
+  background-image: repeating-linear-gradient(-45deg, var(--border-color), var(--border-color) 4px, transparent 4px, transparent 8px);
   border: 0;
   height: 3px;
   margin: 40px 0;
@@ -789,7 +757,6 @@ img {
   max-width: 100%;
   height: auto;
 }
-
 
 /* === css/layout.css === */
 /* Dygita CSS 层次：布局层（整体容器与响应式栅格） */
@@ -932,7 +899,6 @@ img {
     order: 3;
   }
 }
-
 /* === css/components.css === */
 /* Dygita CSS 层次：组件层（可复用 UI 组件样式） */
 
@@ -996,6 +962,7 @@ img {
     background: #f9f9f9;
     background: var(--card-bg-color, #f9f9f9);
     border-radius: 8px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
 }
 
 .related-title {
@@ -1417,7 +1384,6 @@ body {
         transform: rotate(720deg) scale(0.6)
     }
 }
-
 /* === css/custom.css === */
 /* Dygita CSS 层次：业务层（页面 / 模板定制样式） */
 
@@ -1428,7 +1394,7 @@ body {
  * @version 1.1.0
  */
 
-/* 进一步调整标题栏高度，减少留白 */
+/* 标题栏样式 */
 .l-header {
     padding: 20px 0;
     min-height: 120px;
@@ -1436,6 +1402,8 @@ body {
     border-top: none;
     background: var(--header-bg-color, #E74C3C);
     background-color: var(--header-bg-color, #E74C3C);
+    position: relative;
+    overflow: hidden;
 }
 
 /* 确保m-about没有额外的margin-top */
@@ -1446,8 +1414,7 @@ body {
     z-index: var(--z-header-content, 1);
 }
 
-/* 针对header及其子元素的margin和padding重置 */
-.l-header,
+/* 针对header子元素的margin和padding重置（不重置header自身的padding-top） */
 .l-header * {
     margin-top: 0;
     padding-top: 0;
@@ -1468,6 +1435,7 @@ body > header:first-of-type {
 .l-header #logo img {
     width: 50px;
     height: 50px;
+    object-fit: cover;
 }
 
 .l-header .tit {
@@ -1511,13 +1479,6 @@ body > header:first-of-type {
     z-index: var(--z-header-bg, 0);
 }
 
-/* 确保header背景色正确显示 - 修复顶部黑色区域 */
-.l-header {
-    background-color: var(--header-bg-color, #E74C3C);
-    position: relative;
-    overflow: hidden;
-}
-
 /* 代码块样式 */
 pre {
     background: #2d2d2d;
@@ -1539,78 +1500,12 @@ pre code {
 }
 
 /* 代码块语言标签 */
-pre[class*="language-python"]::before {
-    content: "Python";
-    position: absolute;
-    top: 0;
-    right: 0;
-    background: rgba(0, 0, 0, 0.2);
-    color: #fff;
-    padding: 3px 10px;
-    font-size: 12px;
-    border-bottom-left-radius: 8px;
-    text-transform: uppercase;
-    font-weight: bold;
-}
-
-pre[class*="language-javascript"]::before {
-    content: "JavaScript";
-    position: absolute;
-    top: 0;
-    right: 0;
-    background: rgba(0, 0, 0, 0.2);
-    color: #fff;
-    padding: 3px 10px;
-    font-size: 12px;
-    border-bottom-left-radius: 8px;
-    text-transform: uppercase;
-    font-weight: bold;
-}
-
-pre[class*="language-css"]::before {
-    content: "CSS";
-    position: absolute;
-    top: 0;
-    right: 0;
-    background: rgba(0, 0, 0, 0.2);
-    color: #fff;
-    padding: 3px 10px;
-    font-size: 12px;
-    border-bottom-left-radius: 8px;
-    text-transform: uppercase;
-    font-weight: bold;
-}
-
-pre[class*="language-markup"]::before {
-    content: "HTML";
-    position: absolute;
-    top: 0;
-    right: 0;
-    background: rgba(0, 0, 0, 0.2);
-    color: #fff;
-    padding: 3px 10px;
-    font-size: 12px;
-    border-bottom-left-radius: 8px;
-    text-transform: uppercase;
-    font-weight: bold;
-}
-
-pre[class*="language-bash"]::before {
-    content: "Bash";
-    position: absolute;
-    top: 0;
-    right: 0;
-    background: rgba(0, 0, 0, 0.2);
-    color: #fff;
-    padding: 3px 10px;
-    font-size: 12px;
-    border-bottom-left-radius: 8px;
-    text-transform: uppercase;
-    font-weight: bold;
-}
-
+pre[class*="language-python"]::before,
+pre[class*="language-javascript"]::before,
+pre[class*="language-css"]::before,
+pre[class*="language-markup"]::before,
+pre[class*="language-bash"]::before,
 pre[class*="language-json"]::before {
-    content: "JSON";
     position: absolute;
     top: 0;
     right: 0;
@@ -1622,6 +1517,12 @@ pre[class*="language-json"]::before {
     text-transform: uppercase;
     font-weight: bold;
 }
+pre[class*="language-python"]::before { content: "Python"; }
+pre[class*="language-javascript"]::before { content: "JavaScript"; }
+pre[class*="language-css"]::before { content: "CSS"; }
+pre[class*="language-markup"]::before { content: "HTML"; }
+pre[class*="language-bash"]::before { content: "Bash"; }
+pre[class*="language-json"]::before { content: "JSON"; }
 
 /* 复制按钮样式 */
 .copy-to-clipboard-button {
@@ -1675,15 +1576,6 @@ pre[class*="language-json"]::before {
     border-radius: 10px;
     background-color: var(--card-bg-color, #f9f9f9);
     color: var(--blockquote-color, #666);
-}
-
-/* 相关文章样式 - 修复贴边问题 */
-.related_posts {
-    margin: 30px 30px;
-    padding: 25px;
-    background: var(--card-bg-color, #f9f9f9);
-    border-radius: 10px;
-    box-shadow: 0 2px 10px rgba(0,0,0,0.05);
 }
 
 .related_posts .related-list {
@@ -1835,18 +1727,6 @@ pre[class*="language-json"]::before {
     }
 }
 
-/* 老位图资源防放大，避免高分屏发糊与边缘锯齿 */
-img[src*="/img/smilies/"],
-img[src*="/img/fancybox_"],
-img[src$="loading.gif"],
-img[src$="vip.png"] {
-    width: auto;
-    height: auto;
-    max-width: 100%;
-    image-rendering: -webkit-optimize-contrast;
-    image-rendering: crisp-edges;
-}
-
 /* Swiper.js 轮播图样式 */
 .swiper-container {
     width: 100%;
@@ -1895,6 +1775,12 @@ img[src$="vip.png"] {
 .swiper-button-next:after,
 .swiper-button-prev:after {
     font-size: 20px ;
+}
+
+.swiper-pagination-bullet {
+    width: 12px;
+    height: 12px;
+    margin: 0 6px !important;
 }
 
 /* 响应式调整 */
@@ -2054,86 +1940,37 @@ img[src$="vip.png"] {
     -moz-box-shadow: none ;
 }
 
-/* 搜索按钮对齐样式 */
-.search-toggle-li {
-    display: flex;
-    align-items: center;
-    height: 50px;
-}
-
-.search-toggle-li .search-toggle {
-    display: flex;
-    align-items: center;
-    height: 100%;
-}
-
-.search-toggle-li .search-toggle .btn {
-    display: flex;
-    align-items: center;
-    height: 100%;
-    padding: 0 15px;
-    margin: 0;
-}
-
-/* 颜色切换按钮对齐样式 */
-.color-toggle-li {
-    display: flex;
-    align-items: center;
-    height: 50px;
-}
-
-.color-toggle-li .color-toggle {
-    display: flex;
-    align-items: center;
-    height: 100%;
-}
-
-.color-toggle-li .color-toggle .btn {
-    display: flex;
-    align-items: center;
-    height: 100%;
-    padding: 0 15px;
-    margin: 0;
-}
-
-/* 主题切换按钮对齐样式 */
-.theme-toggle-li {
-    display: flex;
-    align-items: center;
-    height: 50px;
-}
-
-.theme-toggle-li .theme-toggle {
-    display: flex;
-    align-items: center;
-    height: 100%;
-}
-
-.theme-toggle-li .theme-toggle .btn {
-    display: flex;
-    align-items: center;
-    height: 100%;
-    padding: 0 15px;
-    margin: 0;
-}
-
-/* 语言切换按钮：与主题切换同风格 */
+/* 切换按钮对齐样式（搜索/颜色/主题/语言） */
+.search-toggle-li,
+.color-toggle-li,
+.theme-toggle-li,
 .lang-toggle-li {
     display: flex;
     align-items: center;
     height: 50px;
 }
+
+.search-toggle-li .search-toggle,
+.color-toggle-li .color-toggle,
+.theme-toggle-li .theme-toggle,
 .lang-toggle-li .lang-toggle {
     display: flex;
     align-items: center;
     height: 100%;
 }
+
+.search-toggle-li .search-toggle .btn,
+.color-toggle-li .color-toggle .btn,
+.theme-toggle-li .theme-toggle .btn,
 .lang-toggle-li .lang-toggle .btn {
     display: flex;
     align-items: center;
     height: 100%;
     padding: 0 15px;
     margin: 0;
+}
+
+.lang-toggle-li .lang-toggle .btn {
     text-decoration: none;
 }
 
@@ -2795,115 +2632,6 @@ html, body {
     }
 }
 
-/* ========================================
-   相关文章样式
-   ======================================== */
-.related_posts {
-    margin: 30px 0;
-    padding: 20px;
-    background: var(--card-bg-color, #f9f9f9);
-    border-radius: 8px;
-}
-
-.related-title {
-    margin-top: 0;
-    margin-bottom: 20px;
-    font-size: 18px;
-    color: var(--text-color, #333);
-    border-bottom: 2px solid #e74c3c;
-    padding-bottom: 10px;
-}
-
-.related-list {
-    list-style: none;
-    padding: 0;
-    margin: 0;
-    display: flex;
-    flex-wrap: wrap;
-    gap: 15px;
-}
-
-.related-item {
-    flex: 1 1 calc(33.333% - 10px);
-    min-width: 200px;
-    background: var(--content-bg-color, #fff);
-    border-radius: 6px;
-    overflow: hidden;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-    transition: transform 0.3s ease;
-}
-
-.related-item:hover {
-    transform: translateY(-5px);
-}
-
-.related-thumb {
-    width: 100%;
-    height: 120px;
-    object-fit: cover;
-}
-
-.related-item .related-item-title {
-    display: block;
-    padding: 10px;
-    font-size: 14px;
-    color: var(--text-color, #333);
-    text-decoration: none;
-    border: none;
-    margin: 0;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-}
-
-.no-related {
-    text-align: center;
-    padding: 20px;
-}
-
-.hot-posts {
-    list-style: none;
-    padding: 0;
-    margin: 0;
-    text-align: left;
-}
-
-.hot-posts li {
-    margin: 10px 0;
-    padding-left: 20px;
-    position: relative;
-}
-
-.hot-posts li:before {
-    content: '\f0da';
-    font-family: 'FontAwesome';
-    position: absolute;
-    left: 0;
-    color: #e74c3c;
-}
-
-.hot-posts li a {
-    color: var(--text-color, #333);
-    text-decoration: none;
-    transition: color 0.3s ease;
-}
-
-.hot-posts li a:hover {
-    color: #e74c3c;
-}
-
-@media (max-width: 768px) {
-    .related-item {
-        flex: 1 1 calc(50% - 10px);
-    }
-}
-
-@media (max-width: 576px) {
-    .related-item {
-        flex: 1 1 100%;
-    }
-}
-
 /* Download page - file links (download.php) */
 #filelink a {
     margin: 25px 15px 25px 0;
@@ -3042,60 +2770,9 @@ html, body {
     word-break: break-all;
 }
 
-
 /* === css/inline.css === */
 /* Dygita CSS 层次：补丁层（小体量覆盖与兼容性修复） */
-
-/* 懒加载占位符样式 */
-img.lazy {
-    opacity: 0;
-    transition: opacity 0.3s ease-in-out;
-}
-
-img {
-    max-width: 100%;
-    height: auto;
-}
-
-/* 内联样式 */
-
-.l-header {
-    background-color: #E74C3C;
-    background-color: var(--header-bg-color, #E74C3C);
-    position: relative;
-    overflow: hidden;
-    margin-top: 0;
-    padding-top: 0;
-}
-
-.l-header .hdbg {
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background-color: #E74C3C;
-    background-color: var(--header-bg-color, #E74C3C);
-    z-index: var(--z-header-bg, 0);
-}
-
-.l-header .m-about {
-    position: relative;
-    z-index: var(--z-header-content, 1);
-}
-
-.l-header #header-canvas {
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    width: 100%;
-    height: 100%;
-    z-index: var(--z-header-bg, 0);
-}
 
 #m-header .right {
     font-size: 18px;
 }
-

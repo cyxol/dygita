@@ -1,54 +1,5 @@
 /* Dygita CSS 层次：补丁层（小体量覆盖与兼容性修复） */
 
-/* 懒加载占位符样式 */
-img.lazy {
-    opacity: 0;
-    transition: opacity 0.3s ease-in-out;
-}
-
-img {
-    max-width: 100%;
-    height: auto;
-}
-
-/* 内联样式 */
-
-.l-header {
-    background-color: #E74C3C;
-    background-color: var(--header-bg-color, #E74C3C);
-    position: relative;
-    overflow: hidden;
-    margin-top: 0;
-    padding-top: 0;
-}
-
-.l-header .hdbg {
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background-color: #E74C3C;
-    background-color: var(--header-bg-color, #E74C3C);
-    z-index: var(--z-header-bg, 0);
-}
-
-.l-header .m-about {
-    position: relative;
-    z-index: var(--z-header-content, 1);
-}
-
-.l-header #header-canvas {
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    width: 100%;
-    height: 100%;
-    z-index: var(--z-header-bg, 0);
-}
-
 #m-header .right {
     font-size: 18px;
 }

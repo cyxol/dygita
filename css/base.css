@@ -239,14 +239,6 @@ body {
   }
 }
 
-/* 全局暗色主题样式 - 确保所有元素都受到影响 */
-body {
-  background-color: #f5f7f9;
-  color: #555;
-  background-color: var(--body-bg-color);
-  color: var(--text-color);
-}
-
 /* 确保所有容器元素都使用暗色主题 */
 .main-container,
 .content-wrap,
@@ -536,11 +528,6 @@ button:hover,
   color: var(--text-color);
 }
 
-/* 暗色主题下的分隔线调整 */
-hr {
-  background-image: repeating-linear-gradient(-45deg, var(--border-color), var(--border-color) 4px, transparent 4px, transparent 8px);
-}
-
 /* 暗色主题下的代码块调整 */
 .highlight-container {
   background: var(--code-bg-color);
@@ -555,25 +542,6 @@ pre {
 code {
   background: var(--code-bg-color);
   color: var(--code-text-color);
-}
-
-/* 暗色主题下的表格调整 */
-th,
-td {
-  border-color: var(--border-color);
-}
-
-/* 暗色主题下的按钮调整 */
-.btn {
-  background: var(--btn-default-bg);
-  border-color: var(--btn-default-border-color);
-  color: var(--btn-default-color);
-}
-
-.btn:hover {
-  background: var(--btn-default-hover-bg);
-  border-color: var(--btn-default-hover-border-color);
-  color: var(--btn-default-hover-color);
 }
 
 /* 暗色主题下的导航栏调整 */
@@ -661,6 +629,7 @@ video {
 /* Horizontal Rule Styles */
 hr {
   background-image: repeating-linear-gradient(-45deg, #ddd, #ddd 4px, transparent 4px, transparent 8px);
+  background-image: repeating-linear-gradient(-45deg, var(--border-color), var(--border-color) 4px, transparent 4px, transparent 8px);
   border: 0;
   height: 3px;
   margin: 40px 0;
