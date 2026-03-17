@@ -18,11 +18,9 @@ if (isset($_POST['tougao_form']) && $_POST['tougao_form'] == 'send') {
     $cookieToken = (string) Typecho\Cookie::get('dygita_tougao_token');
     $tokenValid = function_exists('hash_equals') ? hash_equals($cookieToken, $postedToken) : ($cookieToken === $postedToken);
     if (empty($cookieToken) || empty($postedToken) || !$tokenValid) {
-        throw new \Typecho\Widget\Exception(_t('请求已过期，请刷新页面后重试。'), 403);
+        throw new \Typecho\Widget\Exception(dygita_t('请求已过期，请刷新页面后重试。'), 403);
     }
-    ob_start();
-    $this->permalink();
-    $current_url = ob_get_clean();
+    $current_url = $this->permalink;
     
     // 表单变量初始化（保存原始数据，输出时转义）
     $name = isset($_POST['tougao_authorname']) ? trim((string) $_POST['tougao_authorname']) : '';
@@ -37,13 +35,13 @@ if (isset($_POST['tougao_form']) && $_POST['tougao_form'] == 'send') {
     
     // 表单项数据验证
     if (empty($name) || mb_strlen($name) > 20) {
-        throw new \Typecho\Widget\Exception(_t('昵称必须填写，且长度不得超过20字。'), 200);
+        throw new \Typecho\Widget\Exception(dygita_t('昵称必须填写，且长度不得超过20字。'), 200);
     }
     if (empty($title) || mb_strlen($title) > 100) {
-        throw new \Typecho\Widget\Exception(_t('标题必须填写，且长度不得超过100字。'), 200);
+        throw new \Typecho\Widget\Exception(dygita_t('标题必须填写，且长度不得超过100字。'), 200);
     }
     if (empty($content) || mb_strlen($content) > 3000 || mb_strlen($content) < 100) {
-        throw new \Typecho\Widget\Exception(_t('内容必须填写，且长度不得超过3000字，不得少于100字。'), 200);
+        throw new \Typecho\Widget\Exception(dygita_t('内容必须填写，且长度不得超过3000字，不得少于100字。'), 200);
     }
     
     $safeName = htmlspecialchars($name, ENT_QUOTES, 'UTF-8');
@@ -77,9 +75,9 @@ if (isset($_POST['tougao_form']) && $_POST['tougao_form'] == 'send') {
         if ($tomail) {
             @mail($tomail, "站长，有新投稿！ ", $title . "\n\n" . $post_content);
         }
-throw new \Typecho\Widget\Exception(_t('投稿成功！感谢投稿！<a href="' . $current_url . '">点此返回</a>'), 200);
+throw new \Typecho\Widget\Exception(dygita_t('投稿成功！感谢投稿！<a href="' . $current_url . '">点此返回</a>'), 200);
     } else {
-throw new \Typecho\Widget\Exception(_t('投稿失败！<a href="' . $current_url . '">点此返回</a>'), 200);
+throw new \Typecho\Widget\Exception(dygita_t('投稿失败！<a href="' . $current_url . '">点此返回</a>'), 200);
     }
 }
 ?>

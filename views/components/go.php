@@ -223,7 +223,7 @@ if (!empty($t_url)) {
 			<span class="spinner-text"><?php echo htmlspecialchars($title, ENT_QUOTES, 'UTF-8'); ?></span>
 			<span class="spinner"></span>
 			<p class="go-loading-message">
-				<?php _e('即将跳转到外部链接'); ?>: <br>
+				<?php dygita_e('即将跳转到外部链接'); ?>: <br>
 				<a href="<?php echo htmlspecialchars($url, ENT_QUOTES, 'UTF-8'); ?>"><?php echo htmlspecialchars($url, ENT_QUOTES, 'UTF-8'); ?></a>
 			</p>
 		</div>

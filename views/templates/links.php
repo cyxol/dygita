@@ -14,23 +14,7 @@
 
         <div class="mgr-10 of-hide cate-content">
             <?php
-            $links = array();
-            $linksText = $this->options->links;
-            if ($linksText) {
-                $linkArray = preg_split('/\r?\n/', $linksText);
-                foreach ($linkArray as $line) {
-                    $linkInfo = explode('|', trim($line));
-                    if (count($linkInfo) >= 2) {
-                        $links[] = array(
-                            'name' => trim($linkInfo[0]),
-                            'url' => trim($linkInfo[1]),
-                            'description' => isset($linkInfo[2]) ? trim($linkInfo[2]) : '',
-                            'notes' => isset($linkInfo[3]) ? trim($linkInfo[3]) : '',
-                            'image' => ''
-                        );
-                    }
-                }
-            }
+            $links = parseLinks($this->options->links);
 
             if (!empty($links)) {
                 echo '<ul class="clearfix">';
@@ -39,7 +23,7 @@
                     $safeUrl = htmlspecialchars($link['url'], ENT_QUOTES, 'UTF-8');
                     $safeDesc = htmlspecialchars($link['description'], ENT_QUOTES, 'UTF-8');
                     $safeNotes = htmlspecialchars($link['notes'], ENT_QUOTES, 'UTF-8');
-                    $ico = $link['image'] ? htmlspecialchars($link['image'], ENT_QUOTES, 'UTF-8') : 'https://api.byi.pw/favicon/?url=' . urlencode($link['url']);
+                    $ico = 'https://api.byi.pw/favicon/?url=' . urlencode($link['url']);
                     $randColor = rand(1, 14);
                     echo '<li class="col-md-4 mt-15 mb-15 pd-10">
                     <div class="pd-0 h-100 borderr-main-4 tra">
@@ -62,7 +46,7 @@
                 }
                 echo '</ul>';
             } else {
-                echo '<p>' . _t('暂无友情链接，请在主题设置中添加。') . '</p>';
+                echo '<p>' . dygita_t('暂无友情链接，请在主题设置中添加。') . '</p>';
             }
             ?>
         </div>

@@ -14,8 +14,6 @@ html {
 }
 
 body {
-  background-color: #f5f7f9;
-  color: #555;
   margin: 0;
   padding: 0;
   background-color: var(--body-bg-color);
@@ -223,8 +221,6 @@ body {
 }
 
 body {
-  background: #f5f7f9;
-  color: #555;
   background: var(--body-bg-color);
   color: var(--text-color);
   font-family: 'Lato', "PingFang SC", "Microsoft YaHei", sans-serif;
@@ -245,9 +241,6 @@ body {
 .footer,
 .footer-inner,
 .footer-copyright {
-  background-color: #f5f7f9;
-  color: #555;
-  border-color: #eaecef;
   background-color: var(--body-bg-color);
   color: var(--text-color);
   border-color: var(--border-color);
@@ -257,9 +250,6 @@ body {
 input,
 textarea,
 select {
-  background-color: #fff;
-  color: #555;
-  border-color: #eaecef;
   background-color: var(--content-bg-color);
   color: var(--text-color);
   border-color: var(--border-color);
@@ -267,12 +257,10 @@ select {
 
 /* 确保所有链接都使用暗色主题 */
 a {
-  color: #555;
   color: var(--link-color);
 }
 
 a:hover {
-  color: #222;
   color: var(--link-hover-color);
 }
 

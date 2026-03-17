@@ -97,8 +97,8 @@
         searchOverlay.appendChild(searchPopup);
 
         var searchForm = document.getElementById('search-form-popup');
-        if (searchForm && typeof CONFIG !== 'undefined' && CONFIG.hostname) {
-            searchForm.action = String(CONFIG.hostname).replace(/\/$/, '');
+        if (searchForm && window.DYGITA && window.DYGITA.config && window.DYGITA.config.hostname) {
+            searchForm.action = String(window.DYGITA.config.hostname).replace(/\/$/, '');
         }
 
         function openSearch(e) {

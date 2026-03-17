@@ -75,8 +75,7 @@
                 if ($this->options->adImageUrl) {
                     $adImageUrl = dygita_escape_url($this->options->adImageUrl);
                 } else {
-                    ob_start(); $this->options->themeUrl('img/default.png'); $defaultAdImageUrl = ob_get_clean();
-                    $adImageUrl = htmlspecialchars($defaultAdImageUrl, ENT_QUOTES, 'UTF-8');
+                    $adImageUrl = htmlspecialchars($this->options->themeUrl . '/img/default.png', ENT_QUOTES, 'UTF-8');
                 }
                 ?>
                 <?php if ($adLinkUrl): ?>

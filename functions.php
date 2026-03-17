@@ -427,29 +427,6 @@ function themeConfig($form)
     $form->addInput($dygita_downloadad2);
 }
 
-function git_get_option($key, $default = null)
-{
-    $options = Typecho\Widget::widget('Widget_Options');
-    // 尝试直接获取
-    $value = $options->$key;
-    if ($value === null) {
-        // 尝试从personal获取 (reserved for plugin compatibility if needed)
-        // return $default;
-
-        // 映射一些 WP 的 option 到 Typecho 的 option
-        switch ($key) {
-            case 'git_skin_b':
-            case 'dygita_skin_b':
-                return dygita_opt($options, 'dygita_skin_b', 'git_skin_b') ?: 'git_red_b';
-            case 'git_pichead_b':
-                return false; // 暂时关闭图片头部
-            default:
-                return $default;
-        }
-    }
-    return $value;
-}
-
 /* 增加: 缩略图获取 */
 function getThumbnail($widget)
 {
@@ -506,10 +483,52 @@ function dygita_get_table($table) {
  * @return string
  */
 function dygita_get_archives_url($options) {
-    ob_start();
-    $options->siteUrl();
-    $base = rtrim(ob_get_clean(), '/');
-    return $base . '/archives/';
+    return rtrim($options->siteUrl, '/') . '/archives/';
+}
+
+/**
+ * 获取所有已发布文章，按发布时间倒序，用于归档页面
+ * @return array
+ */
+/**
+ * 获取下载页数据（文章信息 + 下载自定义字段）
+ * @param int $pid 文章 cid
+ * @return array|null 成功返回 ['post'=>..., 'name'=>..., 'size'=>..., 'links'=>..., 'permalink'=>...], 失败返回 null
+ */
+function dygita_get_download_data($pid) {
+    $db = Typecho\Db::get();
+    $post = $db->fetchRow($db->select()->from(dygita_get_table('contents'))
+        ->where('cid = ?', intval($pid))->where('type = ?', 'post')->where('status = ?', 'publish'));
+    if (!$post) return null;
+
+    $fields = $db->fetchAll($db->select()->from(dygita_get_table('fields'))->where('cid = ?', intval($pid)));
+    $fieldMap = array();
+    foreach ($fields as $field) {
+        $fieldMap[$field['name']] = $field['str_value'];
+    }
+
+    $name  = isset($fieldMap['git_download_name']) ? $fieldMap['git_download_name'] : '';
+    $size  = isset($fieldMap['git_download_size']) ? $fieldMap['git_download_size'] : '';
+    $links = isset($fieldMap['git_download_link']) ? $fieldMap['git_download_link'] : '';
+    if (!$name || !$size || !$links) return null;
+
+    $options = Typecho\Widget::widget('Widget_Options');
+    return array(
+        'post'      => $post,
+        'name'      => $name,
+        'size'      => $size,
+        'links'     => $links,
+        'permalink' => Typecho\Router::url('post', $post, $options->index),
+    );
+}
+
+function dygita_get_archive_posts() {
+    $db = Typecho\Db::get();
+    $table = dygita_get_table('contents');
+    return $db->fetchAll($db->select()->from($table)
+        ->where('type = ?', 'post')
+        ->where('status = ?', 'publish')
+        ->order('created', Typecho\Db::SORT_DESC));
 }
 
 /**
@@ -519,10 +538,7 @@ function dygita_get_archives_url($options) {
  */
 function getRandomPlaceholderImageUrl($options) {
     $random = mt_rand(1, 12);
-    ob_start();
-    $options->themeUrl();
-    $base = rtrim(ob_get_clean(), '/');
-    return $base . '/img/pic/' . $random . '.jpg';
+    return rtrim($options->themeUrl, '/') . '/img/pic/' . $random . '.jpg';
 }
 
 /**
@@ -584,9 +600,7 @@ function dygita_get_saved_theme_prefs() {
  * @return array
  */
 function dygita_get_config_array($options) {
-    ob_start();
-    $options->siteUrl();
-    $hostname = ob_get_clean();
+    $hostname = $options->siteUrl;
     return array(
         'hostname' => $hostname,
         'root' => '/',
@@ -653,6 +667,51 @@ function dygita_escape_url($url) {
         return htmlspecialchars($url, ENT_QUOTES, 'UTF-8');
     }
     return '';
+}
+
+/**
+ * 获取相关文章（三级 fallback：标签 → 分类 → 空数组表示使用热门文章）
+ * @param int $cid 当前文章 ID
+ * @param int $limit 最多返回条数
+ * @return array ['posts' => array, 'use_hot' => bool]
+ */
+function dygita_get_related_posts($cid, $limit = 6) {
+    $db = Typecho\Db::get();
+
+    // 方法1: 基于标签
+    $tags = $db->fetchAll($db->select('mid')->from('table.relationships')->where('cid = ?', $cid));
+    if (!empty($tags)) {
+        $tagMids = array_column($tags, 'mid');
+        $relCids = $db->fetchAll($db->select('DISTINCT cid')->from('table.relationships')
+            ->where('mid IN ?', $tagMids)->where('cid != ?', $cid)->limit($limit));
+        if (!empty($relCids)) {
+            $posts = $db->fetchAll($db->select()->from('table.contents')
+                ->where('cid IN ?', array_column($relCids, 'cid'))
+                ->where('status = ?', 'publish')->where('type = ?', 'post')
+                ->order('created', Typecho\Db::SORT_DESC)->limit($limit));
+            if (!empty($posts)) return array('posts' => $posts, 'use_hot' => false);
+        }
+    }
+
+    // 方法2: 基于分类
+    $cats = $db->fetchAll($db->select('table.metas.mid')->from('table.metas')
+        ->join('table.relationships', 'table.metas.mid = table.relationships.mid')
+        ->where('table.relationships.cid = ?', $cid)->where('table.metas.type = ?', 'category'));
+    if (!empty($cats)) {
+        $catMids = array_column($cats, 'mid');
+        $relCids = $db->fetchAll($db->select('DISTINCT cid')->from('table.relationships')
+            ->where('mid IN ?', $catMids)->where('cid != ?', $cid)->limit($limit));
+        if (!empty($relCids)) {
+            $posts = $db->fetchAll($db->select()->from('table.contents')
+                ->where('cid IN ?', array_column($relCids, 'cid'))
+                ->where('status = ?', 'publish')->where('type = ?', 'post')
+                ->order('created', Typecho\Db::SORT_DESC)->limit($limit));
+            if (!empty($posts)) return array('posts' => $posts, 'use_hot' => false);
+        }
+    }
+
+    // 方法3: 回退到热门文章
+    return array('posts' => array(), 'use_hot' => true);
 }
 
 /* 增加: 相关文章缩略图获取（用于数组形式的文章数据） */
@@ -884,22 +943,37 @@ function themeFields($layout) {
 }
 
 /* 增加: 友情链接 */
+
+/**
+ * 解析友情链接文本，返回结构化数组
+ * 每行格式：名称|URL|描述|备注
+ * @param string $linksText
+ * @return array
+ */
+function parseLinks($linksText) {
+    $result = array();
+    if (!$linksText) return $result;
+    foreach (preg_split('/\r?\n/', $linksText) as $line) {
+        $parts = explode('|', trim($line));
+        if (count($parts) >= 2) {
+            $result[] = array(
+                'name'        => trim($parts[0]),
+                'url'         => trim($parts[1]),
+                'description' => isset($parts[2]) ? trim($parts[2]) : '',
+                'notes'       => isset($parts[3]) ? trim($parts[3]) : '',
+            );
+        }
+    }
+    return $result;
+}
+
 function getLinks() {
     $options = Typecho\Widget::widget('Widget_Options');
-    $links = $options->links;
-    
-    if ($links) {
-        // 修复：使用双引号使 \n 被正确解释为换行符，同时支持 \r\n
-        $linkArray = preg_split('/\r?\n/', $links);
-        foreach ($linkArray as $link) {
-            $linkInfo = explode('|', trim($link));
-            if (count($linkInfo) >= 2) {
-                $name = htmlspecialchars(trim($linkInfo[0]), ENT_QUOTES, 'UTF-8');
-                $url = htmlspecialchars(trim($linkInfo[1]), ENT_QUOTES, 'UTF-8');
-                $desc = isset($linkInfo[2]) ? htmlspecialchars(trim($linkInfo[2]), ENT_QUOTES, 'UTF-8') : '';
-                echo '<li><a href="' . $url . '" title="' . $desc . '" target="_blank" rel="noopener">' . $name . '</a></li>';
-            }
-        }
+    foreach (parseLinks($options->links) as $link) {
+        $name = htmlspecialchars($link['name'], ENT_QUOTES, 'UTF-8');
+        $url  = htmlspecialchars($link['url'],  ENT_QUOTES, 'UTF-8');
+        $desc = htmlspecialchars($link['description'], ENT_QUOTES, 'UTF-8');
+        echo '<li><a href="' . $url . '" title="' . $desc . '" target="_blank" rel="noopener">' . $name . '</a></li>';
     }
 }
 

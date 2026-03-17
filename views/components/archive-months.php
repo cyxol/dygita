@@ -2,13 +2,7 @@
 
 <article class="archives">
     <?php
-    $db = Typecho\Db::get();
-    $contentsTable = dygita_get_table('contents');
-
-    $posts = $db->fetchAll($db->select()->from($contentsTable)
-        ->where('type = ?', 'post')
-        ->where('status = ?', 'publish')
-        ->order('created', Typecho\Db::SORT_DESC));
+    $posts = dygita_get_archive_posts();
 
     if (!empty($posts)) {
         $currentYear = '';
@@ -49,7 +43,7 @@
             echo '</ul></div>';
         }
     } else {
-        echo '<p>' . _t('暂无文章') . '</p>';
+        echo '<p>' . dygita_t('暂无文章') . '</p>';
     }
     ?>
 </article>

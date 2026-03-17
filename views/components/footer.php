@@ -11,8 +11,8 @@
             if ($copyright !== '' && $copyright !== null) {
                 echo htmlspecialchars($copyright, ENT_QUOTES, 'UTF-8');
             } else {
-                ob_start(); $this->options->siteUrl(); $footerSiteUrl = ob_get_clean();
-                ob_start(); $this->options->title(); $footerSiteTitle = ob_get_clean();
+                $footerSiteUrl = $this->options->siteUrl;
+                $footerSiteTitle = $this->options->title;
                 echo '&copy; ' . date('Y') . ' <a href="' . htmlspecialchars($footerSiteUrl, ENT_QUOTES, 'UTF-8') . '">' . htmlspecialchars($footerSiteTitle, ENT_QUOTES, 'UTF-8') . '</a>. ';
             }
             ?>
@@ -38,7 +38,8 @@ endif; ?>
 <script defer src="<?php $this->options->themeUrl('js/reading-progress.js'); ?>"></script>
 <?php if ($this->options->swiperEnabled == '1'): ?>
 <script>
-window.DYGITA_SWIPER = {
+window.DYGITA = window.DYGITA || {};
+window.DYGITA.swiper = {
     autoplay: <?php echo ($this->options->swiperAutoplay == '1') ? 'true' : 'false'; ?>,
     delay: <?php echo $this->options->swiperDelay ? intval($this->options->swiperDelay) : 3000; ?>,
     speed: <?php echo $this->options->swiperSpeed ? intval($this->options->swiperSpeed) : 1000; ?>

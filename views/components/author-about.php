@@ -31,7 +31,7 @@
                         <p><i class="fa fa-qq"></i> <?php echo $contactQQ; ?></p>
                     <?php endif;
                     if (!$contactEmail && !$contactQQ): ?>
-                        <p><?php _e('请在主题设置中填写联系邮箱或QQ'); ?></p>
+                        <p><?php dygita_e('请在主题设置中填写联系邮箱或QQ'); ?></p>
                     <?php endif; ?>
                 </div>
             </div>

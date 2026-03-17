@@ -3,12 +3,12 @@
 
   var NAMESPACE = 'DygitaShare';
 
-  // 依赖于全局的 shareData（由 post.php 内联输出）
+  // 依赖于全局的 shareData（由 post.php 内联输出，挂在 window.DYGITA.shareData）
   function getShareData() {
-    if (!window.shareData) {
+    if (!window.DYGITA || !window.DYGITA.shareData) {
       return null;
     }
-    return window.shareData;
+    return window.DYGITA.shareData;
   }
 
   function shareToWechat() {

@@ -1,6 +1,6 @@
 /**
  * Swiper 轮播初始化
- * 依赖: 在 footer 内联中设置 window.DYGITA_SWIPER = { delay: 3000, speed: 1000, autoplay: true }
+ * 依赖: 在 footer 内联中设置 window.DYGITA.swiper = { delay: 3000, speed: 1000, autoplay: true }
  */
 (function() {
     function init() {
@@ -12,7 +12,7 @@
             }
             return;
         }
-        var opts = window.DYGITA_SWIPER || {};
+        var opts = (window.DYGITA && window.DYGITA.swiper) || {};
         var config = {
             loop: true,
             speed: opts.speed || 1000,

@@ -8,7 +8,7 @@
 $prefs = dygita_get_saved_theme_prefs();
 $savedTheme = $prefs['theme'];
 $savedHeaderColor = $prefs['headerColor'];
-ob_start(); $this->options->lang(); $dygitaLangAttr = trim(ob_get_clean()) ?: 'zh-CN';
+$dygitaLangAttr = trim((string)($this->options->lang ?: '')) ?: 'zh-CN';
 ?>
 <html lang="<?php echo htmlspecialchars($dygitaLangAttr, ENT_QUOTES, 'UTF-8'); ?>" <?php if ($savedTheme): ?> data-theme="<?php echo htmlspecialchars((string) $savedTheme, ENT_QUOTES, 'UTF-8'); ?>" <?php
 elseif ($this->options->colorSchema): ?> data-theme="<?php $this->options->colorSchema(); ?>" <?php
@@ -21,19 +21,20 @@ endif; ?>>
 
     <!-- 保存的主题偏好，用于 JavaScript 初始化 -->
     <script>
-        var dygitaSavedTheme = <?php echo json_encode($savedTheme, JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_QUOT); ?>;
-        var dygitaSavedHeaderColor = <?php echo json_encode($savedHeaderColor, JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_QUOT); ?>;
+        window.DYGITA = window.DYGITA || {};
+        window.DYGITA.savedTheme = <?php echo json_encode($savedTheme, JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_QUOT); ?>;
+        window.DYGITA.savedHeaderColor = <?php echo json_encode($savedHeaderColor, JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_QUOT); ?>;
         (function() {
-            var isDark = dygitaSavedTheme === 'dark' || (!dygitaSavedTheme && typeof window.matchMedia !== 'undefined' && window.matchMedia('(prefers-color-scheme: dark)').matches);
+            var isDark = window.DYGITA.savedTheme === 'dark' || (!window.DYGITA.savedTheme && typeof window.matchMedia !== 'undefined' && window.matchMedia('(prefers-color-scheme: dark)').matches);
             if (isDark) document.documentElement.setAttribute('data-theme', 'dark');
         })();
     </script>
 
     <title><?php $this->archiveTitle(array(
-    'category' => _t('分类 %s 下的文章'),
-    'search' => _t('包含关键字 %s 的文章'),
-    'tag' => _t('标签 %s 下的文章'),
-    'author' => _t('%s 发布的文章')
+    'category' => dygita_t('分类 %s 下的文章'),
+    'search' => dygita_t('包含关键字 %s 的文章'),
+    'tag' => dygita_t('标签 %s 下的文章'),
+    'author' => dygita_t('%s 发布的文章')
 ), '', ' - '); ?><?php $this->options->title(); ?></title>
 
     <!-- 预加载关键资源 -->
@@ -130,11 +131,11 @@ endif; ?>
 
         <!-- 文章结构化数据 -->
         <?php
-        ob_start(); $this->title(); $ldTitle = ob_get_clean();
+        $ldTitle = $this->title;
         ob_start(); $this->excerpt(150); $ldExcerpt = ob_get_clean();
-        ob_start(); $this->permalink(); $ldPermalink = ob_get_clean();
-        ob_start(); $this->options->title(); $ldPublisherName = ob_get_clean();
-        ob_start(); $this->options->themeUrl('img/caiya.xin.jpg'); $ldPublisherLogo = ob_get_clean();
+        $ldPermalink = $this->permalink;
+        $ldPublisherName = $this->options->title;
+        $ldPublisherLogo = $this->options->themeUrl . '/img/caiya.xin.jpg';
         $ldArticle = array(
             "@context" => "https://schema.org",
             "@type" => "Article",
@@ -168,9 +169,9 @@ endif; ?>
 
     <!-- 网站结构化数据 -->
     <?php
-    ob_start(); $this->options->title(); $ldSiteTitle = ob_get_clean();
-    ob_start(); $this->options->siteUrl(); $ldSiteUrl = ob_get_clean();
-    ob_start(); $this->options->description(); $ldSiteDesc = ob_get_clean();
+    $ldSiteTitle = $this->options->title;
+    $ldSiteUrl = $this->options->siteUrl;
+    $ldSiteDesc = $this->options->description;
     $ldWebsite = array(
         "@context" => "https://schema.org",
         "@type" => "WebSite",
@@ -190,7 +191,8 @@ endif; ?>
 
     <!-- 主题配置 -->
     <script id="dygita-configurations">
-        var CONFIG = <?php echo json_encode(dygita_get_config_array($this->options), JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE); ?>;
+        window.DYGITA = window.DYGITA || {};
+        window.DYGITA.config = <?php echo json_encode(dygita_get_config_array($this->options), JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE); ?>;
     </script>
 
     <!-- 通过自有函数输出HTML头部信息 -->
@@ -244,7 +246,7 @@ endif; ?>
                 <h3><?php $this->options->title(); ?></h3>
             </div>
             <?php
-            ob_start(); $this->options->siteUrl(); $navBaseSiteUrl = rtrim(ob_get_clean(), '/');
+            $navBaseSiteUrl = rtrim($this->options->siteUrl, '/');
             $navOpts = $this->options;
             $navIdx = $navOpts->index;
 
@@ -253,8 +255,8 @@ endif; ?>
             $pageListWidget = $this->widget('Widget_Contents_Page_List');
             while ($pageListWidget->next()) {
                 $s = $pageListWidget->slug;
-                ob_start(); $pageListWidget->title(); $pTitle = ob_get_clean();
-                ob_start(); $pageListWidget->permalink(); $pLink = ob_get_clean();
+                $pTitle = $pageListWidget->title;
+                $pLink = $pageListWidget->permalink;
                 $navAllPages[] = ['slug' => $s, 'title' => $pTitle, 'permalink' => $pLink];
                 if ($navAuthorUrl === null && in_array($s, ['about', 'author', 'author_page'])) {
                     $navAuthorUrl = $pLink;

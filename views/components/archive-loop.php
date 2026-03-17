@@ -8,9 +8,9 @@
 
 <?php if (!$hasPosts): ?>
     <article class="excerpt">
-        <h2 class="post-title"><?php _e('没有找到内容'); ?></h2>
+        <h2 class="post-title"><?php dygita_e('没有找到内容'); ?></h2>
     </article>
 <?php endif; ?>
 
-<?php $this->pageNav('&laquo; ' . _t('前一页'), _t('后一页') . ' &raquo;'); ?>
+<?php $this->pageNav('&laquo; ' . dygita_t('前一页'), dygita_t('后一页') . ' &raquo;'); ?>
 

@@ -1,3 +1,4 @@
+(function () {
 var particlesOptions = {
         "particles": {
             "number": {
@@ -233,3 +234,4 @@ if (document.readyState === 'loading') {
     initParticlesWhenReady();
 }
 window.addEventListener('load', initParticlesWhenReady);
+})();

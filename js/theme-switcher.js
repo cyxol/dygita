@@ -1,10 +1,10 @@
 /**
  * 主题切换与顶栏颜色切换
- * 依赖: header 中的 dygitaSavedTheme, dygitaSavedHeaderColor; CONFIG.hostname 用于保存偏好
+ * 依赖: window.DYGITA.savedTheme, window.DYGITA.savedHeaderColor, window.DYGITA.config.hostname
  */
 (function() {
     function dygitaSavePreference(type, value) {
-        var baseUrl = (typeof CONFIG !== 'undefined' && CONFIG && CONFIG.hostname) ? CONFIG.hostname : (window.location.origin + '/');
+        var baseUrl = (window.DYGITA && window.DYGITA.config && window.DYGITA.config.hostname) ? window.DYGITA.config.hostname : (window.location.origin + '/');
         var xhr = new XMLHttpRequest();
         xhr.open('POST', baseUrl, true);
         xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
@@ -22,7 +22,7 @@
         var themeToggle = document.getElementById('theme-toggle');
         if (!themeToggle) return;
 
-        var savedTheme = (typeof dygitaSavedTheme !== 'undefined' ? dygitaSavedTheme : null) || (typeof localStorage !== 'undefined' ? localStorage.getItem('theme') : null);
+        var savedTheme = (window.DYGITA && window.DYGITA.savedTheme ? window.DYGITA.savedTheme : null) || (typeof localStorage !== 'undefined' ? localStorage.getItem('theme') : null);
         var prefersDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
 
         if (savedTheme === 'dark' || (!savedTheme && prefersDark)) {
@@ -52,7 +52,7 @@
         if (!colorToggle) return;
 
         var headerColors = ['#E74C3C', '#3498db', '#27ae60', '#f39c12', '#9b59b6', '#1abc9c'];
-        var savedColor = (typeof dygitaSavedHeaderColor !== 'undefined' ? dygitaSavedHeaderColor : null) || (typeof localStorage !== 'undefined' ? localStorage.getItem('headerColor') : null);
+        var savedColor = (window.DYGITA && window.DYGITA.savedHeaderColor ? window.DYGITA.savedHeaderColor : null) || (typeof localStorage !== 'undefined' ? localStorage.getItem('headerColor') : null);
         if (savedColor) {
             document.documentElement.style.setProperty('--header-bg-color', savedColor);
         }

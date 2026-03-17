@@ -24,23 +24,18 @@
         var rightToggle = document.querySelector('.sidebar-toggle.right');
 
         function updateBothCollapsedClass() {
-            var main = document.querySelector('.main-container');
-            var left = document.querySelector('.sidebar-left');
-            var right = document.querySelector('.sidebar-right');
-            if (!main || !left || !right) return;
-            if (left.classList.contains('collapsed') && right.classList.contains('collapsed')) {
-                main.classList.add('both-collapsed');
+            if (!mainContainer || !sidebarLeft || !sidebarRight) return;
+            if (sidebarLeft.classList.contains('collapsed') && sidebarRight.classList.contains('collapsed')) {
+                mainContainer.classList.add('both-collapsed');
             } else {
-                main.classList.remove('both-collapsed');
+                mainContainer.classList.remove('both-collapsed');
             }
         }
 
         function saveSidebarState() {
-            var left = document.querySelector('.sidebar-left');
-            var right = document.querySelector('.sidebar-right');
             var state = {
-                leftCollapsed: left ? left.classList.contains('collapsed') : false,
-                rightCollapsed: right ? right.classList.contains('collapsed') : false
+                leftCollapsed: sidebarLeft ? sidebarLeft.classList.contains('collapsed') : false,
+                rightCollapsed: sidebarRight ? sidebarRight.classList.contains('collapsed') : false
             };
             try { localStorage.setItem('sidebarState', JSON.stringify(state)); } catch (e) {}
         }
@@ -48,11 +43,7 @@
         function loadSidebarState() {
             var state = {};
             try { state = JSON.parse(localStorage.getItem('sidebarState') || '{}'); } catch (e) {}
-            var sidebarLeft = document.querySelector('.sidebar-left');
-            var sidebarRight = document.querySelector('.sidebar-right');
-            var leftToggle = document.querySelector('.sidebar-toggle.left');
-            var rightToggle = document.querySelector('.sidebar-toggle.right');
-            var mainContainer = document.querySelector('.main-container');
+            // Use closure-scoped variables (queried once above)
 
             if (state.leftCollapsed && sidebarLeft) {
                 sidebarLeft.classList.add('collapsed');

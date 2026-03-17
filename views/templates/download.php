@@ -2,44 +2,18 @@
 <?php $this->need('views/components/header.php'); ?>
 <?php
 $pid = $this->request->get('pid');
-if (!$pid) {
+$dlData = $pid ? dygita_get_download_data($pid) : null;
+if (!$dlData) {
     header('Location: ' . $this->options->siteUrl);
     exit;
 }
-
-$db = Typecho\Db::get();
-$contentsTable = dygita_get_table('contents');
-$fieldsTable = dygita_get_table('fields');
-
-$post = $db->fetchRow($db->select()->from($contentsTable)
-    ->where('cid = ?', intval($pid))
-    ->where('type = ?', 'post')
-    ->where('status = ?', 'publish'));
-
-if (!$post) {
-    header('Location: ' . $this->options->siteUrl);
-    exit;
-}
-
-$fields = $db->fetchAll($db->select()->from($fieldsTable)
-    ->where('cid = ?', intval($pid)));
-$fieldMap = array();
-foreach ($fields as $field) {
-    $fieldMap[$field['name']] = $field['str_value'];
-}
-
-$theCode1 = isset($fieldMap['git_download_name']) ? $fieldMap['git_download_name'] : '';
-$theCode2 = isset($fieldMap['git_download_size']) ? $fieldMap['git_download_size'] : '';
-$theCode3 = isset($fieldMap['git_download_link']) ? $fieldMap['git_download_link'] : '';
-
-if (!$theCode1 || !$theCode2 || !$theCode3) {
-    header('Location: ' . $this->options->siteUrl);
-    exit;
-}
-
-$title = htmlspecialchars($post['title'], ENT_QUOTES, 'UTF-8');
+$post         = $dlData['post'];
+$theCode1     = $dlData['name'];
+$theCode2     = $dlData['size'];
+$theCode3     = $dlData['links'];
+$title        = htmlspecialchars($post['title'], ENT_QUOTES, 'UTF-8');
 $postModified = $post['modified'];
-$permalink = Typecho\Router::url('post', $post, Typecho\Widget::widget('Widget_Options')->index);
+$permalink    = $dlData['permalink'];
 ?>
 
 <?php $this->need('views/components/layout-start.php'); ?>
@@ -50,16 +24,16 @@ $permalink = Typecho\Router::url('post', $post, Typecho\Widget::widget('Widget_O
         <div class="article-content">
             <?php $ad1 = dygita_opt($this->options, 'dygita_downloadad1', 'git_downloadad1'); if ($ad1) echo $ad1; ?>
             
-            <h2><?php _e('资源信息'); ?></h2>
+            <h2><?php dygita_e('资源信息'); ?></h2>
             <div class="alert alert-success">
                 <ul class="infos clearfix">
-                    <li><?php _e('资源名称'); ?>：<?php echo htmlspecialchars($theCode1, ENT_QUOTES, 'UTF-8'); ?></li>
-                    <li><?php _e('文件大小'); ?>：<?php echo htmlspecialchars($theCode2, ENT_QUOTES, 'UTF-8'); ?></li>
-                    <li><?php _e('更新日期'); ?>：<?php echo date('Y-m-d H:i:s', $postModified); ?></li>
+                    <li><?php dygita_e('资源名称'); ?>：<?php echo htmlspecialchars($theCode1, ENT_QUOTES, 'UTF-8'); ?></li>
+                    <li><?php dygita_e('文件大小'); ?>：<?php echo htmlspecialchars($theCode2, ENT_QUOTES, 'UTF-8'); ?></li>
+                    <li><?php dygita_e('更新日期'); ?>：<?php echo date('Y-m-d H:i:s', $postModified); ?></li>
                 </ul>
             </div>
             
-            <h2><?php _e('下载地址'); ?></h2>
+            <h2><?php dygita_e('下载地址'); ?></h2>
             <div id="filelink">
                 <div class="filelink-inner">
                     <?php
@@ -81,12 +55,12 @@ $permalink = Typecho\Router::url('post', $post, Typecho\Widget::widget('Widget_O
             
             <div class="clearfix"></div>
             
-            <h2><?php _e('下载说明'); ?></h2>
+            <h2><?php dygita_e('下载说明'); ?></h2>
             <div class="alert alert-info" role="alert">
                 <?php $dl = dygita_opt($this->options, 'dygita_dlpage_dl', 'git_dlpage_dl'); if ($dl) echo $dl; ?>
             </div>
             
-            <h2><?php _e('免责声明'); ?></h2>
+            <h2><?php dygita_e('免责声明'); ?></h2>
             <div class="alert alert-warning" role="alert">
                 <p><?php $mz = dygita_opt($this->options, 'dygita_dlpage_mz', 'git_dlpage_mz'); if ($mz) echo $mz; ?></p>
             </div>
