@@ -1,4 +1,4 @@
-# Dygita 主题 - Typecho 移植版
+# Dygita 主题 - Typecho 自定义主题
 
 一款功能丰富、美观大方的 Typecho 主题，基于原 WordPress Git 主题移植而来。
 
