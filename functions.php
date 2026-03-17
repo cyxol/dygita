@@ -18,8 +18,12 @@ define('DYGITA_THEME_VERSION', '1.1.0');
 (function () {
     $rt = \Widget\Options::alloc()->routingTable;
     $exists = isset($rt['tags_cloud']) || (isset($rt[0]) && isset($rt[0]['tags_cloud']));
+    $aliasExists = isset($rt['tags_cloud_page']) || (isset($rt[0]) && isset($rt[0]['tags_cloud_page']));
     if (!$exists) {
         \Utils\Helper::addRoute('tags_cloud', '/tags/', '\Widget\Archive', 'render');
+    }
+    if (!$aliasExists) {
+        \Utils\Helper::addRoute('tags_cloud_page', '/page-tag-cloud.html', '\Widget\Archive', 'render');
     }
 })();
 
@@ -230,6 +234,9 @@ function themeConfig($form)
     $rt = \Utils\Helper::options()->routingTable;
     if (!isset($rt['tags_cloud']) && !(isset($rt[0]) && isset($rt[0]['tags_cloud']))) {
         \Utils\Helper::addRoute('tags_cloud', '/tags/', '\Widget\Archive', 'render');
+    }
+    if (!isset($rt['tags_cloud_page']) && !(isset($rt[0]) && isset($rt[0]['tags_cloud_page']))) {
+        \Utils\Helper::addRoute('tags_cloud_page', '/page-tag-cloud.html', '\Widget\Archive', 'render');
     }
 
     // 获取全局配置（注意：在函数上下文中不能使用 $this->options）
@@ -1040,7 +1047,7 @@ function dygita_e($key) {
 // 主题初始化函数
 function themeInit($archive) {
     // 自定义路由模板：标签云页面
-    if ($archive->parameter->type === 'tags_cloud') {
+    if ($archive->parameter->type === 'tags_cloud' || $archive->parameter->type === 'tags_cloud_page') {
         $archive->setThemeFile('views/components/tags.php');
         return;
     }

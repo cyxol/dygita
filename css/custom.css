@@ -9,7 +9,7 @@
 
 /* 标题栏样式 */
 .l-header {
-    padding: 20px 0;
+    padding: 30px 0 20px;
     min-height: 120px;
     margin-top: 0;
     border-top: none;
@@ -42,6 +42,7 @@ body > header:first-of-type {
 
 /* 调整标题栏内元素大小，适应新高度 */
 .l-header #logo {
+    margin-top: 30px;
     margin-bottom: 10px;
 }
 
