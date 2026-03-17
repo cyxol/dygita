@@ -1,0 +1,19 @@
+<?php if (!defined('__TYPECHO_ROOT_DIR__')) exit; ?>
+<?php $this->need('views/components/header.php'); ?>
+<?php $this->need('views/components/layout-start.php'); ?>
+
+        <header class="article-header">
+            <h1 class="article-title">
+                <a href="<?php $this->permalink(); ?>"><?php $this->title(); ?></a>
+            </h1>
+        </header>
+
+        <article class="article-content">
+            <?php $this->content(); ?>
+        </article>
+
+        <?php $this->need('views/components/comments.php'); ?>
+
+<?php $this->need('views/components/layout-end.php'); ?>
+<?php $this->need('views/components/footer.php'); ?>
+

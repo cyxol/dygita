@@ -1,0 +1,140 @@
+/* Dygita CSS 层次：布局层（整体容器与响应式栅格） */
+
+/* 布局样式 */
+
+/* 全局布局 */
+
+/* 页脚样式 */
+.footer {
+  width: 100%;
+  text-align: center;
+  padding: 20px 0;
+  background-color: var(--body-bg-color);
+  color: var(--blockquote-color);
+  font-size: 13px;
+  border-top: 1px solid var(--border-color);
+}
+
+.footer-inner {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 20px;
+}
+
+.footer-copyright {
+  text-align: center;
+}
+
+/* 确保所有容器元素都使用暗色主题 */
+.main-container,
+.content-wrap,
+.footer,
+.footer-inner,
+.footer-copyright {
+  background-color: var(--body-bg-color);
+  color: var(--text-color);
+  border-color: var(--border-color);
+}
+
+/* 三栏布局 */
+.main-container {
+  display: flex;
+  flex-wrap: nowrap;
+  width: 100%;
+  max-width: 1680px;
+  margin: 0 auto;
+  padding: 20px 0;
+  justify-content: center;
+  gap: 20px;
+  box-sizing: border-box;
+  align-items: flex-start;
+}
+
+/* 左侧边栏 */
+.sidebar-left {
+  width: 18%;
+  min-width: 18%;
+  max-width: 18%;
+  flex-shrink: 0;
+  order: 1;
+  box-sizing: border-box;
+  background: var(--content-bg-color);
+  border-radius: 8px;
+  padding: 20px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+}
+
+/* 右侧边栏 */
+.sidebar-right {
+  width: 24%;
+  min-width: 24%;
+  max-width: 24%;
+  flex-shrink: 0;
+  order: 3;
+  box-sizing: border-box;
+  background: var(--content-bg-color);
+  border-radius: 8px;
+  padding: 20px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+}
+
+/* 中间内容区域 */
+.content-wrap {
+  flex: 1;
+  min-width: 0;
+  order: 2;
+  box-sizing: border-box;
+  background: var(--content-bg-color);
+  border-radius: 8px;
+  padding: 40px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+  position: relative;
+  left: 0;
+  right: 0;
+  margin: 0 auto;
+}
+
+/* 响应式布局 */
+@media (max-width: 1200px) {
+  .sidebar-left,
+  .sidebar-right {
+    width: 20%;
+    min-width: 20%;
+    max-width: 20%;
+  }
+}
+
+@media (max-width: 992px) {
+  .sidebar-left,
+  .sidebar-right {
+    width: 22%;
+    min-width: 22%;
+    max-width: 22%;
+  }
+}
+
+@media (max-width: 768px) {
+  .main-container {
+    flex-direction: column;
+    padding: 10px;
+  }
+
+  .sidebar-left,
+  .sidebar-right {
+    width: 100%;
+    min-width: 100%;
+    max-width: 100%;
+    order: 1;
+  }
+
+  .content-wrap {
+    width: 100%;
+    max-width: 100%;
+    min-width: 100%;
+    order: 2;
+  }
+
+  .sidebar-right {
+    order: 3;
+  }
+}
