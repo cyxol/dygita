@@ -2,7 +2,7 @@
     exit; ?>
 <?php $this->need('views/components/header.php'); ?>
 
-<?php $this->need('views/components/layout-start.php'); ?>
+<?php $this->need('views/components/sidebar-left.php'); ?>
 
         <div class="error-404">
             <h1 class="error-code">404</h1>
@@ -85,6 +85,6 @@
             </div>
         </div>
 
-<?php $this->need('views/components/layout-end.php'); ?>
+<?php $this->need('views/components/sidebar-right.php'); ?>
 <?php $this->need('views/components/footer.php'); ?>
 

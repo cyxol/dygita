@@ -1,6 +1,6 @@
 <?php if (!defined('__TYPECHO_ROOT_DIR__')) exit; ?>
 <?php $this->need('views/components/header.php'); ?>
-<?php $this->need('views/components/layout-start.php'); ?>
+<?php $this->need('views/components/sidebar-left.php'); ?>
 
         <header class="archive-header">
             <h1><a href="<?php $this->permalink(); ?>"><?php $this->title(); ?></a></h1>
@@ -36,5 +36,5 @@
         
         <?php $this->need('views/components/comments.php'); ?>
 
-<?php $this->need('views/components/layout-end.php'); ?>
+<?php $this->need('views/components/sidebar-right.php'); ?>
 <?php $this->need('views/components/footer.php'); ?>

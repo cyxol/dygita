@@ -34,7 +34,7 @@ if (!empty($cids)) {
     }
 }
 ?>
-<?php $this->need('views/components/layout-start.php'); ?>
+<?php $this->need('views/components/sidebar-left.php'); ?>
         <header class="archive-header">
             <h1><a href="<?php $this->permalink(); ?>"><?php $this->title(); ?></a></h1>
         </header>
@@ -92,15 +92,15 @@ if (!empty($cids)) {
             $sep = strpos($baseUrl, '?') !== false ? '&' : '?';
             if ($page > 1) {
                 $prevUrl = $page == 2 ? $baseUrl : $baseUrl . $sep . 'page=' . ($page - 1);
-                echo '<a href="' . htmlspecialchars($prevUrl, ENT_QUOTES, 'UTF-8') . '">上一页</a> ';
+                echo '<a href="' . htmlspecialchars($prevUrl, ENT_QUOTES, 'UTF-8') . '">上一�?/a> ';
             }
             echo '<span>' . $page . ' / ' . $totalPages . '</span>';
             if ($page < $totalPages) {
                 $nextUrl = $baseUrl . $sep . 'page=' . ($page + 1);
-                echo ' <a href="' . htmlspecialchars($nextUrl, ENT_QUOTES, 'UTF-8') . '">下一页</a>';
+                echo ' <a href="' . htmlspecialchars($nextUrl, ENT_QUOTES, 'UTF-8') . '">下一�?/a>';
             }
             ?>
         </div>
         <?php endif; ?>
-<?php $this->need('views/components/layout-end.php'); ?>
+<?php $this->need('views/components/sidebar-right.php'); ?>
 <?php $this->need('views/components/footer.php'); ?>

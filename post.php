@@ -4,7 +4,7 @@ $catalog = ArticleCatalog::instance();
 $parsedContent = $catalog->renderHtml($this->content);
 ?>
 <?php $this->need('views/components/header.php'); ?>
-<?php $this->need('views/components/layout-start.php'); ?>
+<?php $this->need('views/components/sidebar-left.php'); ?>
 
         <header class="article-header">
             <h1 class="article-title"><a href="<?php $this->permalink() ?>"><?php $this->title() ?></a></h1>
@@ -73,6 +73,6 @@ $parsedContent = $catalog->renderHtml($this->content);
         <?php $this->need('views/components/related.php'); ?>
         <?php $this->need('views/components/comments.php'); ?>
 
-<?php $this->need('views/components/layout-end.php'); ?>
+<?php $this->need('views/components/sidebar-right.php'); ?>
 <?php $this->need('views/components/footer.php'); ?>
 

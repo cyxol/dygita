@@ -1,54 +1,42 @@
-<?php if (!defined('__TYPECHO_ROOT_DIR__')) exit; ?>
-<?php $this->need('views/components/header.php'); ?>
-<?php $this->need('views/components/layout-start.php'); ?>
-        <header class="archive-header">
-            <h1><?php $this->title(); ?></h1>
-        </header>
+<?php
+/**
+ * 标签云页面
+ *
+ * @package custom
+ */
 
-        <style type="text/css">
-            .tag-clouds a {
-                width: 44%;
-                opacity: .70;
-                filter: alpha(opacity=80);
-                color: #fff;
-                display: inline-block;
-                margin: 0 5px 5px 0;
-                padding: 2px 6px;
-                line-height: 180%;
-                font-weight: bold;
-            }
+if (!defined('__TYPECHO_ROOT_DIR__')) exit;
 
-            .tag-clouds a:hover {
-                opacity: 1;
-                filter: alpha(opacity=100)
-            }
-        </style>
+$this->need('views/components/header.php');
+$this->need('views/components/sidebar-left.php');
+?>
+            <header class="article-header">
+                <h1 class="article-title"><?php dygita_e('标签云'); ?></h1>
+            </header>
 
-        <ul class="tag-clouds">
-            <?php
-            // 使用 Typecho 的 Widget 获取所有标签
-            $tags = Typecho\Widget::widget('Widget\Metas\Tag\Cloud', array(
-                'sort' => 'count',
-                'ignoreZeroCount' => true,
-                'desc' => true
-            ));
+            <article class="article-content">
+                <div class="tag-cloud-page">
+                    <div class="tag-cloud-canvas-wrapper">
+                        <canvas height="500" width="700" id="tag-cloud-tags">
+                            <p><?php dygita_e('标签云'); ?></p>
+                            <?php $this->widget('Widget_Metas_Tag_Cloud', 'sort=count&ignoreZeroCount=1&desc=1&limit=50')->to($tags); ?>
+                            <?php while ($tags->next()): ?>
+                                <a href="<?php $tags->permalink(); ?>" class="tag"><?php $tags->name(); ?></a>
+                            <?php endwhile; ?>
+                        </canvas>
+                    </div>
 
-            if ($tags->have()) {
-                while ($tags->next()) {
-                    $randColor = rand(1, 14);
-                    $pl = htmlspecialchars($tags->permalink, ENT_QUOTES, 'UTF-8');
-                    $name = htmlspecialchars($tags->name, ENT_QUOTES, 'UTF-8');
-                    $count = (int) $tags->count;
-                    echo '<li><a class="btn btn-primary sitecolor_' . $randColor . '" href="' . $pl . '">' . $name . '</a><strong>x ' . $count . '</strong><br>';
-                    echo '</li>';
-                }
-            } else {
-                echo '<li>暂无标签</li>';
-            }
-            ?>
-        </ul>
+                    <!-- 备用标签列表（当 canvas 不支持时显示） -->
+                    <div class="tag-cloud-fallback">
+                        <?php $this->widget('Widget_Metas_Tag_Cloud', 'sort=count&ignoreZeroCount=1&desc=1&limit=50')->to($tagsFallback); ?>
+                        <?php while ($tagsFallback->next()): ?>
+                            <a href="<?php $tagsFallback->permalink(); ?>" class="tag" title="<?php $tagsFallback->count(); ?> 篇文章"><?php $tagsFallback->name(); ?></a>
+                        <?php endwhile; ?>
+                    </div>
+                </div>
+            </article>
 
-        <?php $this->need('views/components/comments.php'); ?>
-<?php $this->need('views/components/layout-end.php'); ?>
-<?php $this->need('views/components/footer.php'); ?>
+            <script defer src="<?php $this->options->themeUrl('js/tag-cloud-page.js'); ?>"></script>
+            <?php $this->need('views/components/sidebar-right.php');
+            $this->need('views/components/footer.php'); ?>
 

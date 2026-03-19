@@ -16,7 +16,7 @@ $postModified = $post['modified'];
 $permalink    = $dlData['permalink'];
 ?>
 
-<?php $this->need('views/components/layout-start.php'); ?>
+<?php $this->need('views/components/sidebar-left.php'); ?>
         <header class="archive-header">
             <h1><a href="<?php echo htmlspecialchars($permalink, ENT_QUOTES, 'UTF-8'); ?>"><?php echo $title; ?></a></h1>
         </header>
@@ -27,9 +27,9 @@ $permalink    = $dlData['permalink'];
             <h2><?php dygita_e('资源信息'); ?></h2>
             <div class="alert alert-success">
                 <ul class="infos clearfix">
-                    <li><?php dygita_e('资源名称'); ?>：<?php echo htmlspecialchars($theCode1, ENT_QUOTES, 'UTF-8'); ?></li>
-                    <li><?php dygita_e('文件大小'); ?>：<?php echo htmlspecialchars($theCode2, ENT_QUOTES, 'UTF-8'); ?></li>
-                    <li><?php dygita_e('更新日期'); ?>：<?php echo date('Y-m-d H:i:s', $postModified); ?></li>
+                    <li><?php dygita_e('资源名称'); ?>�??php echo htmlspecialchars($theCode1, ENT_QUOTES, 'UTF-8'); ?></li>
+                    <li><?php dygita_e('文件大小'); ?>�??php echo htmlspecialchars($theCode2, ENT_QUOTES, 'UTF-8'); ?></li>
+                    <li><?php dygita_e('更新日期'); ?>�??php echo date('Y-m-d H:i:s', $postModified); ?></li>
                 </ul>
             </div>
             
@@ -69,5 +69,5 @@ $permalink    = $dlData['permalink'];
         </div>
 
         <?php $this->need('views/components/comments.php'); ?>
-<?php $this->need('views/components/layout-end.php'); ?>
+<?php $this->need('views/components/sidebar-right.php'); ?>
 <?php $this->need('views/components/footer.php'); ?>

@@ -71,18 +71,47 @@ endif; ?>>
         <meta name="twitter:description" content="<?php $this->options->description(); ?>">
         <meta name="twitter:image" content="<?php $this->options->themeUrl('img/caiya.xin.jpg'); ?>">
     <?php
-elseif ($this->is('category')): ?>
-        <meta name="description" content="<?php $this->category->description(); ?>">
+elseif ($this->is('category')):
+        $categoryName = '';
+        $categoryDescription = '';
+
+        if (isset($this->category)) {
+            if (is_object($this->category)) {
+                if (method_exists($this->category, 'name')) {
+                    ob_start();
+                    $this->category->name();
+                    $categoryName = trim((string) ob_get_clean());
+                }
+                if (method_exists($this->category, 'description')) {
+                    ob_start();
+                    $this->category->description();
+                    $categoryDescription = trim((string) ob_get_clean());
+                }
+            } elseif (is_string($this->category)) {
+                $categoryName = trim($this->category);
+            }
+        }
+
+        if ($categoryName === '') {
+            ob_start();
+            $this->archiveTitle(array('category' => '%s'), '', '');
+            $categoryName = trim(strip_tags((string) ob_get_clean()));
+        }
+        if ($categoryDescription === '') {
+            $categoryDescription = (string) $this->options->description;
+        }
+    ?>
+        <meta name="description" content="<?php echo htmlspecialchars($categoryDescription, ENT_QUOTES, 'UTF-8'); ?>">
         <meta property="og:type" content="website">
-        <meta property="og:title" content="<?php $this->category->name(); ?> - <?php $this->options->title(); ?>">
+        <meta property="og:title" content="<?php echo htmlspecialchars($categoryName, ENT_QUOTES, 'UTF-8'); ?> - <?php $this->options->title(); ?>">
         <meta property="og:url" content="<?php $this->permalink(); ?>">
         <meta property="og:site_name" content="<?php $this->options->title(); ?>">
-        <meta property="og:description" content="<?php $this->category->description(); ?>">
+        <meta property="og:description" content="<?php echo htmlspecialchars($categoryDescription, ENT_QUOTES, 'UTF-8'); ?>">
         <meta property="og:locale" content="<?php $this->options->lang(); ?>">
         <meta property="og:image" content="<?php $this->options->themeUrl('img/caiya.xin.jpg'); ?>">
         <meta name="twitter:card" content="summary">
-        <meta name="twitter:title" content="<?php $this->category->name(); ?> - <?php $this->options->title(); ?>">
-        <meta name="twitter:description" content="<?php $this->category->description(); ?>">
+        <meta name="twitter:title" content="<?php echo htmlspecialchars($categoryName, ENT_QUOTES, 'UTF-8'); ?> - <?php $this->options->title(); ?>">
+        <meta name="twitter:description" content="<?php echo htmlspecialchars($categoryDescription, ENT_QUOTES, 'UTF-8'); ?>">
         <meta name="twitter:image" content="<?php $this->options->themeUrl('img/caiya.xin.jpg'); ?>">
     <?php
 endif; ?>
@@ -95,7 +124,25 @@ endif; ?>
     <meta name="msapplication-TileColor" content="#222">
 
     <!-- Canonical 标签 -->
-    <link rel="canonical" href="<?php $this->permalink(); ?>">
+    <?php
+    $dygitaCanonicalUrl = trim((string) $this->request->getRequestUrl());
+    if ($dygitaCanonicalUrl === '') {
+        $dygitaCanonicalUrl = (string) $this->options->siteUrl;
+    }
+    try {
+        ob_start();
+        $this->permalink();
+        $tmpCanonical = trim((string) ob_get_clean());
+        if ($tmpCanonical !== '') {
+            $dygitaCanonicalUrl = $tmpCanonical;
+        }
+    } catch (Throwable $e) {
+        if (ob_get_level() > 0) {
+            ob_end_clean();
+        }
+    }
+    ?>
+    <link rel="canonical" href="<?php echo htmlspecialchars($dygitaCanonicalUrl, ENT_QUOTES, 'UTF-8'); ?>">
 
     <!-- 站点验证 -->
     <!-- 在这里添加 Google、Bing、Sogou 等站点验证代码 -->
@@ -249,6 +296,16 @@ endif; ?>
             $navBaseSiteUrl = rtrim($this->options->siteUrl, '/');
             $navOpts = $this->options;
             $navIdx = $navOpts->index;
+            $navArchivesUrl = htmlspecialchars($navBaseSiteUrl . '/archives/', ENT_QUOTES, 'UTF-8');
+            $navCategoriesUrl = htmlspecialchars($navBaseSiteUrl . '/category/', ENT_QUOTES, 'UTF-8');
+            $navTagCloudUrl = htmlspecialchars($navBaseSiteUrl . '/tag', ENT_QUOTES, 'UTF-8');
+            $navPathInfo = trim((string) $this->request->getPathInfo(), '/');
+            $navArchivesActive = ($navPathInfo === 'archives' || $this->is('archive') || $this->is('page', 'archives'));
+            $navCategoriesActive = ($navPathInfo === 'category' || $navPathInfo === 'categories' || $this->is('page', 'category') || $this->is('page', 'categories'));
+            $navHasArchivesLink = false;
+            $navHasTagCloudLink = false;
+            $navHasCategoriesLink = false;
+            $navTagCloudSlug = null;
 
             $navAuthorUrl = null;
             $navAllPages = [];
@@ -261,23 +318,43 @@ endif; ?>
                 if ($navAuthorUrl === null && in_array($s, ['about', 'author', 'author_page'])) {
                     $navAuthorUrl = $pLink;
                 }
+                if ($navTagCloudUrl === null && in_array($s, ['page-tag-cloud', 'tag-cloud', 'tags'], true)) {
+                    $navTagCloudUrl = $pLink;
+                    $navTagCloudSlug = $s;
+                }
             }
             if ($navAuthorUrl === null) {
                 $navAuthorUrl = Typecho\Router::url('author', ['uid' => 1], $navIdx);
             }
+            $navTagCloudUrl = htmlspecialchars((string) $navTagCloudUrl, ENT_QUOTES, 'UTF-8');
             $navAuthorUrl = htmlspecialchars((string) $navAuthorUrl, ENT_QUOTES, 'UTF-8');
             $navAuthorActive = $this->is('author') || $this->is('page', 'author') || $this->is('page', 'about') || $this->is('page', 'author_page');
+            $navTagCloudActive = ($navPathInfo === 'tag' || $navPathInfo === 'tags' || $navPathInfo === 'page-tag-cloud.html' || $this->is('page', 'page-tag-cloud') || $this->is('page', 'tag-cloud') || $this->is('page', 'tags') || $this->is('tag'));
             ?>
             <div class="nav-container" role="navigation" aria-label="主导航">
                 <ul class="nav" role="menubar">
                     <?php if ($this->options->navLinksEnabled == '1'): ?>
                         <?php
     $navLinks = json_decode($this->options->navLinks, true);
+    $navDeferredAuthorItem = '';
+    $navArchivesTarget = '_self';
+    $navTagCloudTarget = '_self';
+    $navCategoriesTarget = '_self';
+    $navRenderArchivesUrl = $navArchivesUrl;
+    $navRenderTagCloudUrl = $navTagCloudUrl;
+    $navRenderCategoriesUrl = $navCategoriesUrl;
     if (isset($navLinks['links']) && is_array($navLinks['links'])) {
         foreach ($navLinks['links'] as $link) {
             $nameRaw = isset($link['name']) ? trim($link['name']) : '';
+            if ($nameRaw === '作者') {
+                $nameRaw = '关于博主';
+            }
+            if ($nameRaw === '标签云') {
+                $nameRaw = '文章标签';
+            }
             $name = htmlspecialchars((string) dygita_t($nameRaw), ENT_QUOTES, 'UTF-8');
             $url = isset($link['url']) ? $link['url'] : '';
+            $urlPath = trim((string) parse_url((string) $url, PHP_URL_PATH), '/');
             $target = isset($link['target']) && in_array($link['target'], ['_self', '_blank']) ? $link['target'] : '_self';
 
             if ($url === '@author') {
@@ -289,22 +366,88 @@ endif; ?>
                 $isActive = ($url == '' && $this->is('index'));
             }
 
+            $isAuthorLink = ($url === '@author') || ($urlPath === 'author') || ($urlPath === 'about') || in_array($nameRaw, ['作者', '关于博主'], true);
+            if ($isAuthorLink) {
+                if ($navDeferredAuthorItem === '') {
+                    $navDeferredAuthorItem = '<li ' . ($isActive ? 'class="active"' : '') . ' role="none">'
+                        . '<a href="' . $linkUrl . '" target="' . $target . '" role="menuitem" ' . ($isActive ? 'aria-current="page"' : '') . '>关于博主</a>'
+                        . '</li>';
+                }
+                continue;
+            }
+
+            $isArchivesLink = ($urlPath === 'archives') || in_array($url, ['archives', '/archives', 'archives/', '/archives/'], true);
+            if ($isArchivesLink) {
+                $navHasArchivesLink = true;
+                $navRenderArchivesUrl = $linkUrl;
+                $navArchivesTarget = $target;
+                continue;
+            }
+
+            $isTagCloudLink = in_array($urlPath, ['tag', 'tags', 'page-tag-cloud.html', 'page-tag-cloud', 'tag-cloud'], true)
+                || in_array($url, ['tag', '/tag', 'tag/', '/tag/', 'tags', '/tags', 'tags/', '/tags/', 'page-tag-cloud.html', '/page-tag-cloud.html', 'tag-cloud', '/tag-cloud'], true);
+            if ($isTagCloudLink) {
+                $navHasTagCloudLink = true;
+                $navRenderTagCloudUrl = $linkUrl;
+                $navTagCloudTarget = $target;
+                continue;
+            }
+
+            $isCategoriesLink = in_array($urlPath, ['category', 'categories'], true)
+                || in_array($url, ['category', '/category', 'category/', '/category/', 'categories', '/categories', 'categories/', '/categories/'], true);
+            if ($isCategoriesLink) {
+                $navHasCategoriesLink = true;
+                $navRenderCategoriesUrl = $linkUrl;
+                $navCategoriesTarget = $target;
+                continue;
+            }
+
             echo '<li ' . ($isActive ? 'class="active"' : '') . ' role="none">';
             echo '<a href="' . $linkUrl . '" target="' . $target . '" role="menuitem" ' . ($isActive ? 'aria-current="page"' : '') . '>' . $name . '</a>';
             echo '</li>';
         }
+    }
+
+    echo '<li ' . ($navArchivesActive ? 'class="active"' : '') . ' role="none">';
+    echo '<a href="' . ($navHasArchivesLink ? $navRenderArchivesUrl : $navArchivesUrl) . '" target="' . $navArchivesTarget . '" role="menuitem" ' . ($navArchivesActive ? 'aria-current="page"' : '') . '>文章列表</a>';
+    echo '</li>';
+
+    echo '<li ' . ($navTagCloudActive ? 'class="active"' : '') . ' role="none">';
+    echo '<a href="' . ($navHasTagCloudLink ? $navRenderTagCloudUrl : $navTagCloudUrl) . '" target="' . $navTagCloudTarget . '" role="menuitem" ' . ($navTagCloudActive ? 'aria-current="page"' : '') . '>文章标签</a>';
+    echo '</li>';
+
+    echo '<li ' . ($navCategoriesActive ? 'class="active"' : '') . ' role="none">';
+    echo '<a href="' . ($navHasCategoriesLink ? $navRenderCategoriesUrl : $navCategoriesUrl) . '" target="' . $navCategoriesTarget . '" role="menuitem" ' . ($navCategoriesActive ? 'aria-current="page"' : '') . '>文章分类</a>';
+    echo '</li>';
+
+    if ($navDeferredAuthorItem !== '') {
+        echo $navDeferredAuthorItem;
+    } else {
+        echo '<li ' . ($navAuthorActive ? 'class="active"' : '') . ' role="none">';
+        echo '<a href="' . $navAuthorUrl . '" role="menuitem" ' . ($navAuthorActive ? 'aria-current="page"' : '') . '>关于博主</a>';
+        echo '</li>';
     }
 ?>
                     <?php else: ?>
                         <li <?php if ($this->is('index')): ?> class="active" <?php endif; ?> role="none">
                             <a href="<?php $this->options->siteUrl(); ?>" role="menuitem" <?php if ($this->is('index')): ?> aria-current="page" <?php endif; ?>><?php dygita_e('首页'); ?></a>
                         </li>
+                        <li <?php if ($navArchivesActive): ?> class="active" <?php endif; ?> role="none">
+                            <a href="<?php echo $navArchivesUrl; ?>" role="menuitem" <?php if ($navArchivesActive): ?> aria-current="page" <?php endif; ?>>文章列表</a>
+                        </li>
+                        <li <?php if ($navTagCloudActive): ?> class="active" <?php endif; ?> role="none">
+                            <a href="<?php echo $navTagCloudUrl; ?>" role="menuitem" <?php if ($navTagCloudActive): ?> aria-current="page" <?php endif; ?>>文章标签</a>
+                        </li>
+                        <li <?php if ($navCategoriesActive): ?> class="active" <?php endif; ?> role="none">
+                            <a href="<?php echo $navCategoriesUrl; ?>" role="menuitem" <?php if ($navCategoriesActive): ?> aria-current="page" <?php endif; ?>>文章分类</a>
+                        </li>
                         <li <?php if ($navAuthorActive): ?> class="active" <?php endif; ?> role="none">
-                            <a href="<?php echo $navAuthorUrl; ?>" role="menuitem" <?php if ($navAuthorActive): ?> aria-current="page" <?php endif; ?>><?php echo htmlspecialchars((string) dygita_t('作者'), ENT_QUOTES, 'UTF-8'); ?></a>
+                            <a href="<?php echo $navAuthorUrl; ?>" role="menuitem" <?php if ($navAuthorActive): ?> aria-current="page" <?php endif; ?>>关于博主</a>
                         </li>
 
                         <?php foreach ($navAllPages as $navPage):
                             $navPageTitle = $navPage['title'];
+                            if (in_array($navPage['slug'], ['archives', 'categories', 'about', 'author', 'author_page', 'page-tag-cloud', 'tag-cloud', 'tags'], true)) continue;
                             if (strpos($navPageTitle, 'http') === 0 || strpos($navPageTitle, '/') !== false) continue;
                         ?>
                             <li <?php if ($this->is('page', $navPage['slug'])): ?> class="active" <?php endif; ?> role="none">

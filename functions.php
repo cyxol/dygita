@@ -18,12 +18,28 @@ define('DYGITA_THEME_VERSION', '1.1.0');
 (function () {
     $rt = \Widget\Options::alloc()->routingTable;
     $exists = isset($rt['tags_cloud']) || (isset($rt[0]) && isset($rt[0]['tags_cloud']));
+    $tagExists = isset($rt['tags_cloud_tag']) || (isset($rt[0]) && isset($rt[0]['tags_cloud_tag']));
+    $tagNoSlashExists = isset($rt['tags_cloud_tag_plain']) || (isset($rt[0]) && isset($rt[0]['tags_cloud_tag_plain']));
     $aliasExists = isset($rt['tags_cloud_page']) || (isset($rt[0]) && isset($rt[0]['tags_cloud_page']));
+    $archivesExists = isset($rt['archives_list']) || (isset($rt[0]) && isset($rt[0]['archives_list']));
+    $categoriesExists = isset($rt['categories_page']) || (isset($rt[0]) && isset($rt[0]['categories_page']));
     if (!$exists) {
-        \Utils\Helper::addRoute('tags_cloud', '/tags/', '\Widget\Archive', 'render');
+        \Utils\Helper::addRoute('tags_cloud', '/tag/', '\Widget\Archive', 'render');
+    }
+    if (!$tagExists) {
+        \Utils\Helper::addRoute('tags_cloud_tag', '/tag/', '\Widget\Archive', 'render');
+    }
+    if (!$tagNoSlashExists) {
+        \Utils\Helper::addRoute('tags_cloud_tag_plain', '/tag', '\Widget\Archive', 'render');
     }
     if (!$aliasExists) {
         \Utils\Helper::addRoute('tags_cloud_page', '/page-tag-cloud.html', '\Widget\Archive', 'render');
+    }
+    if (!$archivesExists) {
+        \Utils\Helper::addRoute('archives_list', '/archives/', '\Widget\Archive', 'render');
+    }
+    if (!$categoriesExists) {
+        \Utils\Helper::addRoute('categories_page', '/category/', '\Widget\Archive', 'render');
     }
 })();
 
@@ -233,10 +249,22 @@ function themeConfig($form)
     // 注册自定义路由（访问设置页时即写入数据库）
     $rt = \Utils\Helper::options()->routingTable;
     if (!isset($rt['tags_cloud']) && !(isset($rt[0]) && isset($rt[0]['tags_cloud']))) {
-        \Utils\Helper::addRoute('tags_cloud', '/tags/', '\Widget\Archive', 'render');
+        \Utils\Helper::addRoute('tags_cloud', '/tag/', '\Widget\Archive', 'render');
+    }
+    if (!isset($rt['tags_cloud_tag']) && !(isset($rt[0]) && isset($rt[0]['tags_cloud_tag']))) {
+        \Utils\Helper::addRoute('tags_cloud_tag', '/tag/', '\Widget\Archive', 'render');
+    }
+    if (!isset($rt['tags_cloud_tag_plain']) && !(isset($rt[0]) && isset($rt[0]['tags_cloud_tag_plain']))) {
+        \Utils\Helper::addRoute('tags_cloud_tag_plain', '/tag', '\Widget\Archive', 'render');
     }
     if (!isset($rt['tags_cloud_page']) && !(isset($rt[0]) && isset($rt[0]['tags_cloud_page']))) {
         \Utils\Helper::addRoute('tags_cloud_page', '/page-tag-cloud.html', '\Widget\Archive', 'render');
+    }
+    if (!isset($rt['archives_list']) && !(isset($rt[0]) && isset($rt[0]['archives_list']))) {
+        \Utils\Helper::addRoute('archives_list', '/archives/', '\Widget\Archive', 'render');
+    }
+    if (!isset($rt['categories_page']) && !(isset($rt[0]) && isset($rt[0]['categories_page']))) {
+        \Utils\Helper::addRoute('categories_page', '/category/', '\Widget\Archive', 'render');
     }
 
     // 获取全局配置（注意：在函数上下文中不能使用 $this->options）
@@ -324,7 +352,7 @@ function themeConfig($form)
         );
     $form->addInput($navLinksEnabled);
     
-    $navLinks = new Typecho\Widget\Helper\Form\Element\Textarea('navLinks', NULL, '{"links":[{"name":"首页","url":"","target":"_self"},{"name":"作者","url":"@author","target":"_self"},{"name":"标签云","url":"page-tag-cloud.html","target":"_self"}]}', _t('导航链接配置'), _t('JSON格式，包含导航链接名称、URL和目标。特殊URL：@author 自动检测作者页面。例如：{"links":[{"name":"首页","url":"","target":"_self"},{"name":"作者","url":"@author","target":"_self"}]}'));
+    $navLinks = new Typecho\Widget\Helper\Form\Element\Textarea('navLinks', NULL, '{"links":[{"name":"首页","url":"","target":"_self"},{"name":"作者","url":"@author","target":"_self"},{"name":"标签云","url":"tag","target":"_self"}]}', _t('导航链接配置'), _t('JSON格式，包含导航链接名称、URL和目标。特殊URL：@author 自动检测作者页面。例如：{"links":[{"name":"首页","url":"","target":"_self"},{"name":"作者","url":"@author","target":"_self"}]}'));
     $form->addInput($navLinks);
     
     // 友情链接设置
@@ -1046,9 +1074,45 @@ function dygita_e($key) {
 
 // 主题初始化函数
 function themeInit($archive) {
+    $routeType = '';
+    if (isset($archive->parameter)) {
+        if (is_object($archive->parameter) && isset($archive->parameter->type)) {
+            $routeType = (string) $archive->parameter->type;
+        } elseif (is_array($archive->parameter) && isset($archive->parameter['type'])) {
+            $routeType = (string) $archive->parameter['type'];
+        }
+    }
+
     // 自定义路由模板：标签云页面
-    if ($archive->parameter->type === 'tags_cloud' || $archive->parameter->type === 'tags_cloud_page') {
-        $archive->setThemeFile('views/components/tags.php');
+    if ($routeType === 'tags_cloud' || $routeType === 'tags_cloud_tag' || $routeType === 'tags_cloud_page') {
+        $archive->setThemeFile('tag.php');
+        return;
+    }
+
+    // 自定义路由模板：文章列表页面（/archives）
+    if ($routeType === 'archives_list') {
+        $archive->setThemeFile('archive.php');
+        return;
+    }
+
+    // 自定义路由模板：分类目录页面（/category）
+    if ($routeType === 'categories_page') {
+        $archive->setThemeFile('category.php');
+        return;
+    }
+
+    // 兜底：部分环境下 parameter type 不可用时按 path 匹配
+    $pathInfo = trim((string) $archive->request->getPathInfo(), '/');
+    if ($pathInfo === 'archives') {
+        $archive->setThemeFile('archive.php');
+        return;
+    }
+    if ($pathInfo === 'tag' || $pathInfo === 'tags' || $pathInfo === 'page-tag-cloud.html') {
+        $archive->setThemeFile('tag.php');
+        return;
+    }
+    if ($pathInfo === 'category' || $pathInfo === 'categories') {
+        $archive->setThemeFile('category.php');
         return;
     }
 

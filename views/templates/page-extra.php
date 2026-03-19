@@ -1,6 +1,6 @@
 <?php if (!defined('__TYPECHO_ROOT_DIR__')) exit; ?>
 <?php $this->need('views/components/header.php'); ?>
-<?php $this->need('views/components/layout-start.php'); ?>
+<?php $this->need('views/components/sidebar-left.php'); ?>
 <div class="pagewrapper clearfix">
     <aside class="pagesidebar">
         <ul class="pagesider-menu">
@@ -25,5 +25,5 @@
         <?php $this->need('views/components/comments.php'); ?>
     </div>
 </div>
-<?php $this->need('views/components/layout-end.php'); ?>
+<?php $this->need('views/components/sidebar-right.php'); ?>
 <?php $this->need('views/components/footer.php'); ?>

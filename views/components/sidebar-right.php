@@ -1,4 +1,7 @@
 <?php if (!defined('__TYPECHO_ROOT_DIR__')) exit; ?>
+    </div>
+</div>
+
 <aside class="sidebar sidebar-right">
     <!-- 分类 -->
     <?php if (!empty($this->options->sidebarBlock) && in_array('ShowCategory', $this->options->sidebarBlock)): ?>
@@ -89,3 +92,4 @@
         </div>
     </div>
 </aside>
+</div>

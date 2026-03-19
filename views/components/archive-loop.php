@@ -12,5 +12,11 @@
     </article>
 <?php endif; ?>
 
-<?php $this->pageNav('&laquo; ' . dygita_t('前一页'), dygita_t('后一页') . ' &raquo;'); ?>
+<?php
+try {
+    $this->pageNav('&laquo; ' . dygita_t('前一页'), dygita_t('后一页') . ' &raquo;');
+} catch (Throwable $e) {
+    // Skip broken pagination rendering to avoid full-page 500.
+}
+?>
 

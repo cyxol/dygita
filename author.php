@@ -7,24 +7,61 @@ if (function_exists('dygita_content_class')) {
 }
 ?>
 <?php $this->need('views/components/header.php'); ?>
-<?php $this->need('views/components/layout-start.php'); ?>
+<?php $this->need('views/components/sidebar-left.php'); ?>
 
         <header class="archive-header">
             <h1><?php echo htmlspecialchars((string) dygita_t('关于我'), ENT_QUOTES, 'UTF-8'); ?></h1>
         </header>
 
-        <?php $this->need('views/components/author-about.php'); ?>
+        <article class="post-block author-about">
+            <div class="post-body">
+                <div class="author-about-inner">
+                    <div class="author-profile">
+                        <div class="author-avatar">
+                            <?php if ($this->options->logoUrl): ?>
+                                <img src="<?php $this->options->logoUrl(); ?>" alt="<?php $this->author->screenName(); ?>">
+                            <?php else: ?>
+                                <img src="<?php $this->options->themeUrl('img/authorpic.jpg'); ?>" alt="<?php $this->author->screenName(); ?>">
+                            <?php endif; ?>
+                        </div>
+                        <h2 class="author-name"><?php $this->author->screenName(); ?></h2>
+                    </div>
 
-        <header class="archive-header section-title">
-            <h2><?php echo htmlspecialchars((string) sprintf(dygita_t('%s 发布的文章'), $this->author->screenName), ENT_QUOTES, 'UTF-8'); ?></h2>
-        </header>
+                    <div class="author-bio">
+                        <p><?php $this->options->description(); ?></p>
+                    </div>
 
-        <?php while ($this->next()): ?>
-            <?php $this->need('views/components/post-card.php'); ?>
-        <?php endwhile; ?>
+                    <div class="author-contact">
+                        <h3><?php echo htmlspecialchars((string) dygita_t('与我联系'), ENT_QUOTES, 'UTF-8'); ?></h3>
+                        <div class="contact-list">
+                            <?php
+                            $contactEmail = $this->options->contactEmail ? dygita_escape($this->options->contactEmail) : '';
+                            $contactQQ   = $this->options->contactQQ ? dygita_escape($this->options->contactQQ) : '';
+                            if ($contactEmail): ?>
+                                <p><i class="fa fa-envelope"></i> <a href="mailto:<?php echo $contactEmail; ?>"><?php echo $contactEmail; ?></a></p>
+                            <?php endif;
+                            if ($contactQQ): ?>
+                                <p><i class="fa fa-qq"></i> <?php echo $contactQQ; ?></p>
+                            <?php endif;
+                            if (!$contactEmail && !$contactQQ): ?>
+                                <p><?php dygita_e('请在主题设置中填写联系邮箱或QQ'); ?></p>
+                            <?php endif; ?>
+                        </div>
+                    </div>
 
-        <?php $this->pageNav('&laquo; ' . dygita_t('前一页'), dygita_t('后一页') . ' &raquo;'); ?>
+                    <div class="author-stats">
+                        <h3><?php echo htmlspecialchars((string) dygita_t('更多信息'), ENT_QUOTES, 'UTF-8'); ?></h3>
+                        <?php $stat = getStat(); ?>
+                        <p>
+                            <span><i class="fa fa-file-text-o"></i> <?php echo (int) $stat['posts']; ?> <?php echo htmlspecialchars((string) dygita_t('文章'), ENT_QUOTES, 'UTF-8'); ?></span>
+                            <span><i class="fa fa-folder-o"></i> <?php echo (int) $stat['categories']; ?> <?php echo htmlspecialchars((string) dygita_t('分类'), ENT_QUOTES, 'UTF-8'); ?></span>
+                            <span><i class="fa fa-tags"></i> <?php echo (int) $stat['tags']; ?> <?php echo htmlspecialchars((string) dygita_t('标签'), ENT_QUOTES, 'UTF-8'); ?></span>
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </article>
 
-<?php $this->need('views/components/layout-end.php'); ?>
+<?php $this->need('views/components/sidebar-right.php'); ?>
 <?php $this->need('views/components/footer.php'); ?>
 

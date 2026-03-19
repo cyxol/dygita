@@ -75,14 +75,14 @@ if (isset($_POST['tougao_form']) && $_POST['tougao_form'] == 'send') {
         if ($tomail) {
             @mail($tomail, "站长，有新投稿！ ", $title . "\n\n" . $post_content);
         }
-throw new \Typecho\Widget\Exception(dygita_t('投稿成功！感谢投稿！<a href="' . $current_url . '">点此返回</a>'), 200);
+        throw new \Typecho\Widget\Exception(dygita_t('投稿成功！感谢投稿！<a href="' . $current_url . '">点此返回</a>'), 200);
     } else {
-throw new \Typecho\Widget\Exception(dygita_t('投稿失败！<a href="' . $current_url . '">点此返回</a>'), 200);
+        throw new \Typecho\Widget\Exception(dygita_t('投稿失败！<a href="' . $current_url . '">点此返回</a>'), 200);
     }
 }
 ?>
 <?php $this->need('views/components/header.php'); ?>
-<?php $this->need('views/components/layout-start.php'); ?>
+<?php $this->need('views/components/sidebar-left.php'); ?>
         <header class="archive-header">
             <h1><a href="<?php $this->permalink(); ?>"><?php $this->title(); ?></a></h1>
         </header>
@@ -113,5 +113,5 @@ throw new \Typecho\Widget\Exception(dygita_t('投稿失败！<a href="' . $curre
             
             <br />
             <?php $this->need('views/components/comments.php'); ?>
-<?php $this->need('views/components/layout-end.php'); ?>
+<?php $this->need('views/components/sidebar-right.php'); ?>
 <?php $this->need('views/components/footer.php'); ?>

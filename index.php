@@ -12,7 +12,7 @@
 if (!defined('__TYPECHO_ROOT_DIR__')) exit;
 $GLOBALS['dygita_content_class'] = 'index posts-expand';
 $this->need('views/components/header.php');
-$this->need('views/components/layout-start.php'); ?>
+$this->need('views/components/sidebar-left.php'); ?>
             <!-- 轮播图 -->
             <?php if ($this->options->swiperEnabled == '1'): ?>
                 <div class="carousel">
@@ -55,5 +55,5 @@ $this->need('views/components/layout-start.php'); ?>
                 <?php $this->need('views/components/post-card.php'); ?>
             <?php endwhile; ?>
             <?php $this->pageNav('&laquo; ' . dygita_t('前一页'), dygita_t('后一页') . ' &raquo;'); ?>
-<?php $this->need('views/components/layout-end.php');
+<?php $this->need('views/components/sidebar-right.php');
 $this->need('views/components/footer.php'); ?>
