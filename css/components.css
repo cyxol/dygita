@@ -1,69 +1,47 @@
 /* Dygita CSS 层次：组件层（可复用 UI 组件样式） */
 
 /* Sidebar widgets */
-.sidebar-left .widget-profile {
+.sidebar-left .widget-profile{
     text-align: center;
     padding: 10px;
-}
-
-.sidebar-left .profile-avatar img {
+}.sidebar-left .profile-avatar img{
     width: 80px;
     height: 80px;
     border-radius: 50%;
-}
-
-.sidebar-left .profile-info {
+}.sidebar-left .profile-info{
     margin-top: 10px;
-}
-
-.sidebar-right .contact-info {
+}.sidebar-right .contact-info{
     padding: 10px;
-}
-
-.sidebar-right .ad-box {
+}.sidebar-right .ad-box{
     padding: 10px;
-}
-
-.sidebar-right .ad-box img {
+}.sidebar-right .ad-box img{
     width: 100%;
     border-radius: 4px;
-}
-
-/* Comments form */
-.respond {
+}/* Comments form */
+.respond{
     padding: 20px;
-}
-
-#response {
+}#response{
     margin-bottom: 20px;
     font-size: 1.2rem;
     color: var(--text-color);
-}
-
-#comment-form {
+}#comment-form{
     display: flex;
     flex-direction: column;
     gap: 15px;
-}
-
-.comments-count-title {
+}.comments-count-title{
     margin: 20px 0;
     padding: 10px 20px;
     font-size: 1.1rem;
     color: var(--text-color);
-}
-
-/* 相关文章样式 */
-.related_posts {
+}/* 相关文章样式 */
+.related_posts{
     margin: 30px 0;
     padding: 20px;
     background: #f9f9f9;
     background: var(--card-bg-color, #f9f9f9);
     border-radius: 8px;
     box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
-}
-
-.related-title {
+}.related-title{
     margin-top: 0;
     margin-bottom: 20px;
     font-size: 18px;
@@ -71,18 +49,14 @@
     color: var(--text-color, #333);
     border-bottom: 2px solid var(--accent-color, #e74c3c);
     padding-bottom: 10px;
-}
-
-.related-list {
+}.related-list{
     list-style: none;
     padding: 0;
     margin: 0;
     display: flex;
     flex-wrap: wrap;
     gap: 15px;
-}
-
-.related-item {
+}.related-item{
     flex: 1 1 calc(33.333% - 10px);
     min-width: 200px;
     background: var(--content-bg-color, #fff);
@@ -90,19 +64,13 @@
     overflow: hidden;
     box-shadow: 0 2px 4px rgba(0,0,0,0.1);
     transition: transform 0.3s ease;
-}
-
-.related-item:hover {
+}.related-item:hover{
     transform: translateY(-5px);
-}
-
-.related-thumb {
+}.related-thumb{
     width: 100%;
     height: 120px;
     object-fit: cover;
-}
-
-.related-item .related-item-title {
+}.related-item .related-item-title{
     display: block;
     padding: 10px;
     font-size: 14px;
@@ -114,159 +82,99 @@
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
-}
-
-.no-related {
+}.no-related{
     text-align: center;
     padding: 20px;
-}
-
-/* 作者页「关于我」区块 */
-.author-about .author-about-inner {
+}/* 作者页「关于我」区块 */
+.author-about .author-about-inner{
     padding: 20px 0;
     max-width: 720px;
     margin: 0 auto;
-}
-
-.author-about .author-profile {
+}.author-about .author-profile{
     text-align: center;
     margin-bottom: 24px;
-}
-
-.author-about .author-avatar {
+}.author-about .author-avatar{
     margin-bottom: 12px;
-}
-
-.author-about .author-avatar img {
+}.author-about .author-avatar img{
     width: 120px;
     height: 120px;
     border-radius: 50%;
     object-fit: cover;
-}
-
-.author-about .author-name {
+}.author-about .author-name{
     margin: 0;
     font-size: 1.5rem;
     font-weight: 600;
     color: #333;
     color: var(--text-color, #333);
-}
-
-.author-about .author-bio {
+}.author-about .author-bio{
     margin-bottom: 24px;
     line-height: 1.7;
     color: #555;
     color: var(--text-color, #555);
-}
-
-.author-about .author-bio p {
+}.author-about .author-bio p{
     margin: 0;
-}
-
-.author-about .author-contact,
-.author-about .author-stats {
+}.author-about .author-contact, .author-about .author-stats{
     margin-bottom: 20px;
     padding: 16px 0;
     border-top: 1px solid var(--border-color, #eee);
-}
-
-.author-about .author-contact h3,
-.author-about .author-stats h3 {
+}.author-about .author-contact h3, .author-about .author-stats h3{
     margin: 0 0 12px 0;
     font-size: 1.1rem;
     color: #333;
     color: var(--text-color, #333);
-}
-
-.author-about .contact-list p,
-.author-about .author-stats p {
+}.author-about .contact-list p, .author-about .author-stats p{
     margin: 0;
     color: #555;
     color: var(--text-color, #555);
-}
-
-.author-about .contact-list a {
+}.author-about .contact-list a{
     color: var(--link-color, #1098f7);
     text-decoration: none;
-}
-
-.author-about .contact-list a:hover {
+}.author-about .contact-list a:hover{
     text-decoration: underline;
-}
-
-.author-about .author-stats p span {
+}.author-about .author-stats p span{
     margin-right: 20px;
-}
-
-.author-about .author-stats p span i {
+}.author-about .author-stats p span i{
     margin-right: 6px;
-}
-
-.archive-header.section-title {
-    margin-top: 32px;
-    margin-bottom: 16px;
-}
-
-.archive-header.section-title h2 {
-    font-size: 1.25rem;
-    font-weight: 600;
-    margin: 0;
-}
-
-.hot-posts {
+}.hot-posts{
     list-style: none;
     padding: 0;
     margin: 0;
     text-align: left;
-}
-
-.hot-posts li {
+}.hot-posts li{
     margin: 10px 0;
     padding-left: 20px;
     position: relative;
-}
-
-.hot-posts li:before {
+}.hot-posts li:before{
     content: '\f0da';
     font-family: 'FontAwesome';
     position: absolute;
     left: 0;
     color: var(--accent-color, #e74c3c);
-}
-
-.hot-posts li a {
+}.hot-posts li a{
     color: #333;
     color: var(--text-color, #333);
     text-decoration: none;
     transition: color 0.3s ease;
-}
-
-.hot-posts li a:hover {
+}.hot-posts li a:hover{
     color: var(--accent-color, #e74c3c);
 }
 
-@media (max-width: 768px) {
-    .related-item {
+@media (max-width: 768px) {.related-item{
         flex: 1 1 calc(50% - 10px);
     }
 }
 
-@media (max-width: 576px) {
-    .related-item {
+@media (max-width: 576px) {.related-item{
         flex: 1 1 100%;
     }
-}
-
-/* 文章目录样式 */
-.widget-catalog {
+}/* 文章目录样式 */
+.widget-catalog{
     background: #f9f9f9;
     background: var(--card-bg-color, #f9f9f9);
     border-radius: 8px;
     padding: 15px;
     margin-bottom: 20px;
-}
-
-.widget-catalog .title h2 {
+}.widget-catalog .title h2{
     margin-top: 0;
     margin-bottom: 15px;
     font-size: 16px;
@@ -274,35 +182,25 @@
     color: var(--text-color, #333);
     border-bottom: 2px solid var(--accent-color, #e74c3c);
     padding-bottom: 8px;
-}
-
-.catalog-content ul {
+}.catalog-content ul{
     list-style: none;
     padding: 0;
     margin: 0;
-}
-
-.catalog-content li {
+}.catalog-content li{
     margin: 8px 0;
     padding-left: 15px;
     position: relative;
-}
-
-.catalog-content li:before {
+}.catalog-content li:before{
     content: '\f0da';
     font-family: 'FontAwesome';
     position: absolute;
     left: 0;
     color: var(--accent-color, #e74c3c);
     font-size: 12px;
-}
-
-.catalog-content li ul {
+}.catalog-content li ul{
     margin-left: 15px;
     margin-top: 5px;
-}
-
-.catalog-content a {
+}.catalog-content a{
     color: #333;
     color: var(--text-color, #333);
     text-decoration: none;
@@ -310,175 +208,88 @@
     font-size: 14px;
     display: block;
     padding: 3px 0;
-}
-
-.catalog-content a:hover {
+}.catalog-content a:hover{
     color: var(--accent-color, #e74c3c);
     padding-left: 5px;
-}
-
-.catalog-content a.active {
+}.catalog-content a.active{
     color: var(--accent-color, #e74c3c);
     font-weight: bold;
     padding-left: 10px;
     border-left: 3px solid var(--accent-color, #e74c3c);
-}
-
-.no-catalog {
+}.no-catalog{
     text-align: center;
     color: #999;
     color: var(--muted-text-color, #999);
     font-size: 14px;
     padding: 20px 0;
-}
-
-/* 目录悬浮样式 */
-.widget-catalog.fixed {
+}/* 目录悬浮样式 */
+.widget-catalog.fixed{
     position: sticky;
     top: 20px;
     z-index: var(--z-catalog-sticky, 1100);
     box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-}
-
-/* 跳转页面样式 */
-body {
+}/* 跳转页面样式 */
+body{
     background: var(--body-bg-color, #f5f7f9);
-}
-
-.loading {
+}.loading{
     -webkit-animation: fadein 2s;
     -moz-animation: fadein 2s;
     -o-animation: fadein 2s;
     animation: fadein 2s
 }
 
-@-moz-keyframes fadein {
-    from {
+@-moz-keyframes fadein {from{
         opacity: 0
-    }
-
-    to {
+    }to{
         opacity: 1
     }
 }
 
-@-webkit-keyframes fadein {
-    from {
+@-webkit-keyframes fadein {from{
         opacity: 0
-    }
-
-    to {
+    }to{
         opacity: 1
     }
 }
 
-@-o-keyframes fadein {
-    from {
+@-o-keyframes fadein {from{
         opacity: 0
-    }
-
-    to {
+    }to{
         opacity: 1
     }
 }
 
-@keyframes fadein {
-    from {
+@keyframes fadein {from{
         opacity: 0
-    }
-
-    to {
+    }to{
         opacity: 1
     }
 }
 
-.spinner-wrapper {
-    position: absolute;
-    top: 0;
-    left: 0;
-    z-index: var(--z-modal, 1600);
-    height: 100%;
-    min-width: 100%;
-    min-height: 100%;
-    background: var(--overlay-bg-color, rgba(255, 255, 255, 0.93))
-}
-
-.spinner-text {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    margin-left: -90px;
-    margin-top: 2px;
-    color: #BBB;
-    letter-spacing: 1px;
-    font-weight: 700;
-    font-size: 36px;
-    font-family: Arial
-}
-
-.spinner {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    display: block;
-    margin-left: -160px;
-    width: 1px;
-    height: 1px;
-    border: 25px solid rgba(100, 100, 100, 0.2);
-    -webkit-border-radius: 50px;
-    -moz-border-radius: 50px;
-    border-radius: 50px;
-    border-left-color: transparent;
-    border-right-color: transparent;
-    -webkit-animation: spin 1.5s infinite;
-    -moz-animation: spin 1.5s infinite;
-    animation: spin 1.5s infinite
-}
-
-@-webkit-keyframes spin {
-
-    0%,
-    100% {
+@-webkit-keyframes spin {0%, 100%{
         -webkit-transform: rotate(0deg) scale(1)
-    }
-
-    50% {
+    }50%{
         -webkit-transform: rotate(720deg) scale(0.6)
     }
 }
 
-@-moz-keyframes spin {
-
-    0%,
-    100% {
+@-moz-keyframes spin {0%, 100%{
         -moz-transform: rotate(0deg) scale(1)
-    }
-
-    50% {
+    }50%{
         -moz-transform: rotate(720deg) scale(0.6)
     }
 }
 
-@-o-keyframes spin {
-
-    0%,
-    100% {
+@-o-keyframes spin {0%, 100%{
         -o-transform: rotate(0deg) scale(1)
-    }
-
-    50% {
+    }50%{
         -o-transform: rotate(720deg) scale(0.6)
     }
 }
 
-@keyframes spin {
-
-    0%,
-    100% {
+@keyframes spin {0%, 100%{
         transform: rotate(0deg) scale(1)
-    }
-
-    50% {
+    }50%{
         transform: rotate(720deg) scale(0.6)
     }
 }

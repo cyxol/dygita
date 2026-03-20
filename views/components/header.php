@@ -39,10 +39,10 @@ endif; ?>>
 
     <!-- 预加载关键资源 -->
     <link rel="preload" href="<?php $this->options->themeUrl('css/style.css'); ?>" as="style" onload="this.onload=null;this.rel='stylesheet'">
-    <link rel="preload" href="<?php $this->options->themeUrl('css/font-awesome.min.css'); ?>" as="style" onload="this.onload=null;this.rel='stylesheet'">
+    <link rel="preload" href="<?php $this->options->themeUrl('css/vendor/font-awesome.min.css'); ?>" as="style" onload="this.onload=null;this.rel='stylesheet'">
     <noscript>
         <link rel="stylesheet" href="<?php $this->options->themeUrl('css/style.css'); ?>">
-        <link rel="stylesheet" href="<?php $this->options->themeUrl('css/font-awesome.min.css'); ?>">
+        <link rel="stylesheet" href="<?php $this->options->themeUrl('css/vendor/font-awesome.min.css'); ?>">
     </noscript>
 
     <!-- 网站图标 -->

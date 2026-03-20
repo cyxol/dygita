@@ -40,7 +40,7 @@
 - **editor-style.css**：后台编辑器样式  
   - 仅作用于 Typecho 后台编辑器，使编辑内容预览更接近前台展示效果。
 
-- **font-awesome.min.css**：第三方 icon 字体库（vendor）  
+- **vendor/font-awesome.min.css**：第三方 icon 字体库（vendor）  
   - 作为外部依赖引入，不与主题自有样式混合编辑。
 
 ### 写样式时的落点规则

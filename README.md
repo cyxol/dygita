@@ -63,7 +63,7 @@ node js/build-css.js
 自定义页面模板已移至主题根目录，后台选择模板时显示为模板文件名（如 `about`、`archives`、`page-extra`）。若此前使用过「pages/xxx」类模板，请编辑对应页面并重新选择新的模板名（如 `about`、`archives` 等）。
 
 ### 静态资源与字体
-- **fonts/**：存放 Font Awesome 图标字体（eot/woff/ttf/svg），`css/font-awesome.min.css` 已配置为使用该目录下的本地字体，不依赖 CDN。
+- **fonts/**：存放 Font Awesome 图标字体（eot/woff/ttf/svg），`css/vendor/font-awesome.min.css` 已配置为使用该目录下的本地字体，不依赖 CDN。
 
 ## 注意事项
 

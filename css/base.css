@@ -8,200 +8,107 @@ Description: Dygita Theme Ported to Typecho
 */
 
 /* Base Style Reset */
-html {
+html{
   line-height: 1.15;
   -webkit-text-size-adjust: 100%;
-}
-
-body {
+}body{
   margin: 0;
   padding: 0;
   background-color: var(--body-bg-color);
   color: var(--text-color);
-}
-
-main {
+}main{
   display: block;
-}
-
-h1 {
+}h1{
   font-size: 2em;
   margin: 0.67em 0;
-}
-
-hr {
+}hr{
   box-sizing: content-box;
   height: 0;
   overflow: visible;
-}
-
-pre {
+}pre{
   font-family: monospace, monospace;
   font-size: 1em;
-}
-
-a {
+}a{
   background: transparent;
-}
-
-abbr[title] {
+}abbr[title]{
   border-bottom: none;
   text-decoration: underline;
   text-decoration: underline dotted;
-}
-
-b,
-strong {
+}b, strong{
   font-weight: bolder;
-}
-
-code,
-kbd,
-samp {
+}code, kbd, samp{
   font-family: monospace, monospace;
   font-size: 1em;
-}
-
-small {
+}small{
   font-size: 80%;
-}
-
-sub,
-sup {
+}sub, sup{
   font-size: 75%;
   line-height: 0;
   position: relative;
   vertical-align: baseline;
-}
-
-sub {
+}sub{
   bottom: -0.25em;
-}
-
-sup {
+}sup{
   top: -0.5em;
-}
-
-img {
+}img{
   border-style: none;
-}
-
-button,
-input,
-optgroup,
-select,
-textarea {
+}button, input, optgroup, select, textarea{
   font-family: inherit;
   font-size: 100%;
   line-height: 1.15;
   margin: 0;
-}
-
-button,
-input {
+}button, input{
   overflow: visible;
-}
-
-button,
-select {
+}button, select{
   text-transform: none;
-}
-
-button,
-[type='button'],
-[type='reset'],
-[type='submit'] {
+}button, [type='button'], [type='reset'], [type='submit']{
   appearance: button;
   -webkit-appearance: button;
-}
-
-button::-moz-focus-inner,
-[type='button']::-moz-focus-inner,
-[type='reset']::-moz-focus-inner,
-[type='submit']::-moz-focus-inner {
+}button::-moz-focus-inner, [type='button']::-moz-focus-inner, [type='reset']::-moz-focus-inner, [type='submit']::-moz-focus-inner{
   border-style: none;
   padding: 0;
-}
-
-button:-moz-focusring,
-[type='button']:-moz-focusring,
-[type='reset']:-moz-focusring,
-[type='submit']:-moz-focusring {
+}button:-moz-focusring, [type='button']:-moz-focusring, [type='reset']:-moz-focusring, [type='submit']:-moz-focusring{
   outline: 1px dotted ButtonText;
-}
-
-fieldset {
+}fieldset{
   padding: 0.35em 0.75em 0.625em;
-}
-
-legend {
+}legend{
   box-sizing: border-box;
   color: inherit;
   display: table;
   max-width: 100%;
   padding: 0;
   white-space: normal;
-}
-
-progress {
+}progress{
   vertical-align: baseline;
-}
-
-textarea {
+}textarea{
   overflow: auto;
-}
-
-[type='checkbox'],
-[type='radio'] {
+}[type='checkbox'], [type='radio']{
   box-sizing: border-box;
   padding: 0;
-}
-
-[type='number']::-webkit-inner-spin-button,
-[type='number']::-webkit-outer-spin-button {
+}[type='number']::-webkit-inner-spin-button, [type='number']::-webkit-outer-spin-button{
   height: auto;
-}
-
-[type='search'] {
+}[type='search']{
   outline-offset: -2px;
   appearance: textfield;
   -webkit-appearance: textfield;
-}
-
-[type='search']::-webkit-search-decoration {
+}[type='search']::-webkit-search-decoration{
   -webkit-appearance: none;
-}
-
-::-webkit-file-upload-button {
+}::-webkit-file-upload-button{
   font: inherit;
   -webkit-appearance: button;
-}
-
-details {
+}details{
   display: block;
-}
-
-summary {
+}summary{
   display: list-item;
-}
-
-template {
+}template{
   display: none;
-}
-
-[hidden] {
+}[hidden]{
   display: none;
-}
-
-::selection {
+}::selection{
   background: #262a30;
   color: #eee;
-}
-
-/* 禁用所有可能的悬停位移效果 */
-*,
-*::before,
-*::after {
+}/* 禁用所有可能的悬停位移效果 */
+*, *::before, *::after{
   --tw-translate-x: 0;
   --tw-translate-y: 0;
   --tw-rotate: 0;
@@ -209,18 +116,13 @@ template {
   --tw-skew-y: 0;
   --tw-scale-x: 1;
   --tw-scale-y: 1;
-}
-
-/* Body Styles */
-html,
-body {
+}/* Body Styles */
+html, body{
   height: 100%;
   width: 100%;
   margin: 0;
   padding: 0;
-}
-
-body {
+}body{
   background: var(--body-bg-color);
   color: var(--text-color);
   font-family: 'Lato', "PingFang SC", "Microsoft YaHei", sans-serif;
@@ -228,254 +130,133 @@ body {
   line-height: 2;
 }
 
-@media (max-width: 992px) {
-  body {
+@media (max-width: 992px) {body{
     padding-left: 0;
     padding-right: 0;
   }
-}
-
-/* 确保所有容器元素都使用暗色主题 */
-.main-container,
-.content-wrap,
-.footer,
-.footer-inner,
-.footer-copyright {
+}/* 确保所有容器元素都使用暗色主题 */
+.main-container, .content-wrap, .footer, .footer-inner, .footer-copyright{
   background-color: var(--body-bg-color);
   color: var(--text-color);
   border-color: var(--border-color);
-}
-
-/* 确保所有表单元素都使用暗色主题 */
-input,
-textarea,
-select {
+}/* 确保所有表单元素都使用暗色主题 */
+input, textarea, select{
   background-color: var(--content-bg-color);
   color: var(--text-color);
   border-color: var(--border-color);
-}
-
-/* 确保所有链接都使用暗色主题 */
-a {
+}/* 确保所有链接都使用暗色主题 */
+a{
   color: var(--link-color);
-}
-
-a:hover {
+}a:hover{
   color: var(--link-hover-color);
-}
-
-/* 确保所有标题都使用暗色主题 */
-h1,
-h2,
-h3,
-h4,
-h5,
-h6 {
+}/* 确保所有标题都使用暗色主题 */
+h1, h2, h3, h4, h5, h6{
   color: var(--text-color);
-}
-
-/* 确保所有列表都使用暗色主题 */
-ul,
-ol {
+}/* 确保所有列表都使用暗色主题 */
+ul, ol{
   color: var(--text-color);
-}
-
-/* 确保所有表格都使用暗色主题 */
-table {
+}/* 确保所有表格都使用暗色主题 */
+table{
   border-color: var(--border-color);
-}
-
-th,
-td {
+}th, td{
   background-color: var(--content-bg-color);
   color: var(--text-color);
   border-color: var(--border-color);
-}
-
-/* 确保所有引用块都使用暗色主题 */
-blockquote {
+}/* 确保所有引用块都使用暗色主题 */
+blockquote{
   background-color: var(--content-bg-color);
   color: var(--blockquote-color);
   border-color: var(--border-color);
-}
-
-/* 确保所有代码块都使用暗色主题 */
-code,
-pre {
+}/* 确保所有代码块都使用暗色主题 */
+code, pre{
   background-color: var(--code-bg-color);
   color: var(--code-text-color);
   border-color: var(--border-color);
-}
-
-/* 确保所有按钮都使用暗色主题 */
-button,
-.btn {
+}/* 确保所有按钮都使用暗色主题 */
+button, .btn{
   background-color: var(--btn-default-bg);
   color: var(--btn-default-color);
   border-color: var(--btn-default-border-color);
-}
-
-button:hover,
-.btn:hover {
+}button:hover, .btn:hover{
   background-color: var(--btn-default-hover-bg);
   color: var(--btn-default-hover-color);
   border-color: var(--btn-default-hover-border-color);
-}
-
-/* 确保所有导航元素都使用暗色主题 */
-.m-nav,
-.m-nav-all,
-.nav-container,
-.nav,
-.nav li,
-.nav li a {
+}/* 确保所有导航元素都使用暗色主题 */
+.m-nav, .m-nav-all, .nav-container, .nav, .nav li, .nav li a{
   background-color: var(--menu-item-bg-color);
   color: var(--text-color);
   border-color: var(--border-color);
-}
-
-.nav li a:hover,
-.nav li.active a {
+}.nav li a:hover, .nav li.active a{
   background-color: var(--hover-bg-color);
   color: var(--link-hover-color);
-}
-
-/* 确保搜索表单使用暗色主题 */
-.search-form,
-.search-form input {
-  background-color: var(--content-bg-color);
-  color: var(--text-color);
-  border-color: var(--border-color);
-}
-
-/* 确保侧边栏使用暗色主题 */
-.sidebar,
-.sidebar-left,
-.sidebar-right {
+}/* 确保侧边栏使用暗色主题 */
+.sidebar, .sidebar-left, .sidebar-right{
   background-color: var(--sidebar-bg-color);
   color: var(--text-color);
   border-color: var(--border-color);
-}
-
-/* 确保小部件使用暗色主题 */
-.widget {
+}/* 确保小部件使用暗色主题 */
+.widget{
   background-color: var(--card-bg-color);
   color: var(--text-color);
   border-color: var(--border-color);
-}
-
-/* 确保分页控件使用暗色主题 */
-.pagination {
+}/* 确保分页控件使用暗色主题 */
+.pagination{
   background-color: var(--content-bg-color);
   color: var(--text-color);
-}
-
-.pagination ul li a,
-.pagination ul li span {
+}.pagination ul li a, .pagination ul li span{
   background-color: var(--hover-bg-color);
   color: var(--link-color);
   border-color: var(--border-color);
-}
-
-/* 确保文章元信息使用暗色主题 */
-.auth-span,
-.auth-span .muted,
-.auth-span .muted a {
+}/* 确保文章元信息使用暗色主题 */
+.auth-span, .auth-span .muted, .auth-span .muted a{
   color: var(--text-color);
-}
-
-/* 确保相关文章使用暗色主题 */
-.related-posts {
-  background-color: var(--card-bg-color);
-  color: var(--text-color);
-  border-color: var(--border-color);
-}
-
-/* 确保评论区域使用暗色主题 */
-.comments-area {
+}/* 确保标签云使用暗色主题 */
+#tag-cloud-tags{
   background-color: var(--content-bg-color);
   color: var(--text-color);
-  border-color: var(--border-color);
-}
-
-/* 确保标签云使用暗色主题 */
-#tag-cloud-tags {
-  background-color: var(--content-bg-color);
-  color: var(--text-color);
-}
-
-/* 确保返回顶部按钮使用暗色主题 */
-.back-to-top {
+}/* 确保返回顶部按钮使用暗色主题 */
+.back-to-top{
   background-color: var(--btn-default-bg);
   color: var(--btn-default-color);
   border-color: var(--btn-default-border-color);
   z-index: var(--z-back-to-top, 1300);
-}
-
-.back-to-top:hover {
+}.back-to-top:hover{
   background-color: var(--btn-default-hover-bg);
   color: var(--btn-default-hover-color);
   border-color: var(--btn-default-hover-border-color);
-}
-
-/* 确保阅读进度条使用暗色主题 */
-.reading-progress-bar {
+}/* 确保阅读进度条使用暗色主题 */
+.reading-progress-bar{
   background-color: var(--link-color);
   z-index: var(--z-reading-progress, 1400);
-}
-
-/* 暗色主题下的边框和阴影调整 */
-.post-block,
-.content-wrap,
-.sidebar {
+}/* 暗色主题下的边框和阴影调整 */
+.post-block, .content-wrap, .sidebar{
   border: 1px solid var(--border-color);
   box-shadow: var(--post-shadow);
   background: var(--content-bg-color);
   color: var(--text-color);
-}
-
-/* 确保内部元素不重复添加边框和背景 */
-.widget,
-.content,
-.article-header,
-.article-content {
+}/* 确保内部元素不重复添加边框和背景 */
+.widget, .content, .article-header, .article-content{
   border: none;
   box-shadow: none;
   background: transparent;
   color: var(--text-color);
-}
-
-/* 确保文章标题和内容在暗黑主题下使用正确的颜色 */
-.article-title {
+}/* 确保文章标题和内容在暗黑主题下使用正确的颜色 */
+.article-title{
   color: var(--text-color);
-}
-
-.article-header .meta {
+}.article-header .meta{
   color: var(--blockquote-color);
-}
-
-/* 确保页面标题在暗黑主题下使用正确的颜色 */
-.page-title {
-  color: var(--text-color);
-}
-
-/* 确保评论表单在所有主题下使用正确的颜色和样式 */
-#respond {
+}/* 确保评论表单在所有主题下使用正确的颜色和样式 */
+#respond{
   background: var(--content-bg-color);
   border-top: 1px solid var(--border-color);
   padding: 30px;
   border-radius: 8px;
   margin-top: 30px;
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
-}
-
-#comment-form {
+}#comment-form{
   background: var(--content-bg-color);
   color: var(--text-color);
-}
-
-#comment-form input,
-#comment-form textarea {
+}#comment-form input, #comment-form textarea{
   background: var(--content-bg-color);
   border: 1px solid var(--border-color);
   color: var(--text-color);
@@ -486,16 +267,11 @@ button:hover,
   margin-bottom: 15px;
   font-size: 14px;
   transition: border-color 0.3s ease, box-shadow 0.3s ease;
-}
-
-#comment-form input:focus,
-#comment-form textarea:focus {
+}#comment-form input:focus, #comment-form textarea:focus{
   border-color: var(--link-color);
   outline: none;
   box-shadow: 0 0 0 3px rgba(88, 166, 255, 0.1);
-}
-
-#comment-form #submit {
+}#comment-form #submit{
   background: var(--link-color);
   border: 1px solid var(--link-color);
   color: var(--brand-color);
@@ -503,92 +279,42 @@ button:hover,
   border-radius: 4px;
   cursor: pointer;
   transition: all 0.3s ease;
-}
-
-#comment-form #submit:hover {
+}#comment-form #submit:hover{
   background: var(--link-hover-color);
   border-color: var(--link-hover-color);
-}
-
-/* 确保评论列表在暗黑主题下使用正确的颜色 */
-.comment-list {
-  background: var(--content-bg-color);
-  color: var(--text-color);
-}
-
-/* 暗色主题下的代码块调整 */
-.highlight-container {
-  background: var(--code-bg-color);
-}
-
-.highlight,
-pre {
+}.highlight, pre{
   background: var(--code-bg-color);
   color: var(--code-text-color);
-}
-
-code {
+}code{
   background: var(--code-bg-color);
   color: var(--code-text-color);
-}
-
-/* 暗色主题下的导航栏调整 */
-.header {
+}/* 暗色主题下的导航栏调整 */
+.header{
   background-color: var(--header-bg-color);
-}
-
-.header a {
+}.header a{
   color: var(--header-text-color);
-}
-
-.site-nav .menu-item a {
-  color: var(--header-text-color);
-}
-
-/* Typography Styles */
-h1,
-h2,
-h3,
-h4,
-h5,
-h6 {
+}/* Typography Styles */
+h1, h2, h3, h4, h5, h6{
   font-family: 'Lato', "PingFang SC", "Microsoft YaHei", sans-serif;
   font-weight: bold;
   line-height: 1.5;
   margin: 20px 0 15px;
-}
-
-h1 {
+}h1{
   font-size: 1.5em;
-}
-
-h2 {
+}h2{
   font-size: 1.375em;
-}
-
-h3 {
+}h3{
   font-size: 1.25em;
-}
-
-h4 {
+}h4{
   font-size: 1.125em;
-}
-
-h5 {
+}h5{
   font-size: 1em;
-}
-
-h6 {
+}h6{
   font-size: 0.875em;
-}
-
-p {
+}p{
   margin: 0 0 20px 0;
-}
-
-/* Link Styles */
-a,
-span.exturl {
+}/* Link Styles */
+a, span.exturl{
   border-bottom: 1px solid var(--border-color);
   color: var(--link-color);
   outline: 0;
@@ -596,48 +322,33 @@ span.exturl {
   overflow-wrap: break-word;
   word-wrap: break-word;
   cursor: pointer;
-}
-
-a:hover,
-span.exturl:hover {
+}a:hover, span.exturl:hover{
   border-bottom-color: var(--link-hover-color);
   color: var(--link-hover-color);
-}
-
-/* Image Styles */
-iframe,
-img,
-video {
+}/* Image Styles */
+iframe, img, video{
   display: block;
   margin-left: auto;
   margin-right: auto;
   max-width: 100%;
-}
-
-/* Horizontal Rule Styles */
-hr {
+}/* Horizontal Rule Styles */
+hr{
   background-image: repeating-linear-gradient(-45deg, #ddd, #ddd 4px, transparent 4px, transparent 8px);
   background-image: repeating-linear-gradient(-45deg, var(--border-color), var(--border-color) 4px, transparent 4px, transparent 8px);
   border: 0;
   height: 3px;
   margin: 40px 0;
-}
-
-/* Blockquote Styles */
-blockquote {
+}/* Blockquote Styles */
+blockquote{
   border-left: 4px solid var(--border-color);
   color: var(--blockquote-color);
   margin: 0;
   padding: 0 15px;
-}
-
-blockquote cite::before {
+}blockquote cite::before{
   content: '-';
   padding: 0 5px;
-}
-
-/* KBD Styles */
-kbd {
+}/* KBD Styles */
+kbd{
   background-color: var(--code-bg-color);
   background-image: linear-gradient(var(--hover-bg-color), var(--content-bg-color), var(--hover-bg-color));
   border: 1px solid var(--border-color);
@@ -647,15 +358,11 @@ kbd {
   font-family: inherit;
   padding: 0.1em 0.3em;
   white-space: nowrap;
-}
-
-/* 懒加载占位符样式 */
-img.lazy {
+}/* 懒加载占位符样式 */
+img.lazy{
   opacity: 0;
   transition: opacity 0.3s ease-in-out;
-}
-
-img {
+}img{
   max-width: 100%;
   height: auto;
 }
