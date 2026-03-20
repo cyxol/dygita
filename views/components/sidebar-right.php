@@ -3,6 +3,9 @@
 </div>
 
 <aside class="sidebar sidebar-right">
+    <button class="sidebar-toggle right" aria-label="折叠右侧栏" title="折叠右侧栏">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 6 15 12 9 18"></polyline></svg>
+    </button>
     <!-- 分类 -->
     <?php if (!empty($this->options->sidebarBlock) && in_array('ShowCategory', $this->options->sidebarBlock)): ?>
     <div class="widget">

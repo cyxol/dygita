@@ -447,18 +447,6 @@ body > div.fixed{
     margin-left: 20px ;
     margin-right: 20px ;
     max-width: calc(100% - 40px) ;
-}/* 修复可能的侧边栏切换按钮位置异常 */
-.sidebar-toggle{
-    min-height: 60px ;
-    position: fixed ;
-    top: 50% ;
-    left: 0 ;
-    right: auto ;
-    transform: translateY(-50%) ;
-    z-index: var(--z-sidebar-toggle, 1200) ;
-}.sidebar-toggle.right{
-    left: auto ;
-    right: 0 ;
 }/* 隐藏header区域中的分类信息 */
 .l-header .metacat, #l-header .metacat{
     display: none ;
@@ -472,14 +460,6 @@ body > div.fixed{
     display: none ;
     visibility: hidden ;
     opacity: 0 ;
-}/* 确保侧边栏切换按钮不会出现在页面顶部 */
-body > .sidebar-toggle{
-    top: 50% ;
-    transform: translateY(-50%) ;
-}/* 强制确保 sidebar-toggle 在正确的位置 */
-.sidebar-toggle.left{
-    left: 0 ;
-    right: auto ;
 }/* 确保没有意外的高度计算问题 */
 html, body{
     height: 100% ;

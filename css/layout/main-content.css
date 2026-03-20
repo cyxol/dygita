@@ -111,30 +111,60 @@ body > div.fixed{
 	position: relative ;
 }
 
-/* 修复可能的侧边栏切换按钮位置异常 */
-.sidebar-toggle{
-	min-height: 60px ;
-	position: fixed ;
-	top: 50% ;
-	left: 0 ;
-	right: auto ;
-	transform: translateY(-50%) ;
-	z-index: var(--z-sidebar-toggle, 1200) ;
-}.sidebar-toggle.right{
-	left: auto ;
-	right: 0 ;
+/* --- Sidebar toggle: inside sidebar (expanded state) --- */
+aside.sidebar-left{
+	position: relative !important ;
+}
+aside.sidebar-right{
+	position: relative !important ;
+}
+aside.sidebar-left > .sidebar-toggle.left{
+	position: absolute !important ;
+	top: 8px !important ;
+	left: 4px !important ;
+	right: auto !important ;
+}
+aside.sidebar-right > .sidebar-toggle.right{
+	position: absolute !important ;
+	top: 8px !important ;
+	right: 4px !important ;
+	left: auto !important ;
 }
 
-/* 确保侧边栏切换按钮不会出现在页面顶部 */
+/* --- Sidebar toggle: on body (collapsed state — must be visible!) --- */
 body > .sidebar-toggle{
-	top: 50% ;
+	position: fixed !important ;
+	top: 50% !important ;
 	transform: translateY(-50%) ;
+	width: 20px !important ;
+	height: 44px !important ;
+	background: rgba(51, 51, 51, 0.65) !important ;
+	color: #fff !important ;
+	border: none !important ;
+	box-shadow: 0 2px 8px rgba(0,0,0,0.15) ;
+	backdrop-filter: blur(4px) ;
+	-webkit-backdrop-filter: blur(4px) ;
+}
+body > .sidebar-toggle:hover{
+	background: rgba(231, 76, 60, 0.85) !important ;
+	box-shadow: 0 2px 10px rgba(231,76,60,0.35) ;
+}
+body > .sidebar-toggle.left{
+	left: 0 !important ;
+	right: auto !important ;
+	border-radius: 0 6px 6px 0 ;
+}
+body > .sidebar-toggle.right{
+	right: 0 !important ;
+	left: auto !important ;
+	border-radius: 6px 0 0 6px ;
 }
 
-/* 强制确保 sidebar-toggle 在正确的位置 */
-.sidebar-toggle.left{
-	left: 0 ;
-	right: auto ;
+/* --- 手机端隐藏侧栏折叠按钮 --- */
+@media (max-width: 768px){
+	.sidebar-toggle{
+		display: none !important ;
+	}
 }
 
 /* 确保没有意外的高度计算问�?*/
@@ -519,6 +549,7 @@ html, body{
  * ================================================================ */
 
 .sidebar-left{
+  position: relative;
   width: 220px;
   min-width: 220px;
   max-width: 220px;
@@ -1159,6 +1190,7 @@ html, body{
  * ================================================================ */
 
 .sidebar-right{
+  position: relative;
   width: 400px;
   min-width: 250px;
   max-width: 400px;
@@ -1172,7 +1204,6 @@ html, body{
   display: block;
   visibility: visible;
   opacity: 1;
-  position: static;
   float: none;
   margin-left: 0;
 }
@@ -1344,38 +1375,33 @@ html, body{
   color: #fff;
 }
 
+/* ---- Sidebar Toggle Buttons ---- */
 .sidebar-toggle{
-  position: fixed;
-  top: 50%;
-  transform: translateY(-50%);
-  width: 30px;
-  height: 60px;
-  background-color: rgba(51, 51, 51, 0.8);
-  color: #fff;
-  display: flex;
+  display: inline-flex;
   align-items: center;
   justify-content: center;
+  width: 26px;
+  height: 26px;
+  padding: 0;
+  border: 1px solid var(--border-color, rgba(0,0,0,0.1));
+  border-radius: 6px;
+  background: var(--content-bg-color, #fff);
+  color: var(--text-color-secondary, #999);
   cursor: pointer;
-  z-index: 999;
-  border-radius: 0 4px 4px 0;
-  transition: all 0.3s ease;
+  z-index: var(--z-sidebar-toggle, 1200);
+  transition: background 0.2s, color 0.2s, box-shadow 0.2s;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+  line-height: 1;
+  font-size: 0;
+  outline: none;
 }.sidebar-toggle:hover{
-  background-color: rgba(231, 76, 60, 0.8);
-}.sidebar-toggle.left{
-  left: 0;
-}.sidebar-toggle.right{
-  right: 0;
-  border-radius: 4px 0 0 4px;
-}.sidebar-toggle::before{
-  content: '\25C0';
-  font-weight: bold;
-  font-size: 16px;
-}.sidebar-toggle.right::before{
-  content: '\25B6';
-}.sidebar-toggle.collapsed::before{
-  content: '\25B6';
-}.sidebar-toggle.right.collapsed::before{
-  content: '\25C0';
+  background: var(--link-hover-color, #e74c3c);
+  color: #fff;
+  border-color: transparent;
+  box-shadow: 0 2px 6px rgba(231,76,60,0.3);
+}.sidebar-toggle svg{
+  display: block;
+  pointer-events: none;
 }
 .sidebar-left.collapsed{
   width: 0;

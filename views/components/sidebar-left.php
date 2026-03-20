@@ -1,6 +1,9 @@
 <?php if (!defined('__TYPECHO_ROOT_DIR__')) exit; ?>
 <div class="main-container">
 <aside class="sidebar sidebar-left">
+    <button class="sidebar-toggle left" aria-label="折叠左侧栏" title="折叠左侧栏">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"></polyline></svg>
+    </button>
     <!-- 博主简介 -->
     <div class="widget">
         <div class="title"><h2><?php dygita_e('关于博主'); ?></h2></div>
