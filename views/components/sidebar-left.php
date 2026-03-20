@@ -10,14 +10,27 @@
         <div class="widget-content">
             <div class="widget-profile">
                 <div class="profile-avatar">
-                    <?php if ($this->options->logoUrl): ?>
-                    <img src="<?php $this->options->logoUrl(); ?>" alt="Avatar">
-                    <?php else: ?>
-                    <img src="<?php $this->options->themeUrl('img/authorpic.jpg'); ?>" alt="Avatar">
-                    <?php endif; ?>
+                    <img src="<?php $this->options->themeUrl('img/caiya.xin.jpg'); ?>" alt="Yacine Tsai">
                 </div>
                 <div class="profile-info">
-                    <p><?php $this->options->description(); ?></p>
+                    <p>Yacine Tsai</p>
+                    <p>大数据产品经理</p>
+                    <p>Vibe Coding</p>
+                    <?php $profileStat = getStat(); ?>
+                    <div class="profile-stats" aria-label="站点统计">
+                        <div class="profile-stats-item">
+                            <span class="profile-stats-num"><?php echo (int) $profileStat['posts']; ?></span>
+                            <span class="profile-stats-label">日志</span>
+                        </div>
+                        <div class="profile-stats-item">
+                            <span class="profile-stats-num"><?php echo (int) $profileStat['categories']; ?></span>
+                            <span class="profile-stats-label">分类</span>
+                        </div>
+                        <div class="profile-stats-item">
+                            <span class="profile-stats-num"><?php echo (int) $profileStat['tags']; ?></span>
+                            <span class="profile-stats-label">标签</span>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>

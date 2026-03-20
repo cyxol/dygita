@@ -19,29 +19,90 @@ endif; ?>>
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
     <meta name="theme-color" content="#222">
 
-    <!-- 保存的主题偏好，用于 JavaScript 初始化 -->
+    <!-- 主题偏好：阻塞式初始化，防止暗色主题闪白 -->
     <script>
         window.DYGITA = window.DYGITA || {};
         window.DYGITA.savedTheme = <?php echo json_encode($savedTheme, JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_QUOT); ?>;
         window.DYGITA.savedHeaderColor = <?php echo json_encode($savedHeaderColor, JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_QUOT); ?>;
         (function() {
-            var isDark = window.DYGITA.savedTheme === 'dark' || (!window.DYGITA.savedTheme && typeof window.matchMedia !== 'undefined' && window.matchMedia('(prefers-color-scheme: dark)').matches);
-            if (isDark) document.documentElement.setAttribute('data-theme', 'dark');
+            var t = window.DYGITA.savedTheme;
+            if (!t) try { t = localStorage.getItem('theme'); } catch(e) {}
+            var isDark = t === 'dark' || (!t && typeof window.matchMedia !== 'undefined' && window.matchMedia('(prefers-color-scheme: dark)').matches);
+            if (isDark) {
+                document.documentElement.setAttribute('data-theme', 'dark');
+                document.documentElement.style.colorScheme = 'dark';
+            }
+            document.documentElement.classList.add('no-transitions');
         })();
     </script>
     <style>
-        html[data-theme="dark"], html[data-theme="dark"] body {
+        /* 页面加载期间禁止所有过渡动画，防止闪烁 */
+        html.no-transitions,
+        html.no-transitions *,
+        html.no-transitions *::before,
+        html.no-transitions *::after {
+            transition: none !important;
+        }
+        /* 暗色主题关键元素背景——内联保证首屏无白闪 */
+        html[data-theme="dark"] {
+            color-scheme: dark;
+        }
+        html[data-theme="dark"],
+        html[data-theme="dark"] body {
             background-color: #1e1e1e;
             color: #c9d1d9;
         }
+        html[data-theme="dark"] .content-wrap,
+        html[data-theme="dark"] .sidebar,
+        html[data-theme="dark"] .sidebar-left,
+        html[data-theme="dark"] .sidebar-right {
+            background-color: #252525;
+        }
+        html[data-theme="dark"] .m-nav,
+        html[data-theme="dark"] .m-header,
+        html[data-theme="dark"] .m-nav .nav li,
+        html[data-theme="dark"] .search-toggle .btn,
+        html[data-theme="dark"] .color-toggle .btn,
+        html[data-theme="dark"] .theme-toggle .btn,
+        html[data-theme="dark"] .lang-toggle .btn {
+            background-color: #000;
+        }
+        html[data-theme="dark"] .sidebar-toggle {
+            background-color: #252525;
+            border-color: #30363d;
+            color: #c9d1d9;
+        }
+        html[data-theme="dark"] .m-nav {
+            --link-color: #c9d1d9;
+            --link-hover-color: #fff;
+        }
+        html[data-theme="dark"] .m-nav .nav li a,
+        html[data-theme="dark"] .m-nav .nav li a:link,
+        html[data-theme="dark"] .m-nav .nav li a:visited {
+            color: #c9d1d9 !important;
+        }
+        html[data-theme="dark"] .m-nav .nav li a:hover {
+            color: #fff !important;
+        }
+        html[data-theme="dark"] .m-nav .nav li.active a,
+        html[data-theme="dark"] .m-nav .nav li.active a:link,
+        html[data-theme="dark"] .m-nav .nav li.active a:visited {
+            color: #79b8ff !important;
+        }
     </style>
 
-    <title><?php $this->archiveTitle(array(
+    <title><?php
+if ($this->is('author')) {
+    echo htmlspecialchars((string) dygita_t('关于博主'), ENT_QUOTES, 'UTF-8') . ' - ';
+} else {
+    $this->archiveTitle(array(
     'category' => dygita_t('分类 %s 下的文章'),
     'search' => dygita_t('包含关键字 %s 的文章'),
     'tag' => dygita_t('标签 %s 下的文章'),
     'author' => dygita_t('%s 发布的文章')
-), '', ' - '); ?><?php $this->options->title(); ?></title>
+), '', ' - ');
+}
+?><?php $this->options->title(); ?></title>
 
     <!-- 预加载关键资源 -->
     <link rel="preload" href="<?php $this->options->themeUrl('css/style.css'); ?>" as="style" onload="this.onload=null;this.rel='stylesheet'">
@@ -272,7 +333,7 @@ endif; ?>
     <?php endif; ?>
 
     <!-- 合并后的主题样式（由分层 CSS 源文件构建生成） -->
-    <link rel="stylesheet" href="<?php $this->options->themeUrl('css/build.css'); ?>">
+    <link rel="stylesheet" href="<?php $this->options->themeUrl('css/build.css'); ?>?v=<?php echo filemtime(dirname(__DIR__, 2) . '/css/build.css'); ?>">
 
     <!-- 动态主题色样式 -->
     <style>
@@ -299,11 +360,11 @@ endif; ?>
             $navOpts = $this->options;
             $navIdx = $navOpts->index;
             $navArchivesUrl = htmlspecialchars($navBaseSiteUrl . '/archives/', ENT_QUOTES, 'UTF-8');
-            $navCategoriesUrl = htmlspecialchars($navBaseSiteUrl . '/category/', ENT_QUOTES, 'UTF-8');
-            $navTagCloudUrl = htmlspecialchars($navBaseSiteUrl . '/tag', ENT_QUOTES, 'UTF-8');
+            $navCategoriesUrl = htmlspecialchars($navBaseSiteUrl . '/categories/', ENT_QUOTES, 'UTF-8');
+            $navTagCloudUrl = htmlspecialchars($navBaseSiteUrl . '/tags/', ENT_QUOTES, 'UTF-8');
             $navPathInfo = trim((string) $this->request->getPathInfo(), '/');
-            $navArchivesActive = ($navPathInfo === 'archives' || $this->is('archive') || $this->is('page', 'archives'));
-            $navCategoriesActive = ($navPathInfo === 'category' || $navPathInfo === 'categories' || $this->is('page', 'category') || $this->is('page', 'categories'));
+            $navArchivesActive = ($navPathInfo === 'archives' || $this->is('page', 'archives'));
+            $navCategoriesActive = ($navPathInfo === 'category' || $navPathInfo === 'categories' || $this->is('category') || $this->is('page', 'category') || $this->is('page', 'categories'));
             $navHasArchivesLink = false;
             $navHasTagCloudLink = false;
             $navHasCategoriesLink = false;
@@ -365,7 +426,7 @@ endif; ?>
             } else {
                 $linkUrl = strpos($url, 'http') === 0 ? $url : ($url ? $navBaseSiteUrl . '/' . ltrim($url, '/') : $navBaseSiteUrl);
                 $linkUrl = htmlspecialchars((string) $linkUrl, ENT_QUOTES, 'UTF-8');
-                $isActive = ($url == '' && $this->is('index'));
+                $isActive = ($url === '' && $navPathInfo === '');
             }
 
             $isAuthorLink = ($url === '@author') || ($urlPath === 'author') || ($urlPath === 'about') || in_array($nameRaw, ['作者', '关于博主'], true);
@@ -390,7 +451,8 @@ endif; ?>
                 || in_array($url, ['tag', '/tag', 'tag/', '/tag/', 'tags', '/tags', 'tags/', '/tags/', 'page-tag-cloud.html', '/page-tag-cloud.html', 'tag-cloud', '/tag-cloud'], true);
             if ($isTagCloudLink) {
                 $navHasTagCloudLink = true;
-                $navRenderTagCloudUrl = $linkUrl;
+                // Force tag cloud entry to the stable /tags/ route.
+                $navRenderTagCloudUrl = $navTagCloudUrl;
                 $navTagCloudTarget = $target;
                 continue;
             }
@@ -399,7 +461,8 @@ endif; ?>
                 || in_array($url, ['category', '/category', 'category/', '/category/', 'categories', '/categories', 'categories/', '/categories/'], true);
             if ($isCategoriesLink) {
                 $navHasCategoriesLink = true;
-                $navRenderCategoriesUrl = $linkUrl;
+                // Force category overview entry to the stable /categories/ route.
+                $navRenderCategoriesUrl = $navCategoriesUrl;
                 $navCategoriesTarget = $target;
                 continue;
             }
@@ -431,8 +494,8 @@ endif; ?>
     }
 ?>
                     <?php else: ?>
-                        <li <?php if ($this->is('index')): ?> class="active" <?php endif; ?> role="none">
-                            <a href="<?php $this->options->siteUrl(); ?>" role="menuitem" <?php if ($this->is('index')): ?> aria-current="page" <?php endif; ?>><?php dygita_e('首页'); ?></a>
+                        <li <?php if ($navPathInfo === ''): ?> class="active" <?php endif; ?> role="none">
+                            <a href="<?php $this->options->siteUrl(); ?>" role="menuitem" <?php if ($navPathInfo === ''): ?> aria-current="page" <?php endif; ?>><?php dygita_e('首页'); ?></a>
                         </li>
                         <li <?php if ($navArchivesActive): ?> class="active" <?php endif; ?> role="none">
                             <a href="<?php echo $navArchivesUrl; ?>" role="menuitem" <?php if ($navArchivesActive): ?> aria-current="page" <?php endif; ?>>文章列表</a>

@@ -31,15 +31,43 @@
 }.tag-cloud-fallback .tag:hover{
 	background: var(--link-color);
 	color: #fff;
-}.category-list-page h2{
+}/* 标签云页面：3列居中，复用右侧栏 .tag-cloud 样式 */
+.tag-cloud-page .tag-cloud-3col{
+	grid-template-columns: repeat(3, 1fr);
+	max-width: 720px;
+	margin: 0 auto;
+	gap: 10px;
+	padding: 20px 0;
+}
+.tag-cloud-page .tag-cloud-3col a{
+	font-size: 13px;
+	height: 36px;
+	line-height: 36px;
+	border-radius: 4px;
+}
+@media (max-width: 768px){
+	.tag-cloud-page .tag-cloud-3col{
+		grid-template-columns: repeat(2, 1fr);
+	}
+}
+
+/* 分类页标题居中 */
+.archive-header-center{
+	text-align: center;
+}
+.category-list-page h2{
 	margin-bottom: 20px;
 	padding-bottom: 10px;
 	border-bottom: 2px solid var(--link-color);
 	color: var(--text-color);
-}.category-grid{
+}
+/* 分类页：两列居中 */
+.category-grid{
 	display: grid;
-	grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+	grid-template-columns: repeat(2, 1fr);
 	gap: 15px;
+	max-width: 600px;
+	margin: 0 auto;
 }.category-item{
 	display: flex;
 	justify-content: space-between;

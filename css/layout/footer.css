@@ -18,6 +18,11 @@
 .footer-copyright{
 	text-align: center;
 }
+.footer-heart{
+	color: #e53935;
+	font-style: normal;
+	font-weight: 700;
+}
 
 .back-to-top{
 	font-size: 12px;
@@ -63,5 +68,19 @@
 	.back-to-top{
 		left: 20px;
 		opacity: 0.8;
+	}
+}
+
+@media (max-width: 768px) {
+	.footer{
+		padding: 14px 0;
+		font-size: 10px;
+	}
+	.footer-inner{
+		padding: 0 8px;
+	}
+	.footer-copyright{
+		white-space: nowrap;
+		line-height: 1.2;
 	}
 }

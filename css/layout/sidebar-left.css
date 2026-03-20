@@ -41,3 +41,62 @@
 		order: 1 ;
 	}
 }
+
+/* 左侧栏关于博主内容 */
+.sidebar-left .widget-profile{
+	display: flex ;
+	flex-direction: column ;
+	align-items: center ;
+	text-align: center ;
+}
+.sidebar-left .profile-avatar{
+	margin-bottom: 12px ;
+}
+.sidebar-left .profile-avatar img{
+	width: 96px ;
+	height: 96px ;
+	border-radius: 50% ;
+	object-fit: cover ;
+}
+.sidebar-left .profile-info{
+	width: 100% ;
+	text-align: center ;
+}
+.sidebar-left .profile-info p{
+	margin: 8px 0 ;
+	text-align: center ;
+	line-height: 1.4 ;
+}
+.sidebar-left .profile-stats{
+	display: flex ;
+	justify-content: center ;
+	align-items: stretch ;
+	margin: 14px auto 0 ;
+	max-width: 248px ;
+	background: #eeeeee ;
+	border: 0 ;
+}
+.sidebar-left .profile-stats-item{
+	flex: 1 1 33.33% ;
+	display: flex ;
+	flex-direction: column ;
+	align-items: center ;
+	justify-content: center ;
+	padding: 10px 8px 8px ;
+}
+.sidebar-left .profile-stats-item + .profile-stats-item{
+	border-left: 1px solid #dddddd ;
+}
+.sidebar-left .profile-stats-num{
+	font-size: 39px ;
+	line-height: 1 ;
+	font-weight: 700 ;
+	color: #2e3440 ;
+	font-variant-numeric: tabular-nums ;
+}
+.sidebar-left .profile-stats-label{
+	margin-top: 7px ;
+	font-size: 15px ;
+	line-height: 1.2 ;
+	color: #8b8b8b ;
+}

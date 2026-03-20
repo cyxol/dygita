@@ -109,6 +109,23 @@
 	background-color: var(--nav-bg-color) !important;
 	background-image: none !important;
 }
+/* 暗色导航栏文字颜色：默认白色，当前页高亮 */
+[data-theme="dark"] .m-nav .nav li a,
+[data-theme="dark"] .m-nav .nav li a:link,
+[data-theme="dark"] .m-nav .nav li a:visited,
+[data-theme="dark"] .m-nav .nav li a:focus,
+[data-theme="dark"] .m-nav .nav li a:active{
+	color: #c9d1d9 !important;
+}
+[data-theme="dark"] .m-nav .nav li a:hover{
+	color: #fff !important;
+}
+[data-theme="dark"] .m-nav .nav li.active > a,
+[data-theme="dark"] .m-nav .nav li.active > a:link,
+[data-theme="dark"] .m-nav .nav li.active > a:visited{
+	color: var(--link-hover-color, #79b8ff) !important;
+}
+
 [data-theme="dark"] .archive-header{
 	background: var(--content-bg-color);
 	border-bottom: 1px solid var(--border-color);
@@ -122,11 +139,16 @@
 		border-color: var(--border-color);
 	}
 
-	.m-nav .nav li a{
+	.m-nav .nav li a,
+	.m-nav .nav li a:link,
+	.m-nav .nav li a:visited{
 		color: #c9d1d9;
 	}
-	.m-nav .nav li a:hover, .m-nav .nav li.active a{
+	.m-nav .nav li a:hover{
 		color: #fff;
+	}
+	.m-nav .nav li.active > a{
+		color: var(--link-hover-color, #79b8ff);
 	}
 
 	.m-header h1 a{

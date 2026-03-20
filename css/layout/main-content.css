@@ -238,16 +238,28 @@ html, body{
 }.m-nav .nav li{
   position: relative;
   background-color: transparent;
-}.m-nav .nav li a{
+}/* 暗色模式下重定义导航栏内 --link-color，防止全局蓝色泄漏到导航文字 */
+[data-theme="dark"] .m-nav{
+  --link-color: var(--nav-text-color);
+  --link-hover-color: var(--nav-text-hover-color);
+}
+.m-nav .nav li a{
   padding: 15px 20px;
   /* Align text with sidebar padding (20px) */
   display: block;
   transition: all 0.2s;
   background-color: transparent;
+  color: var(--nav-text-color) !important;
+}.m-nav .nav li a:link,
+.m-nav .nav li a:visited{
+  color: var(--nav-text-color) !important;
 }.m-nav .nav li a:hover, .m-nav .nav li a:active, .m-nav .nav li a:focus{
   transform: none;
-}.m-nav .nav li a:hover, .m-nav .nav li.active a{
-  color: var(--link-hover-color);
+  color: var(--nav-text-hover-color) !important;
+}.m-nav .nav li.active a,
+.m-nav .nav li.active a:link,
+.m-nav .nav li.active a:visited{
+  color: var(--nav-text-active-color) !important;
 }
 .m-nav .nav .search-toggle-li{
   display: block;
@@ -357,52 +369,28 @@ html, body{
   padding: 6px 10px;
   margin: 0;
 }
-.search-toggle .btn{
-  background-color: var(--body-bg-color);
-  border: none;
-  transition: all 0.3s ease;
-}.search-toggle .btn:hover{
-  background-color: var(--body-bg-color);
-  border: none;
-}.search-toggle .btn i{
-  color: var(--text-color);
-}.search-toggle .btn:hover i{
-  color: var(--text-color);
-}
-.color-toggle .btn{
-  background-color: var(--body-bg-color);
-  border: none;
-  transition: all 0.3s ease;
-}.color-toggle .btn:hover{
-  background-color: var(--body-bg-color);
-  border: none;
-}.color-toggle .btn i{
-  color: var(--text-color);
-}.color-toggle .btn:hover i{
-  color: var(--text-color);
-}
-.theme-toggle .btn{
-  background-color: var(--body-bg-color);
-  border: none;
-  transition: all 0.3s ease;
-}.theme-toggle .btn:hover{
-  background-color: var(--body-bg-color);
-  border: none;
-}.theme-toggle .btn i{
-  color: var(--text-color);
-}.theme-toggle .btn:hover i{
-  color: var(--text-color);
-}
+.search-toggle .btn,
+.color-toggle .btn,
+.theme-toggle .btn,
 .lang-toggle .btn{
-  background-color: var(--body-bg-color);
+  background-color: var(--nav-bg-color);
   border: none;
   transition: all 0.3s ease;
-}.lang-toggle .btn:hover{
-  background-color: var(--body-bg-color);
+}.search-toggle .btn:hover,
+.color-toggle .btn:hover,
+.theme-toggle .btn:hover,
+.lang-toggle .btn:hover{
+  background-color: var(--nav-bg-color);
   border: none;
-}.lang-toggle .btn i{
+}.search-toggle .btn i,
+.color-toggle .btn i,
+.theme-toggle .btn i,
+.lang-toggle .btn i{
   color: var(--text-color);
-}.lang-toggle .btn:hover i{
+}.search-toggle .btn:hover i,
+.color-toggle .btn:hover i,
+.theme-toggle .btn:hover i,
+.lang-toggle .btn:hover i{
   color: var(--text-color);
 }
 
@@ -1749,6 +1737,43 @@ html, body{
     font-size: 0.85rem;
   }
 }/* Ensure header and navigation cover the full width */
+
+/* 移动端内容页统一居中：消除多层左右内边距叠加导致的偏移 */
+@media (max-width: 768px) {
+  .main-container {
+    padding-left: 0 !important;
+    padding-right: 0 !important;
+  }
+  .content-wrap {
+    margin-left: auto !important;
+    margin-right: auto !important;
+    padding-left: 12px !important;
+    padding-right: 12px !important;
+  }
+  .content-wrap > .content,
+  .single .content,
+  .page .content {
+    margin-left: auto !important;
+    margin-right: auto !important;
+    padding-left: 0 !important;
+    padding-right: 0 !important;
+  }
+  .content .article-content,
+  .main-container .content-wrap .content .article-content {
+    max-width: 100% !important;
+    margin-left: auto !important;
+    margin-right: auto !important;
+    padding-left: 0 !important;
+    padding-right: 0 !important;
+    box-sizing: border-box;
+  }
+  .article-content p {
+    margin-left: 0 !important;
+    margin-right: 0 !important;
+    max-width: 100% !important;
+  }
+}
+
 .l-header, .m-nav{
   width: 100%;
 }

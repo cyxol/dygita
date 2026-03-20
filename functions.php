@@ -18,29 +18,21 @@ define('DYGITA_THEME_VERSION', '1.1.0');
 (function () {
     $rt = \Widget\Options::alloc()->routingTable;
     $exists = isset($rt['tags_cloud']) || (isset($rt[0]) && isset($rt[0]['tags_cloud']));
-    $tagExists = isset($rt['tags_cloud_tag']) || (isset($rt[0]) && isset($rt[0]['tags_cloud_tag']));
-    $tagNoSlashExists = isset($rt['tags_cloud_tag_plain']) || (isset($rt[0]) && isset($rt[0]['tags_cloud_tag_plain']));
     $aliasExists = isset($rt['tags_cloud_page']) || (isset($rt[0]) && isset($rt[0]['tags_cloud_page']));
     $archivesExists = isset($rt['archives_list']) || (isset($rt[0]) && isset($rt[0]['archives_list']));
-    $categoriesExists = isset($rt['categories_page']) || (isset($rt[0]) && isset($rt[0]['categories_page']));
-    if (!$exists) {
-        \Utils\Helper::addRoute('tags_cloud', '/tag/', '\Widget\Archive', 'render');
-    }
-    if (!$tagExists) {
-        \Utils\Helper::addRoute('tags_cloud_tag', '/tag/', '\Widget\Archive', 'render');
-    }
-    if (!$tagNoSlashExists) {
-        \Utils\Helper::addRoute('tags_cloud_tag_plain', '/tag', '\Widget\Archive', 'render');
-    }
+    // Keep tag cloud entry on /tags/ and reserve /tag/{slug}/ for tag archives.
+    \Utils\Helper::addRoute('tags_cloud', '/tags/', '\Widget\Archive', 'render');
+    \Utils\Helper::addRoute('tags_cloud_tag', '/tags/', '\Widget\Archive', 'render');
+    \Utils\Helper::addRoute('tags_cloud_tag_plain', '/tags', '\Widget\Archive', 'render');
     if (!$aliasExists) {
         \Utils\Helper::addRoute('tags_cloud_page', '/page-tag-cloud.html', '\Widget\Archive', 'render');
     }
     if (!$archivesExists) {
         \Utils\Helper::addRoute('archives_list', '/archives/', '\Widget\Archive', 'render');
     }
-    if (!$categoriesExists) {
-        \Utils\Helper::addRoute('categories_page', '/category/', '\Widget\Archive', 'render');
-    }
+    // Always enforce /categories/ for the category overview page to avoid
+    // conflicting with Typecho's native /category/{slug}/ archive route.
+    \Utils\Helper::addRoute('categories_page', '/categories/', '\Widget\Archive', 'render');
 })();
 
 /**
@@ -248,24 +240,17 @@ function themeConfig($form)
 {
     // 注册自定义路由（访问设置页时即写入数据库）
     $rt = \Utils\Helper::options()->routingTable;
-    if (!isset($rt['tags_cloud']) && !(isset($rt[0]) && isset($rt[0]['tags_cloud']))) {
-        \Utils\Helper::addRoute('tags_cloud', '/tag/', '\Widget\Archive', 'render');
-    }
-    if (!isset($rt['tags_cloud_tag']) && !(isset($rt[0]) && isset($rt[0]['tags_cloud_tag']))) {
-        \Utils\Helper::addRoute('tags_cloud_tag', '/tag/', '\Widget\Archive', 'render');
-    }
-    if (!isset($rt['tags_cloud_tag_plain']) && !(isset($rt[0]) && isset($rt[0]['tags_cloud_tag_plain']))) {
-        \Utils\Helper::addRoute('tags_cloud_tag_plain', '/tag', '\Widget\Archive', 'render');
-    }
+    \Utils\Helper::addRoute('tags_cloud', '/tags/', '\Widget\Archive', 'render');
+    \Utils\Helper::addRoute('tags_cloud_tag', '/tags/', '\Widget\Archive', 'render');
+    \Utils\Helper::addRoute('tags_cloud_tag_plain', '/tags', '\Widget\Archive', 'render');
     if (!isset($rt['tags_cloud_page']) && !(isset($rt[0]) && isset($rt[0]['tags_cloud_page']))) {
         \Utils\Helper::addRoute('tags_cloud_page', '/page-tag-cloud.html', '\Widget\Archive', 'render');
     }
     if (!isset($rt['archives_list']) && !(isset($rt[0]) && isset($rt[0]['archives_list']))) {
         \Utils\Helper::addRoute('archives_list', '/archives/', '\Widget\Archive', 'render');
     }
-    if (!isset($rt['categories_page']) && !(isset($rt[0]) && isset($rt[0]['categories_page']))) {
-        \Utils\Helper::addRoute('categories_page', '/category/', '\Widget\Archive', 'render');
-    }
+    // Keep categories overview route stable at /categories/.
+    \Utils\Helper::addRoute('categories_page', '/categories/', '\Widget\Archive', 'render');
 
     // 获取全局配置（注意：在函数上下文中不能使用 $this->options）
     $options = Typecho\Widget::widget('Widget_Options');
@@ -1084,7 +1069,7 @@ function themeInit($archive) {
     }
 
     // 自定义路由模板：标签云页面
-    if ($routeType === 'tags_cloud' || $routeType === 'tags_cloud_tag' || $routeType === 'tags_cloud_page') {
+    if ($routeType === 'tags_cloud' || $routeType === 'tags_cloud_page') {
         $archive->setThemeFile('tag.php');
         return;
     }
@@ -1107,7 +1092,7 @@ function themeInit($archive) {
         $archive->setThemeFile('archive.php');
         return;
     }
-    if ($pathInfo === 'tag' || $pathInfo === 'tags' || $pathInfo === 'page-tag-cloud.html') {
+    if ($pathInfo === 'tags' || $pathInfo === 'page-tag-cloud.html') {
         $archive->setThemeFile('tag.php');
         return;
     }

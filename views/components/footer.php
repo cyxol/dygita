@@ -5,18 +5,8 @@
 <footer class="footer">
     <div class="footer-inner">
         <div class="footer-copyright">
-            <?php
-            // Typecho 默认无 copyright 选项，有则输出，无则输出默认版权行
-            $copyright = $this->options->copyright ?? '';
-            if ($copyright !== '' && $copyright !== null) {
-                echo htmlspecialchars($copyright, ENT_QUOTES, 'UTF-8');
-            } else {
-                $footerSiteUrl = $this->options->siteUrl;
-                $footerSiteTitle = $this->options->title;
-                echo '&copy; ' . date('Y') . ' <a href="' . htmlspecialchars($footerSiteUrl, ENT_QUOTES, 'UTF-8') . '">' . htmlspecialchars($footerSiteTitle, ENT_QUOTES, 'UTF-8') . '</a>. ';
-            }
-            ?>
-            <span class="caiyacopyright">Theme by <a id="caiya" href="http://caiya.xin" title="CaiYa" target="_blank">CaiYa</a> & Ported to Typecho</span>
+            <?php $currentYear = date('Y'); ?>
+            <span>&copy; 2014-<?php echo htmlspecialchars((string) $currentYear, ENT_QUOTES, 'UTF-8'); ?> | 菜牙.<span class="footer-heart" aria-hidden="true">❤</span> | Theme by Dydita | Ported to Typecho</span>
         </div>
     </div>
 </footer>
@@ -85,6 +75,9 @@ endif; ?>
 </div>
 <div class="reading-progress-bar" role="progressbar" aria-label="<?php dygita_e('阅读进度'); ?>" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"></div>
 
+<script>
+    requestAnimationFrame(function(){requestAnimationFrame(function(){document.documentElement.classList.remove('no-transitions')})});
+</script>
 </body>
 
 </html>

@@ -897,7 +897,60 @@ html, body{
 }/* Archives page (archives.php) */
 .archives-list{
     display: none;
-}/* Tag cloud page (page-tag-cloud.php) */
+}
+/* 文章列表时间线 */
+.archives-timeline{
+    padding: 20px 30px;
+}
+.archives-year{
+    font-size: 1.8rem;
+    font-weight: 700;
+    color: var(--text-color);
+    margin: 0 0 16px;
+    padding: 0;
+    border: none;
+}
+.archives-posts{
+    list-style: none;
+    padding: 0;
+    margin: 0 0 30px;
+}
+.archives-posts li{
+    position: relative;
+    padding: 12px 0 12px 16px;
+    border-bottom: 1px dashed var(--border-color, #eee);
+    display: flex;
+    align-items: baseline;
+    gap: 14px;
+}
+.archives-posts li:last-child{
+    border-bottom: none;
+}
+.archives-posts li::before{
+    content: '•';
+    position: absolute;
+    left: 0;
+    color: var(--text-color-secondary, #bbb);
+    font-size: 14px;
+}
+.archives-date{
+    flex-shrink: 0;
+    font-size: 0.85rem;
+    color: var(--header-bg-color, #E74C3C);
+    font-variant-numeric: tabular-nums;
+    min-width: 40px;
+}
+.archives-title{
+    font-size: 1.05rem;
+    color: var(--text-color);
+    text-decoration: none;
+    border-bottom: none;
+    transition: color 0.2s;
+}
+.archives-title:hover{
+    color: var(--link-hover-color, #e74c3c);
+}
+/* Tag cloud page (page-tag-cloud.php) */
 .tag-cloud-page #tag-cloud-tags{
     display: none;
 }

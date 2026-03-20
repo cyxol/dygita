@@ -359,3 +359,113 @@
         flex: 1 1 100%;
     }
 }
+
+/* Mobile: keep hero header consistent with desktop (background/avatar/subtitle/title) */
+@media (max-width: 992px){
+    .l-header{
+        display: block !important;
+    }
+
+    .content-wrap{
+        margin-bottom: 0 !important;
+    }
+
+    .l-header .m-about,
+    .l-header #logo,
+    .l-header .tit,
+    .l-header .about{
+        text-align: center !important;
+        margin-left: auto;
+        margin-right: auto;
+    }
+
+    /* Avoid duplicate title bar and remove reserved offset under it */
+    #m-header{
+        display: none !important;
+    }
+
+    .m-nav{
+        top: 0 !important;
+        margin-top: 0 !important;
+    }
+}
+
+/* Mobile homepage list: compact left-thumbnail + right-text layout */
+@media (max-width: 768px){
+    .index.posts-expand .excerpt,
+    .index.posts-expand .excerpt-one{
+        margin-bottom: 5px !important;
+    }
+
+    .index.posts-expand .excerpt-one{
+        display: grid;
+        grid-template-columns: 96px minmax(0, 1fr);
+        grid-template-areas:
+            "focus header"
+            "focus note"
+            "auth auth";
+        column-gap: 12px;
+        row-gap: 6px;
+        align-items: start;
+    }
+
+    .index.posts-expand .excerpt-one > header{
+        grid-area: header;
+        width: auto;
+        margin: 0;
+    }
+
+    .index.posts-expand .excerpt-one .focus{
+        grid-area: focus;
+        width: 96px;
+        margin: 0;
+    }
+
+    .index.posts-expand .excerpt-one .focus .thumb{
+        width: 96px;
+        height: 64px;
+        object-fit: cover;
+        border-radius: 4px;
+        display: block;
+    }
+
+    .index.posts-expand .excerpt-one > header h2{
+        margin: 0;
+        line-height: 1.35;
+        font-size: 15px;
+    }
+
+    .index.posts-expand .excerpt-one > header .label{
+        margin-right: 10px;
+        padding-right: 8px;
+        font-size: 11px;
+    }
+
+    .index.posts-expand .excerpt-one .note{
+        grid-area: note;
+        margin: 0;
+        font-size: 12px;
+        line-height: 1.5;
+        -webkit-line-clamp: 2;
+    }
+
+    .index.posts-expand .excerpt-one .auth-span{
+        grid-area: auth;
+        margin-top: 2px;
+        font-size: 10px;
+        line-height: 1.35;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+
+    .index.posts-expand .excerpt-one .auth-span .muted{
+        display: inline-flex;
+        align-items: center;
+        margin-right: 8px;
+    }
+
+    .index.posts-expand .excerpt-one .auth-span .muted:last-child{
+        margin-right: 0;
+    }
+}

@@ -21,9 +21,7 @@
 
             if (btn.dataset.loading === '1') return;
             var cid = btn.getAttribute('data-id');
-            var tokenInput = document.querySelector('input[name="_"]');
-            var token = tokenInput ? tokenInput.value : '';
-            if (!cid || !token) {
+            if (!cid) {
                 alert('点赞失败，请刷新后重试');
                 return;
             }
@@ -33,7 +31,6 @@
             var payload = new URLSearchParams();
             payload.append('action', 'like');
             payload.append('cid', cid);
-            payload.append('_', token);
 
             fetch(window.location.href, {
                 method: 'POST',
