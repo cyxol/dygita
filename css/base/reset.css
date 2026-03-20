@@ -107,7 +107,7 @@ html{
 }::selection{
   background: #262a30;
   color: #eee;
-}/* 禁用所有可能的悬停位移效果 */
+}/* Disable unintended hover transforms globally */
 *, *::before, *::after{
   --tw-translate-x: 0;
   --tw-translate-y: 0;
@@ -162,12 +162,12 @@ table{
   background-color: var(--content-bg-color);
   color: var(--text-color);
   border-color: var(--border-color);
-}/* 确保所有引用块都使用暗色主题 */
+}/* 确保所有引用块都使用暗色主�?*/
 blockquote{
   background-color: var(--content-bg-color);
   color: var(--blockquote-color);
   border-color: var(--border-color);
-}/* 确保所有代码块都使用暗色主题 */
+}/* 确保所有代码块都使用暗色主�?*/
 code, pre{
   background-color: var(--code-bg-color);
   color: var(--code-text-color);
@@ -189,12 +189,12 @@ button, .btn{
 }.nav li a:hover, .nav li.active a{
   background-color: var(--hover-bg-color);
   color: var(--link-hover-color);
-}/* 确保侧边栏使用暗色主题 */
+}/* 确保侧边栏使用暗色主�?*/
 .sidebar, .sidebar-left, .sidebar-right{
   background-color: var(--sidebar-bg-color);
   color: var(--text-color);
   border-color: var(--border-color);
-}/* 确保小部件使用暗色主题 */
+}/* 确保小部件使用暗色主�?*/
 .widget{
   background-color: var(--card-bg-color);
   color: var(--text-color);
@@ -207,10 +207,10 @@ button, .btn{
   background-color: var(--hover-bg-color);
   color: var(--link-color);
   border-color: var(--border-color);
-}/* 确保文章元信息使用暗色主题 */
+}/* 确保文章元信息使用暗色主�?*/
 .auth-span, .auth-span .muted, .auth-span .muted a{
   color: var(--text-color);
-}/* 确保标签云使用暗色主题 */
+}/* 确保标签云使用暗色主�?*/
 #tag-cloud-tags{
   background-color: var(--content-bg-color);
   color: var(--text-color);
@@ -224,11 +224,11 @@ button, .btn{
   background-color: var(--btn-default-hover-bg);
   color: var(--btn-default-hover-color);
   border-color: var(--btn-default-hover-border-color);
-}/* 确保阅读进度条使用暗色主题 */
+}/* 确保阅读进度条使用暗色主�?*/
 .reading-progress-bar{
   background-color: var(--link-color);
   z-index: var(--z-reading-progress, 1400);
-}/* 暗色主题下的边框和阴影调整 */
+}/* 暗色主题下的边框和阴影调�?*/
 .post-block, .content-wrap, .sidebar{
   border: 1px solid var(--border-color);
   box-shadow: var(--post-shadow);
@@ -288,43 +288,11 @@ button, .btn{
 }code{
   background: var(--code-bg-color);
   color: var(--code-text-color);
-}/* 暗色主题下的导航栏调整 */
+}/* 暗色主题下的导航栏调�?*/
 .header{
   background-color: var(--header-bg-color);
 }.header a{
   color: var(--header-text-color);
-}/* Typography Styles */
-h1, h2, h3, h4, h5, h6{
-  font-family: 'Lato', "PingFang SC", "Microsoft YaHei", sans-serif;
-  font-weight: bold;
-  line-height: 1.5;
-  margin: 20px 0 15px;
-}h1{
-  font-size: 1.5em;
-}h2{
-  font-size: 1.375em;
-}h3{
-  font-size: 1.25em;
-}h4{
-  font-size: 1.125em;
-}h5{
-  font-size: 1em;
-}h6{
-  font-size: 0.875em;
-}p{
-  margin: 0 0 20px 0;
-}/* Link Styles */
-a, span.exturl{
-  border-bottom: 1px solid var(--border-color);
-  color: var(--link-color);
-  outline: 0;
-  text-decoration: none;
-  overflow-wrap: break-word;
-  word-wrap: break-word;
-  cursor: pointer;
-}a:hover, span.exturl:hover{
-  border-bottom-color: var(--link-hover-color);
-  color: var(--link-hover-color);
 }/* Image Styles */
 iframe, img, video{
   display: block;
@@ -358,11 +326,121 @@ kbd{
   font-family: inherit;
   padding: 0.1em 0.3em;
   white-space: nowrap;
-}/* 懒加载占位符样式 */
+}
 img.lazy{
   opacity: 0;
   transition: opacity 0.3s ease-in-out;
 }img{
   max-width: 100%;
   height: auto;
+}
+
+
+/* Merged from legacy: style-legacy-global.css */
+
+html{
+	background-color: var(--body-bg-color);
+}
+body{
+	background-color: var(--body-bg-color);
+	color: var(--text-color);
+}
+[data-theme="dark"] *{
+	-webkit-tap-highlight-color: transparent;
+}[data-theme="dark"] a:active, [data-theme="dark"] a:focus, [data-theme="dark"] button:active, [data-theme="dark"] button:focus{
+	background-color: transparent;
+}/* Button Styles */
+.btn{
+	background: var(--btn-default-bg);
+	border: 2px solid var(--btn-default-border-color);
+	border-radius: 2px;
+	color: var(--btn-default-color);
+	display: inline-block;
+	font-size: 0.875em;
+	line-height: 2;
+	padding: 0 20px;
+	text-decoration: none;
+	transition-property: background-color;
+	transition-delay: 0s;
+	transition-duration: 0.2s;
+	transition-timing-function: ease-in-out;
+}.btn:hover{
+	background: var(--btn-default-hover-bg);
+	border-color: var(--btn-default-hover-border-color);
+	color: var(--btn-default-hover-color);
+}.btn+.btn{
+	margin: 0 0 8px 8px;
+}/* KBD Styles */
+kbd{
+	background-color: var(--code-bg-color);
+	background-image: linear-gradient(var(--hover-bg-color), var(--content-bg-color), var(--hover-bg-color));
+	border: 1px solid var(--border-color);
+	border-radius: 0.2em;
+	box-shadow: 0.1em 0.1em 0.2em rgba(0, 0, 0, 0.1);
+	color: var(--text-color);
+	font-family: inherit;
+	padding: 0.1em 0.3em;
+	white-space: nowrap;
+}.excerpt:hover, .excerpt *:hover{
+	transform: none;
+	text-decoration: none;
+}/* Header Styles */
+.container{
+	max-width: 1640px;
+	width: 100%;
+	margin: 0 auto;
+	padding: 0;
+	box-sizing: border-box;
+}.container-inner{
+	width: 100%;
+	max-width: 1440px;
+	margin: 0 auto;
+	margin-top: 30px;
+	padding: 0;
+	box-sizing: border-box;
+}/* Header styles from GreenGrapes */
+.l-header{
+	position: relative;
+	padding: 60px 0;
+	text-align: center;
+	color: var(--header-text-color);
+	background-color: var(--header-bg-color);
+	background-size: cover;
+	background-position: center;
+	width: 100%;
+}.l-header .m-about{
+	position: relative;
+	z-index: 2;
+}.l-header #logo{
+	margin-bottom: 20px;
+}.l-header #logo img{
+	width: 80px;
+	height: 80px;
+	border-radius: 50%;
+	border: 3px solid rgba(255, 255, 255, 0.3);
+}.l-header .tit{
+	font-size: 2.5rem;
+	margin: 0 0 10px;
+	font-weight: bold;
+}.l-header .tit a{
+	color: var(--header-text-color);
+	text-decoration: none;
+	border-bottom: none;
+}.l-header .about{
+	font-size: 1.2rem;
+	opacity: 0.9;
+	max-width: 800px;
+	margin: 0 auto;
+}.header{
+	width: 100%;
+	margin: 0 auto;
+	padding: 20px 0;
+	box-sizing: border-box;
+	background-color: var(--header-bg-color);
+	color: var(--header-text-color);
+}.header a{
+	color: var(--header-text-color);
+	border-bottom: none;
+}.header a:hover{
+	color: var(--header-text-color);
 }

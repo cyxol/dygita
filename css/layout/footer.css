@@ -1,0 +1,67 @@
+/* Dygita CSS 层次：布局层（页脚与回到顶部） */
+
+/* Merged from layout/main-content.css: footer section */
+.footer{
+	width: 100%;
+	text-align: center;
+	padding: 20px 0;
+	background-color: var(--body-bg-color);
+	color: var(--blockquote-color);
+	font-size: 13px;
+	border-top: 1px solid var(--border-color);
+}
+.footer-inner{
+	max-width: 1200px;
+	margin: 0 auto;
+	padding: 0 20px;
+}
+.footer-copyright{
+	text-align: center;
+}
+
+.back-to-top{
+	font-size: 12px;
+	text-align: center;
+	transition-delay: 0s;
+	transition-duration: 0.2s;
+	transition-timing-function: ease-in-out;
+	background: var(--card-bg-color);
+	bottom: -100px;
+	box-sizing: border-box;
+	color: var(--text-color);
+	cursor: pointer;
+	left: 30px;
+	opacity: 0.8;
+	padding: 6px 8px;
+	position: fixed;
+	transition-property: bottom;
+	z-index: 1300;
+	width: initial;
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	align-items: center;
+	border-radius: 5px;
+	min-width: 40px;
+	border: 1px solid var(--border-color);
+	box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+.back-to-top span{
+	font-size: 12px;
+}
+.back-to-top:hover{
+	color: var(--link-hover-color);
+	background: var(--hover-bg-color);
+	border-color: var(--link-hover-color);
+	opacity: 1;
+}
+.back-to-top.back-to-top-on{
+	bottom: 30px;
+}
+
+@media (max-width: 992px) {
+	.back-to-top{
+		left: 20px;
+		opacity: 0.8;
+	}
+}

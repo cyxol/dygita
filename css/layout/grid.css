@@ -4,27 +4,6 @@
 
 /* 全局布局 */
 
-/* 页脚样式 */
-.footer {
-  width: 100%;
-  text-align: center;
-  padding: 20px 0;
-  background-color: var(--body-bg-color);
-  color: var(--blockquote-color);
-  font-size: 13px;
-  border-top: 1px solid var(--border-color);
-}
-
-.footer-inner {
-  max-width: 1200px;
-  margin: 0 auto;
-  padding: 0 20px;
-}
-
-.footer-copyright {
-  text-align: center;
-}
-
 /* 确保所有容器元素都使用暗色主题 */
 .main-container,
 .content-wrap,

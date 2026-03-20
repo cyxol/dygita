@@ -28,8 +28,7 @@ const cssFiles = [
     'css/components/tag-cloud.css',
     'css/components/toc.css',
     'css/components/pagination.css',
-    'css/themes/dark-mode.css',
-    'css/themes/light-mode.css'
+    'css/themes/dark-mode.css'
 ];
 
 const outputFile = 'css/build.css';

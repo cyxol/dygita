@@ -17,6 +17,7 @@
   --table-row-odd-bg-color: #f9f9f9;
   --table-row-hover-bg-color: #f5f5f5;
   --menu-item-bg-color: #f5f5f5;
+  --nav-bg-color: #f5f5f5;
   --btn-default-bg: #fff;
   --btn-default-color: #555;
   --btn-default-border-color: #555;
@@ -63,6 +64,7 @@
   --table-row-odd-bg-color: #2d2d2d;
   --table-row-hover-bg-color: #363636;
   --menu-item-bg-color: #2d2d2d;
+  --nav-bg-color: #000;
   --btn-default-bg: #2d2d2d;
   --btn-default-color: #c9d1d9;
   --btn-default-border-color: #484f58;

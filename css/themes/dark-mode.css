@@ -1,0 +1,91 @@
+/* Dygita CSS 层次：主题层（暗色模式覆盖） */
+
+/* Merged from base/reset.css */
+[data-theme="dark"] *{
+	-webkit-tap-highlight-color: transparent;
+}
+[data-theme="dark"] a:active, [data-theme="dark"] a:focus, [data-theme="dark"] button:active, [data-theme="dark"] button:focus{
+	background-color: transparent;
+}
+
+/* Merged from layout/main-content.css */
+[data-theme="dark"] .search-toggle .btn{
+	background-color: var(--card-bg-color);
+	border: none;
+	transition: all 0.3s ease;
+}
+[data-theme="dark"] .search-toggle .btn:hover{
+	background-color: var(--card-bg-color);
+	border: none;
+}
+[data-theme="dark"] .search-toggle .btn i{
+	color: var(--text-color);
+}
+[data-theme="dark"] .color-toggle .btn{
+	background-color: var(--card-bg-color);
+	border: none;
+	transition: all 0.3s ease;
+}
+[data-theme="dark"] .color-toggle .btn:hover{
+	background-color: var(--card-bg-color);
+	border: none;
+}
+[data-theme="dark"] .color-toggle .btn i{
+	color: var(--text-color);
+}
+[data-theme="dark"] .theme-toggle .btn{
+	background-color: var(--card-bg-color);
+	border: none;
+	transition: all 0.3s ease;
+}
+[data-theme="dark"] .theme-toggle .btn:hover{
+	background-color: var(--card-bg-color);
+	border: none;
+}
+[data-theme="dark"] .theme-toggle .btn i{
+	color: var(--text-color);
+}
+[data-theme="dark"] .lang-toggle .btn{
+	background-color: var(--card-bg-color);
+	border: none;
+}
+[data-theme="dark"] .lang-toggle .btn:hover{
+	background-color: var(--card-bg-color);
+	border: none;
+}
+[data-theme="dark"] .lang-toggle .btn i{
+	color: var(--text-color);
+}
+[data-theme="dark"] .search-toggle-li .btn, [data-theme="dark"] .search-toggle-li .btn:active, [data-theme="dark"] .search-toggle-li .btn:focus, [data-theme="dark"] .color-toggle-li .btn, [data-theme="dark"] .color-toggle-li .btn:active, [data-theme="dark"] .color-toggle-li .btn:focus, [data-theme="dark"] .theme-toggle-li .btn, [data-theme="dark"] .theme-toggle-li .btn:active, [data-theme="dark"] .theme-toggle-li .btn:focus, [data-theme="dark"] .lang-toggle-li .btn, [data-theme="dark"] .lang-toggle-li .btn:active, [data-theme="dark"] .lang-toggle-li .btn:focus{
+	background-color: var(--card-bg-color);
+}
+[data-theme="dark"] .search-toggle-li, [data-theme="dark"] .color-toggle-li, [data-theme="dark"] .theme-toggle-li, [data-theme="dark"] .lang-toggle-li{
+	background-color: var(--menu-item-bg-color);
+}
+[data-theme="dark"] .archive-header{
+	background: var(--content-bg-color);
+	border-bottom: 1px solid var(--border-color);
+}
+[data-theme="dark"] .archive-header h1{
+	color: var(--text-color);
+}
+
+@media (prefers-color-scheme: dark) {
+	.l-header #logo img{
+		border-color: rgba(255, 255, 255, 0.2);
+	}
+
+	.m-nav .nav li a{
+		color: #c9d1d9;
+	}
+	.m-nav .nav li a:hover, .m-nav .nav li.active a{
+		color: #fff;
+	}
+
+	.m-header h1 a{
+		color: #c9d1d9;
+	}
+	.m-header-search{
+		color: #c9d1d9;
+	}
+}

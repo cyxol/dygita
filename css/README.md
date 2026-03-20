@@ -27,7 +27,6 @@
   - pagination.css
 - themes/
   - dark-mode.css
-  - light-mode.css
 - style.css (主题入口)
 - build.css (构建产物)
 
@@ -50,7 +49,6 @@
 13. css/components/toc.css
 14. css/components/pagination.css
 15. css/themes/dark-mode.css
-16. css/themes/light-mode.css
 
 ### Phase 1 说明（零差异迁移）
 
@@ -64,6 +62,7 @@
 ### 开发约定
 
 - 修改样式优先改分层源文件，不直接手改 build.css。
+- 旧 style-legacy-* 文件已并入现有分层文件，不再保留 style-legacy 前缀文件。
 - 根目录旧文件 `variables.css` / `base.css` / `layout.css` / `components.css` / `custom.css` / `inline.css` 仅保留迁移占位说明，不再承载实际样式。
 - 每次改动后执行：node js/build-css.js（在主题目录执行）或 node usr/themes/dygita/js/build-css.js（在仓库根目录执行）。
 - style.css 继续作为主题入口文件加载，build.css 为主样式产物。
