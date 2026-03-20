@@ -156,8 +156,6 @@
 @media (max-width: 992px) {
 	.l-header{
 		display: none !important;
-	}.m-logo-url{
-		display: none !important;
 	}.m-nav-all{
 		flex-direction: row !important;
 		flex-wrap: wrap !important;

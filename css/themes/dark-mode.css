@@ -8,59 +8,106 @@
 	background-color: transparent;
 }
 
+/* Prevent transient light flash on interactive states in dark mode */
+[data-theme="dark"] button:active, [data-theme="dark"] button:focus, [data-theme="dark"] button:focus-visible,
+[data-theme="dark"] .btn:active, [data-theme="dark"] .btn:focus, [data-theme="dark"] .btn:focus-visible,
+[data-theme="dark"] a.btn:active, [data-theme="dark"] a.btn:focus, [data-theme="dark"] a.btn:focus-visible,
+[data-theme="dark"] [role="button"]:active, [data-theme="dark"] [role="button"]:focus, [data-theme="dark"] [role="button"]:focus-visible{
+	outline: none;
+	box-shadow: none;
+	background-image: none;
+}
+
 /* Merged from layout/main-content.css */
 [data-theme="dark"] .search-toggle .btn{
-	background-color: var(--card-bg-color);
+	background-color: var(--nav-bg-color);
 	border: none;
 	transition: all 0.3s ease;
 }
 [data-theme="dark"] .search-toggle .btn:hover{
-	background-color: var(--card-bg-color);
+	background-color: var(--nav-bg-color);
 	border: none;
 }
 [data-theme="dark"] .search-toggle .btn i{
 	color: var(--text-color);
 }
 [data-theme="dark"] .color-toggle .btn{
-	background-color: var(--card-bg-color);
+	background-color: var(--nav-bg-color);
 	border: none;
 	transition: all 0.3s ease;
 }
 [data-theme="dark"] .color-toggle .btn:hover{
-	background-color: var(--card-bg-color);
+	background-color: var(--nav-bg-color);
 	border: none;
 }
 [data-theme="dark"] .color-toggle .btn i{
 	color: var(--text-color);
 }
 [data-theme="dark"] .theme-toggle .btn{
-	background-color: var(--card-bg-color);
+	background-color: var(--nav-bg-color);
 	border: none;
 	transition: all 0.3s ease;
 }
 [data-theme="dark"] .theme-toggle .btn:hover{
-	background-color: var(--card-bg-color);
+	background-color: var(--nav-bg-color);
 	border: none;
 }
 [data-theme="dark"] .theme-toggle .btn i{
 	color: var(--text-color);
 }
 [data-theme="dark"] .lang-toggle .btn{
-	background-color: var(--card-bg-color);
+	background-color: var(--nav-bg-color);
 	border: none;
 }
 [data-theme="dark"] .lang-toggle .btn:hover{
-	background-color: var(--card-bg-color);
+	background-color: var(--nav-bg-color);
 	border: none;
 }
 [data-theme="dark"] .lang-toggle .btn i{
 	color: var(--text-color);
 }
 [data-theme="dark"] .search-toggle-li .btn, [data-theme="dark"] .search-toggle-li .btn:active, [data-theme="dark"] .search-toggle-li .btn:focus, [data-theme="dark"] .color-toggle-li .btn, [data-theme="dark"] .color-toggle-li .btn:active, [data-theme="dark"] .color-toggle-li .btn:focus, [data-theme="dark"] .theme-toggle-li .btn, [data-theme="dark"] .theme-toggle-li .btn:active, [data-theme="dark"] .theme-toggle-li .btn:focus, [data-theme="dark"] .lang-toggle-li .btn, [data-theme="dark"] .lang-toggle-li .btn:active, [data-theme="dark"] .lang-toggle-li .btn:focus{
-	background-color: var(--card-bg-color);
+	background-color: var(--nav-bg-color);
 }
 [data-theme="dark"] .search-toggle-li, [data-theme="dark"] .color-toggle-li, [data-theme="dark"] .theme-toggle-li, [data-theme="dark"] .lang-toggle-li{
-	background-color: var(--menu-item-bg-color);
+	background-color: var(--nav-bg-color);
+}
+[data-theme="dark"] .search-toggle-li .btn:active, [data-theme="dark"] .search-toggle-li .btn:focus,
+[data-theme="dark"] .color-toggle-li .btn:active, [data-theme="dark"] .color-toggle-li .btn:focus,
+[data-theme="dark"] .theme-toggle-li .btn:active, [data-theme="dark"] .theme-toggle-li .btn:focus,
+[data-theme="dark"] .lang-toggle-li .btn:active, [data-theme="dark"] .lang-toggle-li .btn:focus,
+[data-theme="dark"] .m-nav .nav li a:active, [data-theme="dark"] .m-nav .nav li a:focus{
+	background-color: var(--nav-bg-color) !important;
+	border-color: transparent !important;
+	box-shadow: none !important;
+}
+[data-theme="dark"] .m-nav .nav li,
+[data-theme="dark"] .m-nav .nav li:active,
+[data-theme="dark"] .m-nav .nav li:focus,
+[data-theme="dark"] .m-nav .nav li:hover,
+[data-theme="dark"] .m-nav .nav li a,
+[data-theme="dark"] .m-nav .nav li a:active,
+[data-theme="dark"] .m-nav .nav li a:focus,
+[data-theme="dark"] .m-nav .nav li a:hover,
+[data-theme="dark"] .m-nav .nav li.active a,
+[data-theme="dark"] .search-toggle-li .btn,
+[data-theme="dark"] .search-toggle-li .btn:active,
+[data-theme="dark"] .search-toggle-li .btn:focus,
+[data-theme="dark"] .search-toggle-li .btn:hover,
+[data-theme="dark"] .color-toggle-li .btn,
+[data-theme="dark"] .color-toggle-li .btn:active,
+[data-theme="dark"] .color-toggle-li .btn:focus,
+[data-theme="dark"] .color-toggle-li .btn:hover,
+[data-theme="dark"] .theme-toggle-li .btn,
+[data-theme="dark"] .theme-toggle-li .btn:active,
+[data-theme="dark"] .theme-toggle-li .btn:focus,
+[data-theme="dark"] .theme-toggle-li .btn:hover,
+[data-theme="dark"] .lang-toggle-li .btn,
+[data-theme="dark"] .lang-toggle-li .btn:active,
+[data-theme="dark"] .lang-toggle-li .btn:focus,
+[data-theme="dark"] .lang-toggle-li .btn:hover{
+	background-color: var(--nav-bg-color) !important;
+	background-image: none !important;
 }
 [data-theme="dark"] .archive-header{
 	background: var(--content-bg-color);
@@ -72,7 +119,7 @@
 
 @media (prefers-color-scheme: dark) {
 	.l-header #logo img{
-		border-color: rgba(255, 255, 255, 0.2);
+		border-color: var(--border-color);
 	}
 
 	.m-nav .nav li a{

@@ -188,8 +188,6 @@ html, body{
   background-color: transparent;
 }.nav-container>*{
   flex-shrink: 0;
-}.m-logo-url{
-  display: none;
 }.m-nav .nav{
   display: flex;
   gap: 0;

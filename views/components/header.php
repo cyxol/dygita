@@ -29,6 +29,12 @@ endif; ?>>
             if (isDark) document.documentElement.setAttribute('data-theme', 'dark');
         })();
     </script>
+    <style>
+        html[data-theme="dark"], html[data-theme="dark"] body {
+            background-color: #1e1e1e;
+            color: #c9d1d9;
+        }
+    </style>
 
     <title><?php $this->archiveTitle(array(
     'category' => dygita_t('分类 %s 下的文章'),
@@ -288,10 +294,6 @@ endif; ?>
     </header>
     <div id="m-nav" class="m-nav">
         <div class="m-nav-all">
-            <div class="m-logo-url">    
-                <img src="<?php $this->options->themeUrl('img/caiya.xin.jpg'); ?>" alt="头像">
-                <h3><?php $this->options->title(); ?></h3>
-            </div>
             <?php
             $navBaseSiteUrl = rtrim($this->options->siteUrl, '/');
             $navOpts = $this->options;
@@ -495,13 +497,6 @@ endif; ?>
                         </div>
                     </li>
                 </ul>
-                <!-- 使用 .d-none .d-xl-block，在小于 lg 尺寸(1100px)的屏幕上隐藏 -->
-                <form class="search-form-nav d-none d-xl-block" method="post" action="<?php $this->options->siteUrl(); ?>" role="search" aria-label="导航搜索">
-                    <label for="s" class="sr-only">搜索关键词</label>
-                    <input class="form-control" name="s" id="s" placeholder="搜索关键词..." type="text" aria-describedby="search-desc" />
-                    <span id="search-desc" class="sr-only">输入关键词后按回车键搜索</span>
-                    <button class="btn btn-secondary" type="submit" aria-label="搜索"><i class="fa fa-search" aria-hidden="true"></i> 查找</button>
-                </form>
             </div>
         </div>
     </div>

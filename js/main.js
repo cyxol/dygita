@@ -77,28 +77,85 @@
     }
 
     function initSearch() {
-        if (document.querySelector('.search-pop-overlay')) return;
+        var searchOverlay = null;
+        var searchPopup = null;
+        var searchForm = null;
+        var searchInput = null;
+        var resultContent = null;
 
-        var searchOverlay = document.createElement('div');
-        searchOverlay.className = 'search-pop-overlay';
-        document.body.appendChild(searchOverlay);
+        function ensureSearchPopup() {
+            if (searchOverlay && searchPopup) return;
 
-        var searchPopup = document.createElement('div');
-        searchPopup.className = 'search-popup';
-        searchPopup.innerHTML =
-            '<div class="search-header">' +
-            '<span class="search-icon"><i class="fa fa-search"></i></span>' +
-            '<form method="post" action="" id="search-form-popup" class="search-input-container" role="search">' +
-            '<input type="text" class="search-input" placeholder="请输入关键词搜索..." name="s" id="search-input-js" />' +
-            '</form>' +
-            '<span class="popup-btn-close"><i class="fa fa-times"></i></span>' +
-            '</div>' +
-            '<div id="search-result"><div id="no-result"><i class="fa fa-search fa-5x"></i></div></div>';
-        searchOverlay.appendChild(searchPopup);
+            var existedOverlay = document.querySelector('.search-pop-overlay');
+            if (existedOverlay) {
+                searchOverlay = existedOverlay;
+                searchPopup = searchOverlay.querySelector('.search-popup');
+            }
 
-        var searchForm = document.getElementById('search-form-popup');
-        if (searchForm && window.DYGITA && window.DYGITA.config && window.DYGITA.config.hostname) {
-            searchForm.action = String(window.DYGITA.config.hostname).replace(/\/$/, '');
+            if (!searchOverlay) {
+                searchOverlay = document.createElement('div');
+                searchOverlay.className = 'search-pop-overlay';
+                document.body.appendChild(searchOverlay);
+            }
+
+            if (!searchPopup) {
+                searchPopup = document.createElement('div');
+                searchPopup.className = 'search-popup';
+                searchPopup.innerHTML =
+                    '<div class="search-header">' +
+                    '<span class="search-icon"><i class="fa fa-search"></i></span>' +
+                    '<form method="post" action="" id="search-form-popup" class="search-input-container" role="search">' +
+                    '<input type="text" class="search-input" placeholder="请输入关键词搜索..." name="s" id="search-input-js" />' +
+                    '</form>' +
+                    '<span class="popup-btn-close"><i class="fa fa-times"></i></span>' +
+                    '</div>' +
+                    '<div id="search-result"><div id="no-result"><i class="fa fa-search fa-5x"></i></div></div>';
+                searchOverlay.appendChild(searchPopup);
+            }
+
+            searchForm = document.getElementById('search-form-popup');
+            if (searchForm && window.DYGITA && window.DYGITA.config && window.DYGITA.config.hostname) {
+                searchForm.action = String(window.DYGITA.config.hostname).replace(/\/$/, '');
+            }
+
+            var closeBtn = searchPopup.querySelector('.popup-btn-close');
+            if (closeBtn && !closeBtn.dataset.bound) {
+                closeBtn.addEventListener('click', function (e) {
+                    e.stopPropagation();
+                    searchOverlay.classList.remove('search-active');
+                });
+                closeBtn.dataset.bound = '1';
+            }
+
+            if (!searchOverlay.dataset.bound) {
+                searchOverlay.addEventListener('click', function (e) {
+                    if (e.target === searchOverlay) searchOverlay.classList.remove('search-active');
+                });
+                searchOverlay.dataset.bound = '1';
+            }
+
+            searchInput = searchPopup.querySelector('.search-input');
+            resultContent = document.getElementById('search-result');
+
+            if (searchInput && resultContent && !searchInput.dataset.bound) {
+                searchInput.addEventListener('input', function () {
+                    var keyword = searchInput.value.trim();
+                    if (keyword.length > 0) {
+                        resultContent.innerHTML = '<div id="no-result"><p style="color:#999;font-size:14px;"><i class="fa fa-keyboard-o"></i> 按回车键搜索 "<strong>' + escapeHtml(keyword) + '</strong>"</p></div>';
+                    } else {
+                        resultContent.innerHTML = '<div id="no-result"><i class="fa fa-search fa-5x"></i></div>';
+                    }
+                });
+
+                searchInput.addEventListener('keypress', function (e) {
+                    if (e.key !== 'Enter') return;
+                    var keyword = searchInput.value.trim();
+                    if (!keyword) return;
+                    if (searchForm) searchForm.submit();
+                });
+
+                searchInput.dataset.bound = '1';
+            }
         }
 
         function openSearch(e) {
@@ -106,8 +163,9 @@
                 e.stopPropagation();
                 e.preventDefault();
             }
+            ensureSearchPopup();
             searchOverlay.classList.add('search-active');
-            var input = searchPopup.querySelector('.search-input');
+            var input = searchPopup ? searchPopup.querySelector('.search-input') : null;
             if (input) input.focus();
         }
 
@@ -120,20 +178,8 @@
             if (node) node.addEventListener('click', openSearch);
         });
 
-        var closeBtn = searchPopup.querySelector('.popup-btn-close');
-        if (closeBtn) {
-            closeBtn.addEventListener('click', function (e) {
-                e.stopPropagation();
-                searchOverlay.classList.remove('search-active');
-            });
-        }
-
-        searchOverlay.addEventListener('click', function (e) {
-            if (e.target === searchOverlay) searchOverlay.classList.remove('search-active');
-        });
-
         document.addEventListener('keydown', function (e) {
-            if (e.key === 'Escape') searchOverlay.classList.remove('search-active');
+            if (e.key === 'Escape' && searchOverlay) searchOverlay.classList.remove('search-active');
         });
 
         function escapeHtml(str) {
@@ -148,25 +194,7 @@
             });
         }
 
-        var searchInput = searchPopup.querySelector('.search-input');
-        var resultContent = document.getElementById('search-result');
-        if (!searchInput || !resultContent) return;
-
-        searchInput.addEventListener('input', function () {
-            var keyword = searchInput.value.trim();
-            if (keyword.length > 0) {
-                resultContent.innerHTML = '<div id="no-result"><p style="color:#999;font-size:14px;"><i class="fa fa-keyboard-o"></i> 按回车键搜索 "<strong>' + escapeHtml(keyword) + '</strong>"</p></div>';
-            } else {
-                resultContent.innerHTML = '<div id="no-result"><i class="fa fa-search fa-5x"></i></div>';
-            }
-        });
-
-        searchInput.addEventListener('keypress', function (e) {
-            if (e.key !== 'Enter') return;
-            var keyword = searchInput.value.trim();
-            if (!keyword) return;
-            if (searchForm) searchForm.submit();
-        });
+        // Search popup DOM is lazily created on first open to avoid no-CSS fallback duplication.
     }
 
     function initCatalog() {
