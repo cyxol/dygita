@@ -3,10 +3,25 @@
 <?php
 /** @var \Widget\Archive $this */
 $isAuthorArchive = $this->is('author');
+$showCategoryCorner = $this->is('index');
+$postCategoryLabel = '';
+if ($showCategoryCorner) {
+    ob_start();
+    $this->category(',');
+    $postCategoryLinks = trim((string) ob_get_clean());
+    if ($postCategoryLinks !== '' && preg_match('/<a\b[^>]*>.*?<\/a>/i', $postCategoryLinks, $postCategoryMatch)) {
+        $postCategoryLabel = $postCategoryMatch[0];
+    }
+}
 ?>
 
 <article class="excerpt excerpt-one">
     <header>
+        <?php if ($postCategoryLabel !== ''): ?>
+            <span class="label">
+                <?php echo $postCategoryLabel; ?>
+            </span>
+        <?php endif; ?>
         <h2>
             <a target="_blank" href="<?php $this->permalink(); ?>" title="<?php $this->title(); ?>">
                 <?php $this->title(); ?>

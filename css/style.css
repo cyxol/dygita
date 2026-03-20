@@ -632,10 +632,10 @@ kbd{
 }.excerpt .label{
   background-color: var(--header-bg-color);
   color: var(--header-text-color);
-  padding: 4px 10px;
+  padding: 4px 12px 4px 10px;
   font-size: 12px;
   font-weight: bold;
-  margin-right: 10px;
+  margin-right: 20px;
   text-decoration: none;
   display: inline-block;
   line-height: 1.4;
@@ -646,13 +646,15 @@ kbd{
   max-width: none;
   position: relative;
   overflow: visible;
-}/* 确保分类标签内的箭头图标也在红色区域内 */
-.excerpt .label i{
-  color: #fff;
-  margin-left: 5px;
-  font-size: 10px;
-  display: inline-block;
-  vertical-align: middle;
+}.excerpt .label::after{
+  content: '';
+  position: absolute;
+  right: -9px;
+  top: 0;
+  width: 10px;
+  height: 100%;
+  background: var(--header-bg-color);
+  clip-path: polygon(0 0, 100% 50%, 0 100%);
 }/* 确保整个标签都在红色区域内 */
 .excerpt header .label{
   z-index: 1;
@@ -661,6 +663,12 @@ kbd{
 .excerpt .label a{
   color: var(--header-text-color);
   text-decoration: none;
+  border-bottom: none;
+}.excerpt .label a:hover,
+.excerpt .label a:focus,
+.excerpt .label a:active{
+  text-decoration: none;
+  border-bottom: none;
 }/* 确保分类标签内的文字完全在红色区域内 */
 .excerpt .label span{
   color: var(--header-text-color);

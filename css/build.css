@@ -1280,6 +1280,26 @@ body > div.fixed{
 }.excerpt-one > header{
     width: 100% ;
     margin-bottom: 15px ;
+}.excerpt-one > header .label, .excerpt > header .label{
+    padding-right: 12px ;
+    margin-right: 20px ;
+    overflow: visible ;
+    position: relative ;
+}.excerpt-one > header .label::after, .excerpt > header .label::after{
+    content: '' ;
+    position: absolute ;
+    right: -9px ;
+    top: 0 ;
+    width: 10px ;
+    height: 100% ;
+    background: var(--header-bg-color, #e74c3c) ;
+    clip-path: polygon(0 0, 100% 50%, 0 100%) ;
+}.excerpt-one > header .label a, .excerpt > header .label a{
+    text-decoration: none ;
+    border-bottom: none ;
+}.excerpt-one > header .label a:hover, .excerpt-one > header .label a:focus, .excerpt-one > header .label a:active, .excerpt > header .label a:hover, .excerpt > header .label a:focus, .excerpt > header .label a:active{
+    text-decoration: none ;
+    border-bottom: none ;
 }.excerpt-one .note{
     display: -webkit-box ;
     -webkit-line-clamp: 5 ;
