@@ -1,0 +1,144 @@
+/* Main content and global layout overrides (Phase 2 split from article.css) */
+
+/* 确保没有任何固定定位元素在页面顶部异常显示 */
+.main-container, .content-wrap{
+	position: relative ;
+	top: auto ;
+}
+
+/* 取消 style.css 的上层正文壳，保留底层内容布局逻辑 */
+.content-wrap > .content, .single .content, .page .content{
+	background: transparent ;
+	border: 0 ;
+	border-radius: 0 ;
+	box-shadow: none ;
+	padding: 0 ;
+}.content-wrap > .content > .article-content, .content-wrap > .content > article.article-content{
+	background: transparent ;
+	border: 0 ;
+	border-radius: 0 ;
+	box-shadow: none ;
+}
+
+/* 文章详情页样式 - 修复中间文章栏太靠边的问题 */
+.content .article-content{
+	line-height: 1.8 ;
+	font-size: 16px ;
+	color: var(--text-color, #333) ;
+	word-wrap: break-word ;
+	padding: 0 30px ;
+	margin: 0 auto ;
+	max-width: 1000px ;
+	box-sizing: border-box ;
+}/* 增强优先级 - 确保样式覆盖所有其他规则 */
+.main-container .content-wrap .content .article-content{
+	padding: 0 30px ;
+	margin: 0 auto ;
+	max-width: 1000px ;
+}/* 直接针对文章内容的段落添加边距 */
+.article-content p{
+	margin-left: 20px ;
+	margin-right: 20px ;
+	max-width: calc(100% - 40px) ;
+}
+
+/* 修改布局：桌面端固定 540/1080/540，总宽 2160 */
+.container-inner{
+	margin-top: 0 ;
+}.main-container{
+	display: flex ;
+	flex-wrap: nowrap ;
+	width: 100% ;
+	max-width: 2160px ;
+	margin: 0 auto ;
+	padding: 0 0 8px ;
+	gap: 0 ;
+	box-sizing: border-box ;
+	align-items: stretch ;
+}
+
+/* 中间内容区域 */
+.content-wrap{
+	width: 1080px ;
+	min-width: 1080px ;
+	max-width: 1080px ;
+	flex: 0 0 1080px ;
+	order: 2 ;
+	box-sizing: border-box ;
+	padding: 0 ;
+	overflow: visible ;
+}
+
+@media (max-width: 2160px) {
+	.content-wrap{
+		width: 50% ;
+		min-width: 0 ;
+		max-width: none ;
+		flex: 0 0 50% ;
+	}
+}
+
+/* 防止正文元素横向溢出，覆盖右侧栏 */
+.content-wrap .content, .content-wrap .article-content{
+	min-width: 0 ;
+	max-width: 100% ;
+	overflow-wrap: anywhere ;
+	word-break: break-word ;
+}.content-wrap .article-content p, .content-wrap .article-content li, .content-wrap .article-content blockquote, .content-wrap .article-content td, .content-wrap .article-content th, .content-wrap .article-content a, .content-wrap .article-content code, .content-wrap .article-content kbd, .content-wrap .article-content samp{
+	overflow-wrap: anywhere ;
+	word-break: break-word ;
+}.content-wrap .article-content img, .content-wrap .article-content video, .content-wrap .article-content iframe, .content-wrap .article-content embed, .content-wrap .article-content object{
+	max-width: 100% ;
+	height: auto ;
+}.content-wrap .article-content pre, .content-wrap .article-content table{
+	max-width: 100% ;
+	overflow-x: auto ;
+}
+
+@media (max-width: 768px) {.main-container{
+		flex-direction: column ;
+		padding: 10px ;
+	}.content-wrap{
+		width: 100% ;
+		max-width: 100% ;
+		min-width: 100% ;
+		order: 2 ;
+	}
+}
+
+/* 修复页面顶部可能出现的异常元素 */
+body > div.fixed{
+	position: relative ;
+}
+
+/* 修复可能的侧边栏切换按钮位置异常 */
+.sidebar-toggle{
+	min-height: 60px ;
+	position: fixed ;
+	top: 50% ;
+	left: 0 ;
+	right: auto ;
+	transform: translateY(-50%) ;
+	z-index: var(--z-sidebar-toggle, 1200) ;
+}.sidebar-toggle.right{
+	left: auto ;
+	right: 0 ;
+}
+
+/* 确保侧边栏切换按钮不会出现在页面顶部 */
+body > .sidebar-toggle{
+	top: 50% ;
+	transform: translateY(-50%) ;
+}
+
+/* 强制确保 sidebar-toggle 在正确的位置 */
+.sidebar-toggle.left{
+	left: 0 ;
+	right: auto ;
+}
+
+/* 确保没有意外的高度计算问题 */
+html, body{
+	height: 100% ;
+	min-height: 100vh ;
+}

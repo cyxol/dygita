@@ -14,12 +14,22 @@ const fs = require('fs');
 const path = require('path');
 
 const cssFiles = [
-    'css/variables.css',
-    'css/base.css',
-    'css/layout.css',
-    'css/components.css',
-    'css/custom.css',
-    'css/inline.css'
+    'css/base/variables.css',
+    'css/base/reset.css',
+    'css/base/typography.css',
+    'css/layout/grid.css',
+    'css/layout/header.css',
+    'css/layout/sidebar-left.css',
+    'css/layout/main-content.css',
+    'css/layout/sidebar-right.css',
+    'css/layout/footer.css',
+    'css/components/buttons.css',
+    'css/components/article.css',
+    'css/components/tag-cloud.css',
+    'css/components/toc.css',
+    'css/components/pagination.css',
+    'css/themes/dark-mode.css',
+    'css/themes/light-mode.css'
 ];
 
 const outputFile = 'css/build.css';

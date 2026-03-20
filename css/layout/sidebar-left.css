@@ -1,0 +1,43 @@
+/* Left sidebar layout rules (Phase 2 split from article.css) */
+
+/* 左侧边栏 */
+.sidebar-left{
+	width: 540px ;
+	min-width: 540px ;
+	max-width: 540px ;
+	flex: 0 0 540px ;
+	flex-shrink: 0 ;
+	order: 1 ;
+	box-sizing: border-box ;
+}
+
+@media (max-width: 2160px) {.sidebar-left{
+		width: 25% ;
+		min-width: 0 ;
+		max-width: none ;
+		flex: 0 0 25% ;
+	}
+}
+
+/* 响应式调整 */
+@media (max-width: 1200px) {.sidebar-left{
+		width: 20% ;
+		min-width: 20% ;
+		max-width: 20% ;
+	}
+}
+
+@media (max-width: 992px) {.sidebar-left{
+		width: 20% ;
+		min-width: 20% ;
+		max-width: 20% ;
+	}
+}
+
+@media (max-width: 768px) {.sidebar-left{
+		width: 100% ;
+		min-width: 100% ;
+		max-width: 100% ;
+		order: 1 ;
+	}
+}

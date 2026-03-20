@@ -1,0 +1,180 @@
+/* Header and navigation layout rules (Phase 2 split from article.css) */
+
+/* 标题栏样式 */
+.l-header{
+	padding: 30px 0 20px;
+	min-height: 120px;
+	margin-top: 0;
+	border-top: none;
+	background: var(--header-bg-color, #E74C3C);
+	background-color: var(--header-bg-color, #E74C3C);
+	position: relative;
+	overflow: hidden;
+}.l-header .m-about{
+	margin-top: 0;
+	padding-top: 0;
+	position: relative;
+	z-index: var(--z-header-content, 1);
+}.l-header *{
+	margin-top: 0;
+	padding-top: 0;
+}body > *:first-child, body > header:first-of-type{
+	margin-top: 0;
+	padding-top: 0;
+}.l-header #logo{
+	margin-top: 30px;
+	margin-bottom: 10px;
+}.l-header #logo img{
+	width: 50px;
+	height: 50px;
+	object-fit: cover;
+}.l-header .tit{
+	font-size: 1.8rem;
+	margin: 5px 0 5px;
+}.l-header .about{
+	font-size: 0.9rem;
+	margin-bottom: 10px;
+}.l-header #header-canvas{
+	height: 100%;
+	max-height: 100%;
+	position: absolute;
+	top: 0;
+	left: 0;
+	right: 0;
+	bottom: 0;
+	z-index: var(--z-header-bg, 0);
+	background-color: var(--header-bg-color, #E74C3C);
+}.l-header #header-canvas canvas{
+	background-color: var(--header-bg-color, #E74C3C);
+}.l-header .hdbg{
+	height: 100%;
+	max-height: 100%;
+	position: absolute;
+	top: 0;
+	left: 0;
+	right: 0;
+	bottom: 0;
+	background-color: var(--header-bg-color, #E74C3C);
+	z-index: var(--z-header-bg, 0);
+}
+
+/* 导航栏按钮对齐样式 */
+.m-nav-all{
+	justify-content: center ;
+}.m-nav .nav-container{
+	justify-content: center ;
+}.m-nav .nav{
+	display: flex ;
+	justify-content: center ;
+	align-items: center ;
+	margin: 0 auto ;
+}.m-nav .nav li{
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	height: 50px;
+}.m-nav .nav li a{
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	height: 100%;
+	padding: 0 15px;
+	transition: none ;
+}.m-nav .nav .search-toggle-li{
+	margin-left: 0 ;
+}.m-nav .nav .color-toggle-li{
+	margin-left: 0 ;
+}.m-nav .nav .theme-toggle-li, .m-nav .nav .lang-toggle-li{
+	margin-left: 0 ;
+}.m-nav .nav li a:hover, .m-nav .nav li a:active, .m-nav .nav li a:focus{
+	transition: none ;
+}.navbar .nav li a, .navbar .nav li a:hover, .navbar .nav li a:active, .navbar .nav li a:focus, .navbar .nav li.current-menu-item a{
+	transform: none ;
+	box-shadow: none ;
+	outline: none ;
+	transition: background-color 0.3s ease, color 0.3s ease ;
+	-webkit-box-shadow: none ;
+	-moz-box-shadow: none ;
+}.m-nav .nav li a, .m-nav .nav li a:hover, .m-nav .nav li a:active, .m-nav .nav li a:focus, .m-nav .nav li.active a{
+	outline: none ;
+	box-shadow: none ;
+	-webkit-box-shadow: none ;
+	-moz-box-shadow: none ;
+}.search-toggle-li .btn, .color-toggle-li .btn, .theme-toggle-li .btn{
+	transition: none ;
+	outline: none ;
+	box-shadow: none ;
+	-webkit-box-shadow: none ;
+	-moz-box-shadow: none ;
+}.search-toggle-li .btn:hover, .search-toggle-li .btn:active, .search-toggle-li .btn:focus, .color-toggle-li .btn:hover, .color-toggle-li .btn:active, .color-toggle-li .btn:focus, .theme-toggle-li .btn:hover, .theme-toggle-li .btn:active, .theme-toggle-li .btn:focus, .lang-toggle-li .btn:hover, .lang-toggle-li .btn:active, .lang-toggle-li .btn:focus{
+	transition: none ;
+	transform: none ;
+	outline: none ;
+	box-shadow: none ;
+	-webkit-box-shadow: none ;
+	-moz-box-shadow: none ;
+}.search-toggle-li, .color-toggle-li, .theme-toggle-li, .lang-toggle-li{
+	display: flex;
+	align-items: center;
+	height: 50px;
+}.search-toggle-li .search-toggle, .color-toggle-li .color-toggle, .theme-toggle-li .theme-toggle, .lang-toggle-li .lang-toggle{
+	display: flex;
+	align-items: center;
+	height: 100%;
+}.search-toggle-li .search-toggle .btn, .color-toggle-li .color-toggle .btn, .theme-toggle-li .theme-toggle .btn, .lang-toggle-li .lang-toggle .btn{
+	display: flex;
+	align-items: center;
+	height: 100%;
+	padding: 0 15px;
+	margin: 0;
+}.lang-toggle-li .lang-toggle .btn{
+	text-decoration: none;
+}.btn i{
+	display: flex;
+	align-items: center;
+	justify-content: center;
+}
+
+/* Header region visibility and nav pseudo cleanup */
+.l-header .metacat, #l-header .metacat{
+	display: none ;
+	visibility: hidden ;
+	opacity: 0 ;
+	position: absolute ;
+	top: -9999px ;
+	left: -9999px ;
+}.l-header > *:not(.m-about):not(.hdbg):not(#header-canvas), #l-header > *:not(.m-about):not(.hdbg):not(#header-canvas){
+	display: none ;
+	visibility: hidden ;
+	opacity: 0 ;
+}.m-nav .nav li::before, .m-nav .nav li::after, .nav li::before, .nav li::after, .nav li a::before, .nav li a::after, .navbar .nav li::before, .navbar .nav li::after, .navbar .nav li a::before, .navbar .nav li a::after{
+	display: none ;
+	content: none ;
+}
+
+/* 移动端 Header 修复 (≤ 992px) */
+@media (max-width: 992px) {
+	.l-header{
+		display: none !important;
+	}.m-logo-url{
+		display: none !important;
+	}.m-nav-all{
+		flex-direction: row !important;
+		flex-wrap: wrap !important;
+		height: auto !important;
+		min-height: 44px !important;
+		padding: 4px 8px !important;
+		gap: 0 !important;
+	}.nav-container{
+		overflow: visible !important;
+		width: 100% !important;
+		flex-wrap: wrap !important;
+	}.m-nav .nav{
+		flex-wrap: wrap !important;
+		width: 100% !important;
+		justify-content: center !important;
+		gap: 0 !important;
+	}.m-nav{
+		top: 50px !important;
+	}
+}

@@ -50,7 +50,7 @@ endif; ?>>
     <link rel="icon" type="image/png" sizes="32x32" href="<?php $this->options->themeUrl('img/caiya.xin.jpg'); ?>">
     <link rel="icon" type="image/png" sizes="16x16" href="<?php $this->options->themeUrl('img/caiya.xin.jpg'); ?>">
 
-    <!-- 懒加载与深色主题样式已移动到独立 CSS 文件中（variables.css / base.css / style.css / inline.css） -->
+    <!-- 懒加载与主题相关样式已拆分到分层 CSS 源文件（base/layout/components/themes） -->
 
     <!-- SEO 相关标签 -->
     <meta name="keywords" content="<?php $this->options->keywords(); ?>">
@@ -265,7 +265,7 @@ endif; ?>
     <script defer src="https://cdn.jsdelivr.net/npm/prismjs@1/plugins/copy-to-clipboard/prism-copy-to-clipboard.min.js" onerror="this.onerror=null;this.src='https://unpkg.com/prismjs@1/plugins/copy-to-clipboard/prism-copy-to-clipboard.min.js'"></script>
     <?php endif; ?>
 
-    <!-- 合并后的自定义样式 (variables + base + layout + components + custom + inline) -->
+    <!-- 合并后的主题样式（由分层 CSS 源文件构建生成） -->
     <link rel="stylesheet" href="<?php $this->options->themeUrl('css/build.css'); ?>">
 
     <!-- 动态主题色样式 -->

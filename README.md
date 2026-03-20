@@ -50,7 +50,7 @@
 
 ### CSS 入口与可编辑源
 - **style.css**（主题根目录）：Typecho 主题识别入口，内含主题元信息及大量全局/组件样式。修改变量、深色模式或全局样式时可编辑此文件。
-- **css/build.css**：由构建脚本合并生成，**不要直接编辑**。其来源为 `css/` 下的 `variables.css`、`base.css`、`layout.css`、`components.css`、`custom.css`、`inline.css`。修改基础或布局样式时，请编辑上述对应文件后重新执行构建。
+- **css/build.css**：由构建脚本合并生成，**不要直接编辑**。其来源为 `css/` 下分层目录文件：`base/variables.css`、`base/reset.css`、`base/typography.css`、`layout/grid.css`、`layout/header.css`、`layout/sidebar-left.css`、`layout/main-content.css`、`layout/sidebar-right.css`、`layout/footer.css`、`components/buttons.css`、`components/article.css`、`components/tag-cloud.css`、`components/toc.css`、`components/pagination.css`、`themes/dark-mode.css`、`themes/light-mode.css`。修改样式后请重新执行构建。
 
 ### 构建命令
 在主题根目录执行：
