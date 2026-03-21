@@ -24,6 +24,15 @@
       {
         "ignoreAtRules": ["tailwind", "apply", "variants", "responsive", "screen"]
       }
-    ]
-  }
+    ],
+    "no-duplicate-selectors": null
+  },
+  "ignoreFiles": [
+    "css/vendor/**",
+    "css/build.css",
+    "css/style.css",
+    "css/dark-init.css",
+    "css/editor-style.css",
+    "css/links.css"
+  ]
 }

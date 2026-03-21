@@ -13,8 +13,27 @@
 
 <script defer src="<?php $this->options->themeUrl('js/main.js'); ?>"></script>
 <!-- Swiper.js 轮播图 - CDN + 本地备用 -->
-<?php if ($this->options->swiperEnabled == '1'): ?>
-<script defer src="https://cdn.jsdelivr.net/npm/swiper@8/swiper-bundle.min.js" onerror="this.onerror=null;this.src='https://unpkg.com/swiper@8/swiper-bundle.min.js'"></script>
+<?php if ($this->options->swiperEnabled == '1'):
+    $cdnProvider = dygita_opt($this->options, 'dygita_cdn_provider', 'git_cdn_provider') ?: 'jsdelivr';
+    $swiperJsUrl = '';
+    switch ($cdnProvider) {
+        case 'staticfile':
+            $swiperJsUrl = 'https://cdn.staticfile.org/Swiper/8.4.5/swiper-bundle.min.js';
+            break;
+        case 'bootcdn':
+            $swiperJsUrl = 'https://cdn.bootcdn.net/ajax/libs/Swiper/8.4.5/swiper-bundle.min.js';
+            break;
+        case 'cdnjs':
+            $swiperJsUrl = 'https://cdnjs.cloudflare.com/ajax/libs/Swiper/8.4.5/swiper-bundle.min.js';
+            break;
+        case 'local':
+            $swiperJsUrl = $this->options->themeUrl('vendor/swiper/swiper-bundle.min.js');
+            break;
+        default:
+            $swiperJsUrl = 'https://cdn.jsdelivr.net/npm/swiper@8/swiper-bundle.min.js';
+    }
+?>
+<script defer src="<?php echo $swiperJsUrl; ?>" onerror="this.onerror=null;this.src='https://unpkg.com/swiper@8/swiper-bundle.min.js'"></script>
 <?php
 endif; ?>
 <!-- 粒子背景动画 -->
@@ -84,23 +103,11 @@ endif; ?>
 </template>
 
 <?php
-$dygitaSearchIndex = array();
-$this->widget('Widget_Contents_Post_Recent', 'pageSize=120')->to($dygitaSearchPosts);
-while ($dygitaSearchPosts->next()):
-    ob_start();
-    $dygitaSearchPosts->excerpt(120, '...');
-    $dygitaSearchExcerpt = trim(strip_tags((string) ob_get_clean()));
-    $dygitaSearchIndex[] = array(
-        'title' => (string) $dygitaSearchPosts->title,
-        'url' => (string) $dygitaSearchPosts->permalink,
-        'excerpt' => $dygitaSearchExcerpt,
-        'date' => date('Y-m-d', (int) $dygitaSearchPosts->created)
-    );
-endwhile;
+$searchIndexUrl = \Typecho\Router::url('do', array('action' => 'dygita-search-index'), $this->options->index);
 ?>
 <script>
 window.DYGITA = window.DYGITA || {};
-window.DYGITA.searchIndex = <?php echo json_encode($dygitaSearchIndex, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES); ?>;
+window.DYGITA.searchIndexUrl = <?php echo json_encode($searchIndexUrl, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES); ?>;
 </script>
 
 <script>

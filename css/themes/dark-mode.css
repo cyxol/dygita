@@ -1,160 +1,183 @@
 /* Dygita CSS 层次：主题层（暗色模式覆盖） */
 
 /* Merged from base/reset.css */
-[data-theme="dark"] *{
-	-webkit-tap-highlight-color: transparent;
+[data-theme='dark'] *{
+    -webkit-tap-highlight-color: transparent;
 }
-[data-theme="dark"] a:active, [data-theme="dark"] a:focus, [data-theme="dark"] button:active, [data-theme="dark"] button:focus{
-	background-color: transparent;
+
+[data-theme='dark'] a:active, [data-theme='dark'] a:focus, [data-theme='dark'] button:active, [data-theme='dark'] button:focus{
+    background-color: transparent;
 }
 
 /* Prevent transient light flash on interactive states in dark mode */
-[data-theme="dark"] button:active, [data-theme="dark"] button:focus, [data-theme="dark"] button:focus-visible,
-[data-theme="dark"] .btn:active, [data-theme="dark"] .btn:focus, [data-theme="dark"] .btn:focus-visible,
-[data-theme="dark"] a.btn:active, [data-theme="dark"] a.btn:focus, [data-theme="dark"] a.btn:focus-visible,
-[data-theme="dark"] [role="button"]:active, [data-theme="dark"] [role="button"]:focus, [data-theme="dark"] [role="button"]:focus-visible{
-	outline: none;
-	box-shadow: none;
-	background-image: none;
+[data-theme='dark'] button:active, [data-theme='dark'] button:focus, [data-theme='dark'] button:focus-visible,
+[data-theme='dark'] .btn:active, [data-theme='dark'] .btn:focus, [data-theme='dark'] .btn:focus-visible,
+[data-theme='dark'] a.btn:active, [data-theme='dark'] a.btn:focus, [data-theme='dark'] a.btn:focus-visible,
+[data-theme='dark'] [role='button']:active, [data-theme='dark'] [role='button']:focus, [data-theme='dark'] [role='button']:focus-visible{
+    outline: none;
+    box-shadow: none;
+    background-image: none;
 }
 
 /* Merged from layout/main-content.css */
-[data-theme="dark"] .search-toggle .btn{
-	background-color: var(--nav-bg-color);
-	border: none;
-	transition: all 0.3s ease;
-}
-[data-theme="dark"] .search-toggle .btn:hover{
-	background-color: var(--nav-bg-color);
-	border: none;
-}
-[data-theme="dark"] .search-toggle .btn i{
-	color: var(--text-color);
-}
-[data-theme="dark"] .color-toggle .btn{
-	background-color: var(--nav-bg-color);
-	border: none;
-	transition: all 0.3s ease;
-}
-[data-theme="dark"] .color-toggle .btn:hover{
-	background-color: var(--nav-bg-color);
-	border: none;
-}
-[data-theme="dark"] .color-toggle .btn i{
-	color: var(--text-color);
-}
-[data-theme="dark"] .theme-toggle .btn{
-	background-color: var(--nav-bg-color);
-	border: none;
-	transition: all 0.3s ease;
-}
-[data-theme="dark"] .theme-toggle .btn:hover{
-	background-color: var(--nav-bg-color);
-	border: none;
-}
-[data-theme="dark"] .theme-toggle .btn i{
-	color: var(--text-color);
-}
-[data-theme="dark"] .lang-toggle .btn{
-	background-color: var(--nav-bg-color);
-	border: none;
-}
-[data-theme="dark"] .lang-toggle .btn:hover{
-	background-color: var(--nav-bg-color);
-	border: none;
-}
-[data-theme="dark"] .lang-toggle .btn i{
-	color: var(--text-color);
-}
-[data-theme="dark"] .search-toggle-li .btn, [data-theme="dark"] .search-toggle-li .btn:active, [data-theme="dark"] .search-toggle-li .btn:focus, [data-theme="dark"] .color-toggle-li .btn, [data-theme="dark"] .color-toggle-li .btn:active, [data-theme="dark"] .color-toggle-li .btn:focus, [data-theme="dark"] .theme-toggle-li .btn, [data-theme="dark"] .theme-toggle-li .btn:active, [data-theme="dark"] .theme-toggle-li .btn:focus, [data-theme="dark"] .lang-toggle-li .btn, [data-theme="dark"] .lang-toggle-li .btn:active, [data-theme="dark"] .lang-toggle-li .btn:focus{
-	background-color: var(--nav-bg-color);
-}
-[data-theme="dark"] .search-toggle-li, [data-theme="dark"] .color-toggle-li, [data-theme="dark"] .theme-toggle-li, [data-theme="dark"] .lang-toggle-li{
-	background-color: var(--nav-bg-color);
-}
-[data-theme="dark"] .search-toggle-li .btn:active, [data-theme="dark"] .search-toggle-li .btn:focus,
-[data-theme="dark"] .color-toggle-li .btn:active, [data-theme="dark"] .color-toggle-li .btn:focus,
-[data-theme="dark"] .theme-toggle-li .btn:active, [data-theme="dark"] .theme-toggle-li .btn:focus,
-[data-theme="dark"] .lang-toggle-li .btn:active, [data-theme="dark"] .lang-toggle-li .btn:focus,
-[data-theme="dark"] .m-nav .nav li a:active, [data-theme="dark"] .m-nav .nav li a:focus{
-	background-color: var(--nav-bg-color);
-	border-color: transparent;
-	box-shadow: none;
-}
-[data-theme="dark"] .m-nav .nav li,
-[data-theme="dark"] .m-nav .nav li:active,
-[data-theme="dark"] .m-nav .nav li:focus,
-[data-theme="dark"] .m-nav .nav li:hover,
-[data-theme="dark"] .m-nav .nav li a,
-[data-theme="dark"] .m-nav .nav li a:active,
-[data-theme="dark"] .m-nav .nav li a:focus,
-[data-theme="dark"] .m-nav .nav li a:hover,
-[data-theme="dark"] .m-nav .nav li.active a,
-[data-theme="dark"] .search-toggle-li .btn,
-[data-theme="dark"] .search-toggle-li .btn:active,
-[data-theme="dark"] .search-toggle-li .btn:focus,
-[data-theme="dark"] .search-toggle-li .btn:hover,
-[data-theme="dark"] .color-toggle-li .btn,
-[data-theme="dark"] .color-toggle-li .btn:active,
-[data-theme="dark"] .color-toggle-li .btn:focus,
-[data-theme="dark"] .color-toggle-li .btn:hover,
-[data-theme="dark"] .theme-toggle-li .btn,
-[data-theme="dark"] .theme-toggle-li .btn:active,
-[data-theme="dark"] .theme-toggle-li .btn:focus,
-[data-theme="dark"] .theme-toggle-li .btn:hover,
-[data-theme="dark"] .lang-toggle-li .btn,
-[data-theme="dark"] .lang-toggle-li .btn:active,
-[data-theme="dark"] .lang-toggle-li .btn:focus,
-[data-theme="dark"] .lang-toggle-li .btn:hover{
-	background-color: var(--nav-bg-color);
-	background-image: none;
-}
-/* 暗色导航栏文字颜色：默认白色，当前页高亮 */
-[data-theme="dark"] .m-nav .nav li a,
-[data-theme="dark"] .m-nav .nav li a:link,
-[data-theme="dark"] .m-nav .nav li a:visited,
-[data-theme="dark"] .m-nav .nav li a:focus,
-[data-theme="dark"] .m-nav .nav li a:active{
-	color: #c9d1d9;
-}
-[data-theme="dark"] .m-nav .nav li a:hover{
-	color: #fff;
-}
-[data-theme="dark"] .m-nav .nav li.active > a,
-[data-theme="dark"] .m-nav .nav li.active > a:link,
-[data-theme="dark"] .m-nav .nav li.active > a:visited{
-	color: var(--link-hover-color, #79b8ff);
+[data-theme='dark'] .search-toggle .btn{
+    background-color: var(--nav-bg-color);
+    border: none;
+    transition: all 0.3s ease;
 }
 
-[data-theme="dark"] .archive-header{
-	background: var(--content-bg-color);
-	border-bottom: 1px solid var(--border-color);
+[data-theme='dark'] .search-toggle .btn:hover{
+    background-color: var(--nav-bg-color);
+    border: none;
 }
-[data-theme="dark"] .archive-header h1{
-	color: var(--text-color);
+
+[data-theme='dark'] .search-toggle .btn i{
+    color: var(--text-color);
+}
+
+[data-theme='dark'] .color-toggle .btn{
+    background-color: var(--nav-bg-color);
+    border: none;
+    transition: all 0.3s ease;
+}
+
+[data-theme='dark'] .color-toggle .btn:hover{
+    background-color: var(--nav-bg-color);
+    border: none;
+}
+
+[data-theme='dark'] .color-toggle .btn i{
+    color: var(--text-color);
+}
+
+[data-theme='dark'] .theme-toggle .btn{
+    background-color: var(--nav-bg-color);
+    border: none;
+    transition: all 0.3s ease;
+}
+
+[data-theme='dark'] .theme-toggle .btn:hover{
+    background-color: var(--nav-bg-color);
+    border: none;
+}
+
+[data-theme='dark'] .theme-toggle .btn i{
+    color: var(--text-color);
+}
+
+[data-theme='dark'] .lang-toggle .btn{
+    background-color: var(--nav-bg-color);
+    border: none;
+}
+
+[data-theme='dark'] .lang-toggle .btn:hover{
+    background-color: var(--nav-bg-color);
+    border: none;
+}
+
+[data-theme='dark'] .lang-toggle .btn i{
+    color: var(--text-color);
+}
+
+[data-theme='dark'] .search-toggle-li .btn, [data-theme='dark'] .search-toggle-li .btn:active, [data-theme='dark'] .search-toggle-li .btn:focus, [data-theme='dark'] .color-toggle-li .btn, [data-theme='dark'] .color-toggle-li .btn:active, [data-theme='dark'] .color-toggle-li .btn:focus, [data-theme='dark'] .theme-toggle-li .btn, [data-theme='dark'] .theme-toggle-li .btn:active, [data-theme='dark'] .theme-toggle-li .btn:focus, [data-theme='dark'] .lang-toggle-li .btn, [data-theme='dark'] .lang-toggle-li .btn:active, [data-theme='dark'] .lang-toggle-li .btn:focus{
+    background-color: var(--nav-bg-color);
+}
+
+[data-theme='dark'] .search-toggle-li, [data-theme='dark'] .color-toggle-li, [data-theme='dark'] .theme-toggle-li, [data-theme='dark'] .lang-toggle-li{
+    background-color: var(--nav-bg-color);
+}
+
+[data-theme='dark'] .search-toggle-li .btn:active, [data-theme='dark'] .search-toggle-li .btn:focus,
+[data-theme='dark'] .color-toggle-li .btn:active, [data-theme='dark'] .color-toggle-li .btn:focus,
+[data-theme='dark'] .theme-toggle-li .btn:active, [data-theme='dark'] .theme-toggle-li .btn:focus,
+[data-theme='dark'] .lang-toggle-li .btn:active, [data-theme='dark'] .lang-toggle-li .btn:focus,
+[data-theme='dark'] .m-nav .nav li a:active, [data-theme='dark'] .m-nav .nav li a:focus{
+    background-color: var(--nav-bg-color);
+    border-color: transparent;
+    box-shadow: none;
+}
+
+[data-theme='dark'] .m-nav .nav li,
+[data-theme='dark'] .m-nav .nav li:active,
+[data-theme='dark'] .m-nav .nav li:focus,
+[data-theme='dark'] .m-nav .nav li:hover,
+[data-theme='dark'] .m-nav .nav li a,
+[data-theme='dark'] .m-nav .nav li a:active,
+[data-theme='dark'] .m-nav .nav li a:focus,
+[data-theme='dark'] .m-nav .nav li a:hover,
+[data-theme='dark'] .m-nav .nav li.active a,
+[data-theme='dark'] .search-toggle-li .btn,
+[data-theme='dark'] .search-toggle-li .btn:active,
+[data-theme='dark'] .search-toggle-li .btn:focus,
+[data-theme='dark'] .search-toggle-li .btn:hover,
+[data-theme='dark'] .color-toggle-li .btn,
+[data-theme='dark'] .color-toggle-li .btn:active,
+[data-theme='dark'] .color-toggle-li .btn:focus,
+[data-theme='dark'] .color-toggle-li .btn:hover,
+[data-theme='dark'] .theme-toggle-li .btn,
+[data-theme='dark'] .theme-toggle-li .btn:active,
+[data-theme='dark'] .theme-toggle-li .btn:focus,
+[data-theme='dark'] .theme-toggle-li .btn:hover,
+[data-theme='dark'] .lang-toggle-li .btn,
+[data-theme='dark'] .lang-toggle-li .btn:active,
+[data-theme='dark'] .lang-toggle-li .btn:focus,
+[data-theme='dark'] .lang-toggle-li .btn:hover{
+    background-color: var(--nav-bg-color);
+    background-image: none;
+}
+
+/* 暗色导航栏文字颜色：默认白色，当前页高亮 */
+[data-theme='dark'] .m-nav .nav li a,
+[data-theme='dark'] .m-nav .nav li a:link,
+[data-theme='dark'] .m-nav .nav li a:visited,
+[data-theme='dark'] .m-nav .nav li a:focus,
+[data-theme='dark'] .m-nav .nav li a:active{
+    color: #c9d1d9;
+}
+
+[data-theme='dark'] .m-nav .nav li a:hover{
+    color: #fff;
+}
+
+[data-theme='dark'] .m-nav .nav li.active > a,
+[data-theme='dark'] .m-nav .nav li.active > a:link,
+[data-theme='dark'] .m-nav .nav li.active > a:visited{
+    color: var(--link-hover-color, #79b8ff);
+}
+
+[data-theme='dark'] .archive-header{
+    background: var(--content-bg-color);
+    border-bottom: 1px solid var(--border-color);
+}
+
+[data-theme='dark'] .archive-header h1{
+    color: var(--text-color);
 }
 
 @media (prefers-color-scheme: dark) {
-	.l-header #logo img{
-		border-color: var(--border-color);
-	}
+    .l-header #logo img{
+        border-color: var(--border-color);
+    }
 
-	.m-nav .nav li a,
-	.m-nav .nav li a:link,
-	.m-nav .nav li a:visited{
-		color: #c9d1d9;
-	}
-	.m-nav .nav li a:hover{
-		color: #fff;
-	}
-	.m-nav .nav li.active > a{
-		color: var(--link-hover-color, #79b8ff);
-	}
+    .m-nav .nav li a,
+    .m-nav .nav li a:link,
+    .m-nav .nav li a:visited{
+        color: #c9d1d9;
+    }
 
-	.m-header h1 a{
-		color: #c9d1d9;
-	}
-	.m-header-search{
-		color: #c9d1d9;
-	}
+    .m-nav .nav li a:hover{
+        color: #fff;
+    }
+
+    .m-nav .nav li.active > a{
+        color: var(--link-hover-color, #79b8ff);
+    }
+
+    .m-header h1 a{
+        color: #c9d1d9;
+    }
+
+    .m-header-search{
+        color: #c9d1d9;
+    }
 }

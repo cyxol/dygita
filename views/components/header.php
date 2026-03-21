@@ -137,27 +137,6 @@ endif; ?>
     <meta name="msapplication-TileImage" content="<?php $this->options->themeUrl('img/caiya.xin.jpg'); ?>">
     <meta name="msapplication-TileColor" content="#222">
 
-    <!-- Canonical 标签 -->
-    <?php
-    $dygitaCanonicalUrl = trim((string) $this->request->getRequestUrl());
-    if ($dygitaCanonicalUrl === '') {
-        $dygitaCanonicalUrl = (string) $this->options->siteUrl;
-    }
-    try {
-        ob_start();
-        $this->permalink();
-        $tmpCanonical = trim((string) ob_get_clean());
-        if ($tmpCanonical !== '') {
-            $dygitaCanonicalUrl = $tmpCanonical;
-        }
-    } catch (Throwable $e) {
-        if (ob_get_level() > 0) {
-            ob_end_clean();
-        }
-    }
-    ?>
-    <link rel="canonical" href="<?php echo htmlspecialchars($dygitaCanonicalUrl, ENT_QUOTES, 'UTF-8'); ?>">
-
     <!-- 站点验证 -->
     <!-- 在这里添加 Google、Bing、Sogou 等站点验证代码 -->
     <link href="https://gravatar.com/exuberant3c83335dc7" rel="me" />
@@ -196,7 +175,7 @@ endif; ?>
         ob_start(); $this->excerpt(150); $ldExcerpt = ob_get_clean();
         $ldPermalink = $this->permalink;
         $ldPublisherName = $this->options->title;
-        $ldPublisherLogo = $this->options->themeUrl . '/img/caiya.xin.jpg';
+        $ldPublisherLogo = $this->options->themeUrl('img/caiya.xin.jpg');
         $ldArticle = array(
             "@context" => "https://schema.org",
             "@type" => "Article",
@@ -260,20 +239,88 @@ endif; ?>
     <?php $this->header(); ?>
 
     <!-- Swiper.js 轮播图样式 -->
-    <?php if ($this->options->swiperEnabled == '1'): ?>
-        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@8/swiper-bundle.min.css" onerror="this.onerror=null;this.href='https://unpkg.com/swiper@8/swiper-bundle.min.css'">
+    <?php if ($this->options->swiperEnabled == '1'):
+        $cdnProvider = dygita_opt($this->options, 'dygita_cdn_provider', 'git_cdn_provider') ?: 'jsdelivr';
+        $swiperCssUrl = '';
+        switch ($cdnProvider) {
+            case 'staticfile':
+                $swiperCssUrl = 'https://cdn.staticfile.org/Swiper/8.4.5/swiper-bundle.min.css';
+                break;
+            case 'bootcdn':
+                $swiperCssUrl = 'https://cdn.bootcdn.net/ajax/libs/Swiper/8.4.5/swiper-bundle.min.css';
+                break;
+            case 'cdnjs':
+                $swiperCssUrl = 'https://cdnjs.cloudflare.com/ajax/libs/Swiper/8.4.5/swiper-bundle.min.css';
+                break;
+            case 'local':
+                $swiperCssUrl = $this->options->themeUrl('vendor/swiper/swiper-bundle.min.css');
+                break;
+            default:
+                $swiperCssUrl = 'https://cdn.jsdelivr.net/npm/swiper@8/swiper-bundle.min.css';
+        }
+    ?>
+        <link rel="stylesheet" href="<?php echo $swiperCssUrl; ?>" onerror="this.onerror=null;this.href='https://unpkg.com/swiper@8/swiper-bundle.min.css'">
     <?php
 endif; ?>
 
     <!-- 代码语法高亮 - 仅在文章/页面中加载 -->
-    <?php if ($this->is('post') || $this->is('page')): ?>
-    <!-- PrismJS: core + autoloader（按需加载语言，替代 6 个固定语言文件） -->
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/prismjs@1/themes/prism-tomorrow.min.css" onerror="this.onerror=null;this.href='https://unpkg.com/prismjs@1/themes/prism-tomorrow.min.css'">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/prismjs@1/plugins/toolbar/prism-toolbar.min.css" onerror="this.onerror=null;this.href='https://unpkg.com/prismjs@1/plugins/toolbar/prism-toolbar.min.css'">
-    <script src="https://cdn.jsdelivr.net/npm/prismjs@1/prism.min.js" onerror="this.onerror=null;this.src='https://unpkg.com/prismjs@1/prism.min.js'"></script>
-    <script src="https://cdn.jsdelivr.net/npm/prismjs@1/plugins/toolbar/prism-toolbar.min.js" onerror="this.onerror=null;this.src='https://unpkg.com/prismjs@1/plugins/toolbar/prism-toolbar.min.js'"></script>
-    <script src="https://cdn.jsdelivr.net/npm/prismjs@1/plugins/autoloader/prism-autoloader.min.js" onerror="this.onerror=null;this.src='https://unpkg.com/prismjs@1/plugins/autoloader/prism-autoloader.min.js'"></script>
-    <script src="https://cdn.jsdelivr.net/npm/prismjs@1/plugins/copy-to-clipboard/prism-copy-to-clipboard.min.js" onerror="this.onerror=null;this.src='https://unpkg.com/prismjs@1/plugins/copy-to-clipboard/prism-copy-to-clipboard.min.js'"></script>
+    <?php if ($this->is('post') || $this->is('page')):
+        $prismCdnProvider = dygita_opt($this->options, 'dygita_cdn_provider', 'git_cdn_provider') ?: 'jsdelivr';
+        $prismThemeUrl = '';
+        $prismToolbarUrl = '';
+        $prismCoreUrl = '';
+        $prismToolbarJsUrl = '';
+        $prismAutoloaderUrl = '';
+        $prismCopyUrl = '';
+        
+        switch ($prismCdnProvider) {
+            case 'staticfile':
+                $prismThemeUrl = 'https://cdn.staticfile.org/prism/1.29.0/themes/prism-tomorrow.min.css';
+                $prismToolbarUrl = 'https://cdn.staticfile.org/prism/1.29.0/plugins/toolbar/prism-toolbar.min.css';
+                $prismCoreUrl = 'https://cdn.staticfile.org/prism/1.29.0/prism.min.js';
+                $prismToolbarJsUrl = 'https://cdn.staticfile.org/prism/1.29.0/plugins/toolbar/prism-toolbar.min.js';
+                $prismAutoloaderUrl = 'https://cdn.staticfile.org/prism/1.29.0/plugins/autoloader/prism-autoloader.min.js';
+                $prismCopyUrl = 'https://cdn.staticfile.org/prism/1.29.0/plugins/copy-to-clipboard/prism-copy-to-clipboard.min.js';
+                break;
+            case 'bootcdn':
+                $prismThemeUrl = 'https://cdn.bootcdn.net/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css';
+                $prismToolbarUrl = 'https://cdn.bootcdn.net/ajax/libs/prism/1.29.0/plugins/toolbar/prism-toolbar.min.css';
+                $prismCoreUrl = 'https://cdn.bootcdn.net/ajax/libs/prism/1.29.0/prism.min.js';
+                $prismToolbarJsUrl = 'https://cdn.bootcdn.net/ajax/libs/prism/1.29.0/plugins/toolbar/prism-toolbar.min.js';
+                $prismAutoloaderUrl = 'https://cdn.bootcdn.net/ajax/libs/prism/1.29.0/plugins/autoloader/prism-autoloader.min.js';
+                $prismCopyUrl = 'https://cdn.bootcdn.net/ajax/libs/prism/1.29.0/plugins/copy-to-clipboard/prism-copy-to-clipboard.min.js';
+                break;
+            case 'cdnjs':
+                $prismThemeUrl = 'https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css';
+                $prismToolbarUrl = 'https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/toolbar/prism-toolbar.min.css';
+                $prismCoreUrl = 'https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js';
+                $prismToolbarJsUrl = 'https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/toolbar/prism-toolbar.min.js';
+                $prismAutoloaderUrl = 'https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/autoloader/prism-autoloader.min.js';
+                $prismCopyUrl = 'https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/copy-to-clipboard/prism-copy-to-clipboard.min.js';
+                break;
+            case 'local':
+                $prismThemeUrl = $this->options->themeUrl('vendor/prism/themes/prism-tomorrow.min.css');
+                $prismToolbarUrl = $this->options->themeUrl('vendor/prism/plugins/toolbar/prism-toolbar.min.css');
+                $prismCoreUrl = $this->options->themeUrl('vendor/prism/prism.min.js');
+                $prismToolbarJsUrl = $this->options->themeUrl('vendor/prism/plugins/toolbar/prism-toolbar.min.js');
+                $prismAutoloaderUrl = $this->options->themeUrl('vendor/prism/plugins/autoloader/prism-autoloader.min.js');
+                $prismCopyUrl = $this->options->themeUrl('vendor/prism/plugins/copy-to-clipboard/prism-copy-to-clipboard.min.js');
+                break;
+            default:
+                $prismThemeUrl = 'https://cdn.jsdelivr.net/npm/prismjs@1/themes/prism-tomorrow.min.css';
+                $prismToolbarUrl = 'https://cdn.jsdelivr.net/npm/prismjs@1/plugins/toolbar/prism-toolbar.min.css';
+                $prismCoreUrl = 'https://cdn.jsdelivr.net/npm/prismjs@1/prism.min.js';
+                $prismToolbarJsUrl = 'https://cdn.jsdelivr.net/npm/prismjs@1/plugins/toolbar/prism-toolbar.min.js';
+                $prismAutoloaderUrl = 'https://cdn.jsdelivr.net/npm/prismjs@1/plugins/autoloader/prism-autoloader.min.js';
+                $prismCopyUrl = 'https://cdn.jsdelivr.net/npm/prismjs@1/plugins/copy-to-clipboard/prism-copy-to-clipboard.min.js';
+        }
+    ?>
+    <link rel="stylesheet" href="<?php echo $prismThemeUrl; ?>" onerror="this.onerror=null;this.href='https://unpkg.com/prismjs@1/themes/prism-tomorrow.min.css'">
+    <link rel="stylesheet" href="<?php echo $prismToolbarUrl; ?>" onerror="this.onerror=null;this.href='https://unpkg.com/prismjs@1/plugins/toolbar/prism-toolbar.min.css'">
+    <script src="<?php echo $prismCoreUrl; ?>" onerror="this.onerror=null;this.src='https://unpkg.com/prismjs@1/prism.min.js'"></script>
+    <script src="<?php echo $prismToolbarJsUrl; ?>" onerror="this.onerror=null;this.src='https://unpkg.com/prismjs@1/plugins/toolbar/prism-toolbar.min.js'"></script>
+    <script src="<?php echo $prismAutoloaderUrl; ?>" onerror="this.onerror=null;this.src='https://unpkg.com/prismjs@1/plugins/autoloader/prism-autoloader.min.js'"></script>
+    <script src="<?php echo $prismCopyUrl; ?>" onerror="this.onerror=null;this.src='https://unpkg.com/prismjs@1/plugins/copy-to-clipboard/prism-copy-to-clipboard.min.js'"></script>
     <?php endif; ?>
 
     <!-- 合并后的主题样式（由分层 CSS 源文件构建生成） -->
@@ -288,11 +335,15 @@ endif; ?>
     <header id="l-header" class="l-header">
         <div class="hdbg skin-bg"></div>
         <div class="m-about">
-            <div id="logo">
-                <a href="<?php $this->options->siteUrl(); ?>" aria-label="返回首页"><img src="<?php $this->options->themeUrl('img/caiya.xin.jpg'); ?>" alt="网站logo" aria-hidden="true"></a>
+            <div class="widget-profile">
+                <div class="profile-avatar">
+                    <img src="<?php $this->options->themeUrl('img/caiya.xin.jpg'); ?>" alt="Yacine Tsai">
+                </div>
+                <div class="profile-info">
+                    <h1 class="tit" itemprop="headline"><a href="<?php $this->options->siteUrl(); ?>" aria-label="返回首页"><?php $this->options->title(); ?></a></h1>
+                    <div class="about" itemprop="description"><?php $this->options->description(); ?></div>
+                </div>
             </div>
-            <h1 class="tit" itemprop="headline"><a href="<?php $this->options->siteUrl(); ?>" aria-label="返回首页"><?php $this->options->title(); ?></a></h1>
-            <div class="about" itemprop="description"><?php $this->options->description(); ?></div>
         </div>
         <canvas id="header-canvas"></canvas>
     </header>

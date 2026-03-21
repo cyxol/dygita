@@ -1,3 +1,4 @@
+/* eslint-env browser */
 (function () {
     var particlesOptions = {
         'particles': {
@@ -120,6 +121,7 @@
     var _fallbackAnimationId = null;
     var _resizeHandler = null;
 
+    // eslint-disable-next-line no-unused-vars
     function cleanupParticles() {
         if (_fallbackAnimationId) {
             cancelAnimationFrame(_fallbackAnimationId);

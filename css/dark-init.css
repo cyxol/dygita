@@ -14,8 +14,9 @@ html.no-transitions *::after {
 }
 
 /* 暗色主题关键变量和背景色 */
-html[data-theme="dark"] {
+html[data-theme='dark'] {
     color-scheme: dark;
+
     --body-bg-color: #1e1e1e;
     --content-bg-color: #252525;
     --text-color: #c9d1d9;
@@ -24,22 +25,22 @@ html[data-theme="dark"] {
     --border-color: #30363d;
 }
 
-html[data-theme="dark"],
-html[data-theme="dark"] body {
+html[data-theme='dark'],
+html[data-theme='dark'] body {
     background-color: var(--body-bg-color);
     color: var(--text-color);
 }
 
 /* 关键容器背景 - 防止闪白 */
-html[data-theme="dark"] .content-wrap,
-html[data-theme="dark"] .sidebar,
-html[data-theme="dark"] .sidebar-left,
-html[data-theme="dark"] .sidebar-right {
+html[data-theme='dark'] .content-wrap,
+html[data-theme='dark'] .sidebar,
+html[data-theme='dark'] .sidebar-left,
+html[data-theme='dark'] .sidebar-right {
     background-color: var(--content-bg-color);
 }
 
 /* 导航栏背景 */
-html[data-theme="dark"] .m-nav,
-html[data-theme="dark"] .m-header {
+html[data-theme='dark'] .m-nav,
+html[data-theme='dark'] .m-header {
     background-color: var(--nav-bg-color);
 }

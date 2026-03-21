@@ -8,7 +8,7 @@
     "build-css:prod": "node tools/build-css.js --production",
     "build-js": "node tools/build-js.js",
     "build-js:prod": "node tools/build-js.js --production",
-    "lint:js": "eslint \"js/**/*.js\" --ignore-pattern \"js/vendor/**\"",
+    "lint:js": "eslint \"js/**/*.js\" --ignore-pattern \"js/vendor/**\" --ignore-pattern \"js/dist/**\"",
     "lint:css": "stylelint \"css/**/*.css\"",
     "lint": "npm run lint:js && npm run lint:css",
     "lint:fix": "npm run lint:js -- --fix && npm run lint:css -- --fix",

@@ -37,6 +37,7 @@ function dygita_register_routes() {
 function themeActivate() {
     dygita_register_routes();
     dygita_register_actions();
+    dygita_register_search_action();
 }
 
 /**
@@ -47,10 +48,15 @@ function dygita_bootstrap_runtime() {
     if ($bootstrapped) return;
     dygita_register_routes();
     dygita_register_actions();
+    dygita_register_search_action();
 
     // 注册文章目录缓存钩子：文章发布/更新时自动生成 TOC 缓存
     $catalogPlugin = \Typecho\Plugin::factory('Widget_Abstract_Contents');
     $catalogPlugin->finishPublish = [Dygita_Catalog_Cache::class, 'onFinishPublish'];
+
+    // 注册搜索索引重建钩子：文章发布/更新时自动重建搜索索引
+    $searchPlugin = \Typecho\Plugin::factory('Widget_Abstract_Contents');
+    $searchPlugin->finishPublish = [Dygita_Search_Index::class, 'onArticleChange'];
 
     $bootstrapped = true;
 }
@@ -77,6 +83,20 @@ class Dygita_Action_Like extends \Typecho\Widget implements \Widget\ActionInterf
         }
 
         $db = \Typecho\Db::get();
+        $contentsTable = dygita_get_table('contents');
+
+        $postExists = $db->fetchRow($db->select('cid')->from($contentsTable)
+            ->where('cid = ?', $cid)
+            ->where('type = ?', 'post')
+            ->where('status = ?', 'publish')
+            ->limit(1));
+
+        if (!$postExists) {
+            $this->response->setStatus(404);
+            echo 'not_found';
+            exit;
+        }
+
         $fieldsTable = dygita_get_table('fields');
 
         $likes = \Typecho\Cookie::get('extend_contents_likes');
@@ -356,7 +376,8 @@ class Dygita_Catalog_Cache {
 
             self::saveCache($cid, $parsedHtml, $catalogHtml);
         } catch (\Throwable $e) {
-            // 静默失败，绝不影响文章保存流程
+            // 静默失败，绝不影响文章保存流程，但记录日志便于排查问题
+            error_log('[Dygita_Catalog_Cache] onFinishPublish failed for cid=' . $cid . ': ' . $e->getMessage());
         }
     }
 
@@ -478,7 +499,8 @@ class Dygita_Catalog_Cache {
                     ->where('name IN ?', [self::FIELD_PARSED, self::FIELD_CATALOG])
             );
         } catch (\Throwable $e) {
-            // 静默
+            // 静默失败，绝不影响文章保存流程，但记录日志便于排查问题
+            error_log('[Dygita_Catalog_Cache] clearCache failed for cid=' . $cid . ': ' . $e->getMessage());
         }
     }
 }
@@ -678,6 +700,691 @@ function themeConfig($form)
     $ad2Cur = dygita_opt($options, 'dygita_downloadad2', 'git_downloadad2');
     $dygita_downloadad2 = new Typecho\Widget\Helper\Form\Element\Textarea('dygita_downloadad2', NULL, $ad2Cur, _t('下载页底部广告'), _t('在下载页面底部显示的广告代码'));
     $form->addInput($dygita_downloadad2);
+    
+    // 第三方 CDN 配置（解决 jsdelivr/unpkg 国内访问问题）
+    $cdnProviderCur = dygita_opt($options, 'dygita_cdn_provider', 'git_cdn_provider') ?: 'jsdelivr';
+    $dygita_cdn_provider = new Typecho\Widget\Helper\Form\Element\Select(
+        'dygita_cdn_provider',
+        array(
+            'jsdelivr' => _t('jsdelivr + unpkg 回退'),
+            'staticfile' => _t('七牛云 Staticfile CDN'),
+            'bootcdn' => _t('BootCDN'),
+            'cdnjs' => _t('Cloudflare CDNJS'),
+            'local' => _t('本地资源（需手动下载到主题目录）')
+        ),
+        $cdnProviderCur,
+        _t('第三方 CDN 提供商'),
+        _t('选择 Swiper、PrismJS、Gitalk、Valine 等第三方库的 CDN 来源。如选择本地资源，需手动下载文件到主题 /vendor/ 目录')
+    );
+    $form->addInput($dygita_cdn_provider);
+}
+
+/**
+ * Dygita 主题辅助工具类
+ * 封装所有主题相关的工具方法，避免全局函数污染
+ */
+class Dygita_Theme_Helper {
+    /**
+     * 选项读取兼容：优先读 dygita_*，无则回退到 git_*（便于从 git_* 迁移到 dygita_*）
+     * @param \Widget_Options $options
+     * @param string $newKey 新选项名，如 dygita_skin_b
+     * @param string|null $oldKey 旧选项名，如 git_skin_b，null 则只读 newKey
+     * @return mixed
+     */
+    public static function opt($options, $newKey, $oldKey = null) {
+        $v = isset($options->$newKey) && $options->$newKey !== '' && $options->$newKey !== null ? $options->$newKey : null;
+        if ($v !== null) {
+            return $v;
+        }
+        if ($oldKey !== null && isset($options->$oldKey) && $options->$oldKey !== '' && $options->$oldKey !== null) {
+            return $options->$oldKey;
+        }
+        return null;
+    }
+
+    /**
+     * 获取带表前缀的表名
+     * @param string $table 表名
+     * @return string
+     */
+    public static function get_table($table) {
+        $db = Typecho\Db::get();
+        return $db->getPrefix() . $table;
+    }
+
+    /**
+     * 获取归档页 URL（集中管理，便于伪静态或路由变更）
+     * @param \Widget_Options $options
+     * @return string
+     */
+    public static function get_archives_url($options) {
+        return rtrim($options->siteUrl, '/') . '/archives/';
+    }
+
+    /**
+     * 获取随机占位图 URL（统一路径，便于修改）
+     * @param \Widget_Options $options
+     * @return string
+     */
+    public static function get_random_placeholder_url($options) {
+        $random = mt_rand(1, 12);
+        return rtrim($options->themeUrl, '/') . '/img/pic/' . $random . '.jpg';
+    }
+
+    /**
+     * 缩略图解析核心（两个公开函数的共享逻辑）：
+     * 给定已提取的 thumb 字段值与文章内容 HTML，返回第一个可用的绝对 URL；
+     * 若都没有则返回随机占位图。
+     * @param string $thumbValue
+     * @param string $contentHtml
+     * @param \Widget_Options $options
+     * @return string
+     */
+    public static function resolve_thumbnail_url($thumbValue, $contentHtml, $options) {
+        if ($thumbValue && preg_match('/^https?:\/\//i', $thumbValue)) {
+            return htmlspecialchars($thumbValue, ENT_QUOTES, 'UTF-8');
+        }
+        if ($contentHtml && preg_match('/<img.+?src=["\']([^"\']+)["\']/', $contentHtml, $match)
+            && preg_match('/^https?:\/\//i', $match[1])) {
+            return htmlspecialchars($match[1], ENT_QUOTES, 'UTF-8');
+        }
+        return self::get_random_placeholder_url($options);
+    }
+
+    /**
+     * 获取文章缩略图
+     * @param \Widget\Archive $widget
+     * @return string
+     */
+    public static function get_thumbnail($widget) {
+        // 优先：自定义字段 thumb → 附件图片 → 正文第一图
+        $thumbValue = '';
+        if ($widget->fields->thumb) {
+            $thumbValue = $widget->fields->thumb;
+        } elseif (($attach = $widget->attachments(1)->attachment) && $attach && $attach->isImage) {
+            $thumbValue = $attach->url;
+        }
+        return self::resolve_thumbnail_url($thumbValue, $widget->content, $widget->widget('Widget_Options'));
+    }
+
+    /**
+     * 主题色 key → 颜色映射（集中维护）
+     * @param string $skinKey 如 git_skin_b 的值
+     * @return array ['nom' => '#xxx', 'hover' => '#xxx']
+     */
+    public static function get_skin_colors($skinKey) {
+        $map = array(
+            'git_blue_b'   => array('nom' => '#003399', 'hover' => '#002266'),
+            'git_black_b'  => array('nom' => '#616161', 'hover' => '#474747'),
+            'git_purple_b' => array('nom' => '#9932CC', 'hover' => '#7B28A4'),
+            'git_yellow_b' => array('nom' => '#f5e011', 'hover' => '#C9B508'),
+            'git_light_b'  => array('nom' => '#03A9F4', 'hover' => '#2196F3'),
+            'git_green_b'  => array('nom' => '#4CAF50', 'hover' => '#388E3C'),
+        );
+        $default = array('nom' => '#E74C3C', 'hover' => '#D52D1A');
+        return isset($map[$skinKey]) ? $map[$skinKey] : $default;
+    }
+
+    /**
+     * 输出主题色 CSS 变量声明（供 header :root 内联使用）
+     * 选择器规则在 css/base/skin.css 中，通过 var() 引用这两个变量。
+     * @param string $skinKey 如 $this->options->dygita_skin_b
+     * @return string 两行 CSS 变量声明
+     */
+    public static function get_theme_skin_css($skinKey) {
+        $c = self::get_skin_colors($skinKey);
+        return "--dygita-skin-color:{$c['nom']};--dygita-skin-hover:{$c['hover']};";
+    }
+
+    /**
+     * 获取保存的主题偏好（用于 data-theme / 顶栏色等）
+     * @return array ['theme' => string, 'headerColor' => string]
+     */
+    public static function get_saved_theme_prefs() {
+        $options = Typecho\Widget::widget('Widget_Options');
+        $theme = '';
+        $headerColor = '';
+
+        if (isset($options->dygita_theme) && $options->dygita_theme !== null && $options->dygita_theme !== '') {
+            $theme = trim((string) $options->dygita_theme);
+        }
+        if (isset($options->dygita_headerColor) && $options->dygita_headerColor !== null && $options->dygita_headerColor !== '') {
+            $headerColor = trim((string) $options->dygita_headerColor);
+        }
+
+        // 访客兜底：从 Cookie 读取，避免仅 localStorage 导致首屏主题闪烁
+        if ($theme === '' && isset($_COOKIE['dygita_theme_pref'])) {
+            $cookieTheme = trim((string) $_COOKIE['dygita_theme_pref']);
+            if ($cookieTheme === 'light' || $cookieTheme === 'dark') {
+                $theme = $cookieTheme;
+            }
+        }
+        if ($headerColor === '' && isset($_COOKIE['dygita_header_color'])) {
+            $cookieHeaderColor = trim((string) $_COOKIE['dygita_header_color']);
+            if (preg_match('/^#[0-9a-fA-F]{6}$/', $cookieHeaderColor)) {
+                $headerColor = $cookieHeaderColor;
+            }
+        }
+
+        return array('theme' => $theme, 'headerColor' => $headerColor);
+    }
+
+    /**
+     * 获取前端 CONFIG 对象（供 header 内联脚本输出）
+     * @param \Widget_Options $options
+     * @return array
+     */
+    public static function get_config_array($options) {
+        $hostname = $options->siteUrl;
+        return array(
+            'hostname' => $hostname,
+            'likeUrl' => \Typecho\Router::url('do', array('action' => 'dygita-like'), $options->index),
+            'root' => '/',
+            'exturl' => false,
+            'cdn' => array(
+                'provider' => self::opt($options, 'dygita_cdn_provider', 'git_cdn_provider') ?: 'jsdelivr'
+            ),
+            'sidebar' => array(
+                'position' => 'right',
+                'width' => 360,
+                'display' => 'post',
+                'padding' => 18,
+                'offset' => 12,
+                'onmobile' => false
+            ),
+            'back2top' => array(
+                'enable' => true,
+                'sidebar' => false,
+                'scrollpercent' => true
+            ),
+            'copycode' => array(
+                'enable' => true,
+                'show_result' => true,
+                'style' => 'mac'
+            ),
+            'localsearch' => array(
+                'enable' => true,
+                'trigger' => 'auto',
+                'top_n_per_article' => 10,
+                'unescape' => false,
+                'preload' => false
+            ),
+            'motion' => array(
+                'enable' => false,
+                'async' => false,
+                'transition' => array(
+                    'post_block' => 'bounceDownIn',
+                    'post_header' => 'slideDownIn',
+                    'post_body' => 'slideDownIn',
+                    'coll_header' => 'slideLeftIn',
+                    'sidebar' => 'slideUpIn'
+                )
+            )
+        );
+    }
+
+    /**
+     * XSS 防护辅助函数 - 对输出进行转义
+     * @param string $string 要转义的字符串
+     * @return string 转义后的字符串
+     */
+    public static function escape($string) {
+        return htmlspecialchars($string ?? '', ENT_QUOTES, 'UTF-8');
+    }
+
+    /**
+     * 安全输出链接
+     * @param string $url 链接地址
+     * @return string 安全转义后的链接
+     */
+    public static function escape_url($url) {
+        $url = trim($url ?? '');
+        if (empty($url) || $url === '#') {
+            return $url;
+        }
+        if (preg_match('/^https?:\/\//i', $url) || (strlen($url) > 0 && $url[0] === '/')) {
+            return htmlspecialchars($url, ENT_QUOTES, 'UTF-8');
+        }
+        return '';
+    }
+
+    /**
+     * 按 slug 高效获取单个页面（请求级静态缓存）
+     * 解决 header.php 中全量遍历所有页面查找特定 slug 的性能瓶颈
+     * @param string $slug 页面缩略名
+     * @return array|null ['title' => '', 'permalink' => ''] 或 null
+     */
+    public static function get_page_by_slug($slug) {
+        static $cache = [];
+        $slug = trim((string) $slug);
+        if ($slug === '') return null;
+
+        if (isset($cache[$slug])) {
+            return $cache[$slug];
+        }
+
+        $db = \Typecho\Db::get();
+        $row = $db->fetchRow($db->select(['title', 'permalink'])
+            ->from('table.contents')
+            ->where('slug = ?', $slug)
+            ->where('type = ?', 'page')
+            ->where('status = ?', 'publish')
+            ->limit(1));
+
+        if ($row) {
+            $cache[$slug] = ['title' => $row['title'], 'permalink' => $row['permalink']];
+        } else {
+            $cache[$slug] = null;
+        }
+
+        return $cache[$slug];
+    }
+
+    /**
+     * 缓存导航链接配置（请求级静态缓存）
+     * 解决 header.php 中每次请求都 json_decode navLinks 的性能问题
+     * @param string|null $navLinksJson navLinks 字段的原始 JSON 字符串，传 null 时自动获取
+     * @return array 解析后的配置数组 ['links' => [...]]
+     */
+    public static function get_nav_links_cached($navLinksJson = null) {
+        static $parsedCache = null;
+        static $sourceHash = null;
+
+        if ($navLinksJson === null) {
+            $options = \Widget\Options::alloc();
+            $navLinksJson = isset($options->navLinks) ? (string) $options->navLinks : '';
+        }
+
+        $currentHash = md5($navLinksJson);
+        if ($parsedCache === null || $sourceHash !== $currentHash) {
+            $parsedCache = json_decode($navLinksJson, true);
+            if (!is_array($parsedCache)) {
+                $parsedCache = ['links' => []];
+            }
+            if (!isset($parsedCache['links']) || !is_array($parsedCache['links'])) {
+                $parsedCache['links'] = [];
+            }
+            $sourceHash = $currentHash;
+        }
+
+        return $parsedCache;
+    }
+
+    /**
+     * 获取所有页面列表（请求级静态缓存）
+     * 解决 header.php 中每次请求都遍历所有页面的性能问题
+     * @param bool $refresh 强制刷新缓存
+     * @return array [['slug' => '', 'title' => '', 'permalink' => ''], ...]
+     */
+    public static function get_all_pages_cached($refresh = false) {
+        static $cache = null;
+
+        if ($cache !== null && !$refresh) {
+            return $cache;
+        }
+
+        $cache = [];
+        $db = \Typecho\Db::get();
+        $rows = $db->fetchAll($db->select(['slug', 'title', 'permalink'])
+            ->from('table.contents')
+            ->where('type = ?', 'page')
+            ->where('status = ?', 'publish')
+            ->order('order', \Typecho\Db::SORT_ASC));
+
+        foreach ($rows as $row) {
+            $cache[] = [
+                'slug' => $row['slug'],
+                'title' => $row['title'],
+                'permalink' => $row['permalink']
+            ];
+        }
+
+        return $cache;
+    }
+
+    /**
+     * 获取相关文章（三级 fallback：标签 + 分类 → 仅分类 → 热门文章）
+     * 返回 Typecho 标准 Contents Widget，便于模板用 next()/字段属性遍历。
+     * @param int $cid 当前文章 ID
+     * @param int $limit 最多返回条数
+     * @return array ['posts' => \Widget\Contents\Related|null, 'use_hot' => bool]
+     */
+    public static function get_related_posts($cid, $limit = 6) {
+        $db = \Typecho\Db::get();
+        $cid = (int) $cid;
+        $limit = max(1, (int) $limit);
+
+        $buildRelatedWidget = function (array $mids) use ($cid, $limit) {
+            $mids = array_values(array_unique(array_map('intval', $mids)));
+            if (empty($mids)) return null;
+            $tagRows = array();
+            foreach ($mids as $mid) {
+                $tagRows[] = array('mid' => $mid);
+            }
+            $widget = \Widget\Contents\Related::alloc(array(
+                'cid' => $cid,
+                'type' => 'post',
+                'tags' => $tagRows,
+                'limit' => $limit
+            ));
+            return $widget->have() ? $widget : null;
+        };
+
+        // 方法 1：共享 meta（标签 + 分类）
+        $mids = $db->fetchAll($db->select('mid')->from('table.relationships')->where('cid = ?', $cid));
+        if (!empty($mids)) {
+            $widget = $buildRelatedWidget(array_column($mids, 'mid'));
+            if ($widget) return array('posts' => $widget, 'use_hot' => false);
+        }
+
+        // 方法 2：仅分类
+        $catRows = $db->fetchAll(
+            $db->select('table.metas.mid')
+            ->from('table.metas')
+            ->join('table.relationships', 'table.metas.mid = table.relationships.mid')
+            ->where('table.relationships.cid = ?', $cid)
+            ->where('table.metas.type = ?', 'category')
+        );
+        if (!empty($catRows)) {
+            $widget = $buildRelatedWidget(array_column($catRows, 'mid'));
+            if ($widget) return array('posts' => $widget, 'use_hot' => false);
+        }
+
+        // 方法 3：回退到热门文章
+        return array('posts' => null, 'use_hot' => true);
+    }
+
+    /**
+     * 获取相关文章缩略图（兼容数组与 Widget 对象）
+     * @param array|\Widget\Contents $post
+     * @return string
+     */
+    public static function get_related_post_thumbnail($post) {
+        $db = Typecho\Db::get();
+        $options = Typecho\Widget::widget('Widget_Options');
+        $cid = is_array($post) ? intval($post['cid'] ?? 0) : intval($post->cid ?? 0);
+        $content = is_array($post) ? (string)($post['text'] ?? '') : (string)($post->text ?? '');
+        if ($cid <= 0) {
+            return self::get_random_placeholder_url($options);
+        }
+
+        $thumbValue = '';
+        $fieldsTable = self::get_table('fields');
+        $thumb = $db->fetchRow($db->select('str_value')->from($fieldsTable)
+            ->where('cid = ?', $cid)
+            ->where('name = ?', 'thumb'));
+        if ($thumb && !empty($thumb['str_value'])) {
+            $thumbValue = $thumb['str_value'];
+        }
+
+        return self::resolve_thumbnail_url($thumbValue, $content, $options);
+    }
+
+    /**
+     * 获取文章浏览量
+     * @param \Widget\Archive $archive
+     * @return void
+     */
+    public static function get_post_view($archive) {
+        $cid    = $archive->cid;
+        $db     = Typecho\Db::get();
+        $fieldsTable = self::get_table('fields');
+
+        $row = $db->fetchRow($db->select('str_value')->from($fieldsTable)
+            ->where('cid = ?', $cid)
+            ->where('name = ?', 'views'));
+
+        if (!$row) {
+            $db->query($db->insert($fieldsTable)->rows(array(
+                'cid' => $cid,
+                'name' => 'views',
+                'type' => 'str',
+                'str_value' => 0,
+                'int_value' => 0,
+                'float_value' => 0
+            )));
+            $views = 0;
+        } else {
+            $views = intval($row['str_value']);
+        }
+
+        if ($archive->is('single')) {
+             $viewed = Typecho\Cookie::get('extend_contents_views');
+             $viewed = $viewed ? explode(',', $viewed) : array();
+
+             if (!in_array($cid, $viewed)) {
+                 $views++;
+                 $db->query($db->update($fieldsTable)
+                    ->rows(array('str_value' => $views, 'int_value' => $views))
+                    ->where('cid = ?', $cid)
+                    ->where('name = ?', 'views'));
+
+                 $viewed[] = $cid;
+                 if (count($viewed) > 100) {
+                     $viewed = array_slice($viewed, -100);
+                 }
+                 Typecho\Cookie::set('extend_contents_views', implode(',', $viewed));
+             }
+        }
+        echo $views;
+    }
+
+    /**
+     * 获取点赞数量
+     * @param int $cid
+     * @return int
+     */
+    public static function agree_num($cid) {
+        $db = Typecho\Db::get();
+        $fieldsTable = self::get_table('fields');
+        $row = $db->fetchRow($db->select('str_value')->from($fieldsTable)
+            ->where('cid = ?', $cid)
+            ->where('name = ?', 'likes'));
+        if (!$row) {
+            return 0;
+        }
+        return intval($row['str_value']);
+    }
+
+    /**
+     * 获取热门文章
+     * @param int $limit
+     * @return void
+     */
+    public static function get_hot_posts($limit = 5) {
+        $db = Typecho\Db::get();
+        $contentsTable = self::get_table('contents');
+        $fieldsTable = self::get_table('fields');
+        $result = $db->fetchAll($db->select()->from($contentsTable)
+            ->where($contentsTable . '.status = ?', 'publish')
+            ->where($contentsTable . '.type = ?', 'post')
+            ->join($fieldsTable, $contentsTable . '.cid = ' . $fieldsTable . '.cid', Typecho\Db::LEFT_JOIN)
+            ->where($fieldsTable . '.name = ?', 'views')
+            ->order($fieldsTable . '.int_value', Typecho\Db::SORT_DESC)
+            ->limit($limit));
+
+        if ($result) {
+            foreach ($result as $val) {
+                $permalink = Typecho\Router::url('post', $val, Typecho\Widget::widget('Widget_Options')->index);
+                $title = htmlspecialchars($val['title'], ENT_QUOTES, 'UTF-8');
+                echo '<li><a href="' . $permalink . '" title="' . $title . '">' . $title . '</a></li>';
+            }
+        }
+    }
+
+    /**
+     * 获取随机文章 - 优化版本，避免 ORDER BY RAND() 全表扫描和内存溢出
+     * @param int $limit
+     * @return void
+     */
+    public static function get_random_posts($limit = 5) {
+        $db = Typecho\Db::get();
+        $contentsTable = self::get_table('contents');
+        
+        // 内存优化：限制随机池大小为最近 1000 篇文章，避免大型站点内存溢出
+        // 同时避免使用 ORDER BY RAND() 导致的全表扫描和临时表创建
+        $poolSize = 1000;
+        $allCids = $db->fetchAll($db->select('cid')->from($contentsTable)
+            ->where('status = ?', 'publish')
+            ->where('type = ?', 'post')
+            ->order('created', Typecho\Db::SORT_DESC)
+            ->limit($poolSize));
+        
+        if (empty($allCids)) {
+            return;
+        }
+        
+        // 提取 cid 数组
+        $cidArray = array_column($allCids, 'cid');
+        $totalCount = count($cidArray);
+        
+        // 如果文章总数少于需要的数量，直接使用全部
+        if ($totalCount <= $limit) {
+            $selectedCids = $cidArray;
+        } else {
+            // 在 PHP 层面随机选择指定数量的 cid
+            $randomKeys = array_rand($cidArray, $limit);
+            $selectedCids = array();
+            if (is_array($randomKeys)) {
+                foreach ($randomKeys as $key) {
+                    $selectedCids[] = $cidArray[$key];
+                }
+            } else {
+                // array_rand 在只选择 1 个时返回单个值而非数组
+                $selectedCids[] = $cidArray[$randomKeys];
+            }
+        }
+        
+        // 使用 IN 查询获取选中文章的详细信息
+        $result = $db->fetchAll($db->select()->from($contentsTable)
+            ->where('cid IN ?', $selectedCids)
+            ->where('status = ?', 'publish')
+            ->where('type = ?', 'post')
+            ->order('created', Typecho\Db::SORT_DESC));
+        
+        if ($result) {
+            foreach ($result as $val) {
+                $permalink = Typecho\Router::url('post', $val, Typecho\Widget::widget('Widget_Options')->index);
+                $title = htmlspecialchars($val['title'], ENT_QUOTES, 'UTF-8');
+                echo '<li><a href="' . $permalink . '" title="' . $title . '">' . $title . '</a></li>';
+            }
+        }
+    }
+
+    /**
+     * 获取站点统计
+     * @return array
+     */
+    public static function get_stat() {
+        $stat = \Typecho\Widget::widget('Widget\Stat');
+        return array(
+            'posts'      => $stat->publishedPostsNum,
+            'comments'   => $stat->publishedCommentsNum,
+            'categories' => $stat->categoriesNum,
+            'tags'       => $stat->tagsNum,
+        );
+    }
+
+    /**
+     * 解析友情链接文本，返回结构化数组
+     * 每行格式：名称|URL|描述 | 备注
+     * @param string $linksText
+     * @return array
+     */
+    public static function parse_links($linksText) {
+        $result = array();
+        if (!$linksText) return $result;
+        foreach (preg_split('/\r?\n/', $linksText) as $line) {
+            $parts = explode('|', trim($line));
+            if (count($parts) >= 2) {
+                $result[] = array(
+                    'name'        => trim($parts[0]),
+                    'url'         => trim($parts[1]),
+                    'description' => isset($parts[2]) ? trim($parts[2]) : '',
+                    'notes'       => isset($parts[3]) ? trim($parts[3]) : '',
+                );
+            }
+        }
+        return $result;
+    }
+
+    /**
+     * 输出友情链接列表
+     * @return void
+     */
+    public static function get_links() {
+        $options = Typecho\Widget::widget('Widget_Options');
+        foreach (self::parse_links($options->links) as $link) {
+            $name = htmlspecialchars($link['name'], ENT_QUOTES, 'UTF-8');
+            $url  = htmlspecialchars($link['url'],  ENT_QUOTES, 'UTF-8');
+            $desc = htmlspecialchars($link['description'], ENT_QUOTES, 'UTF-8');
+            echo '<li><a href="' . $url . '" title="' . $desc . '" target="_blank" rel="noopener">' . $name . '</a></li>';
+        }
+    }
+
+    /**
+     * 获取下载页数据（文章信息 + 下载自定义字段）
+     * @param int $pid 文章 cid
+     * @return array|null 成功返回 ['post'=>..., 'name'=>..., 'size'=>..., 'links'=>..., 'permalink'=>...], 失败返回 null
+     */
+    public static function get_download_data($pid) {
+        $db = Typecho\Db::get();
+        $post = $db->fetchRow($db->select()->from(self::get_table('contents'))
+            ->where('cid = ?', intval($pid))->where('type = ?', 'post')->where('status = ?', 'publish'));
+        if (!$post) return null;
+
+        $fields = $db->fetchAll($db->select()->from(self::get_table('fields'))->where('cid = ?', intval($pid)));
+        $fieldMap = array();
+        foreach ($fields as $field) {
+            $fieldMap[$field['name']] = $field['str_value'];
+        }
+
+        $name  = isset($fieldMap['git_download_name']) ? $fieldMap['git_download_name'] : '';
+        $size  = isset($fieldMap['git_download_size']) ? $fieldMap['git_download_size'] : '';
+        $links = isset($fieldMap['git_download_link']) ? $fieldMap['git_download_link'] : '';
+        if (!$name || !$size || !$links) return null;
+
+        $options = Typecho\Widget::widget('Widget_Options');
+        return array(
+            'post'      => $post,
+            'name'      => $name,
+            'size'      => $size,
+            'links'     => $links,
+            'permalink' => Typecho\Router::url('post', $post, $options->index),
+        );
+    }
+
+    /**
+     * 获取所有已发布文章，按发布时间倒序，用于归档页面
+     * @return array
+     */
+    public static function get_archive_posts() {
+        $db = Typecho\Db::get();
+        $table = self::get_table('contents');
+        return $db->fetchAll($db->select()->from($table)
+            ->where('type = ?', 'post')
+            ->where('status = ?', 'publish')
+            ->order('created', Typecho\Db::SORT_DESC));
+    }
+
+    /**
+     * 主题版本
+     * @return string
+     */
+    public static function theme_version() {
+        return '1.1.0';
+    }
+
+    /**
+     * 检查更新
+     * @return bool
+     */
+    public static function check_update() {
+        // 这里可以添加更新检查逻辑
+        // 例如：从远程服务器获取最新版本信息并与当前版本比较
+        // 暂时返回 false，表示无更新
+        return false;
+    }
 }
 
 /* 增加: 缩略图获取 */
@@ -871,6 +1578,9 @@ function dygita_get_config_array($options) {
         'likeUrl' => \Typecho\Router::url('do', array('action' => 'dygita-like'), $options->index),
         'root' => '/',
         'exturl' => false,
+        'cdn' => array(
+            'provider' => dygita_opt($options, 'dygita_cdn_provider', 'git_cdn_provider') ?: 'jsdelivr'
+        ),
         'sidebar' => array(
             'position' => 'right',
             'width' => 360,
@@ -906,6 +1616,9 @@ function dygita_get_config_array($options) {
                 'coll_header' => 'slideLeftIn',
                 'sidebar' => 'slideUpIn'
             )
+        ),
+        'cdn' => array(
+            'provider' => dygita_opt($options, 'dygita_cdn_provider', 'git_cdn_provider') ?: 'jsdelivr'
         )
     );
 }
@@ -1188,16 +1901,19 @@ function dygita_get_hot_posts($limit = 5) {
     }
 }
 
-/* 增加: 随机文章 - 优化版本，避免 ORDER BY RAND() 全表扫描 */
+/* 增加: 随机文章 - 优化版本，避免 ORDER BY RAND() 全表扫描和内存溢出 */
 function dygita_get_random_posts($limit = 5) {
     $db = Typecho\Db::get();
     $contentsTable = dygita_get_table('contents');
     
-    // 性能优化：先获取所有已发布文章的 cid，在 PHP 层面随机选择
-    // 避免使用 ORDER BY RAND() 导致的全表扫描和临时表创建
+    // 内存优化：限制随机池大小为最近 1000 篇文章，避免大型站点内存溢出
+    // 同时避免使用 ORDER BY RAND() 导致的全表扫描和临时表创建
+    $poolSize = 1000;
     $allCids = $db->fetchAll($db->select('cid')->from($contentsTable)
         ->where('status = ?', 'publish')
-        ->where('type = ?', 'post'));
+        ->where('type = ?', 'post')
+        ->order('created', Typecho\Db::SORT_DESC)
+        ->limit($poolSize));
     
     if (empty($allCids)) {
         return;
@@ -1463,4 +2179,120 @@ function themeInit($archive) {
         echo 'success';
         exit;
     }
-};
+}
+
+/**
+ * 全站搜索索引生成与管理
+ */
+class Dygita_Search_Index {
+    const OPTION_KEY = 'dygita_search_index';
+
+    /**
+     * 生成完整的搜索索引（所有文章）
+     */
+    public static function generate() {
+        $db = Typecho\Db::get();
+        $contentsTable = dygita_get_table('contents');
+
+        $posts = $db->fetchAll($db->select('cid', 'title', 'text', 'created')
+            ->from($contentsTable)
+            ->where('type = ?', 'post')
+            ->where('status = ?', 'publish')
+            ->order('created', Typecho\Db::SORT_DESC));
+
+        $index = [];
+        foreach ($posts as $post) {
+            $text = $post['text'];
+            if (strpos($text, '<!--markdown-->') === 0) {
+                $text = substr($text, 15);
+                $text = \Utils\Markdown::convert($text);
+            }
+            $excerpt = trim(strip_tags($text));
+            $excerpt = mb_substr($excerpt, 0, 120, 'UTF-8');
+            $permalink = Typecho\Router::url('post', $post, Typecho\Widget::widget('Widget_Options')->index);
+
+            $index[] = [
+                'title' => $post['title'],
+                'url' => $permalink,
+                'excerpt' => $excerpt,
+                'date' => date('Y-m-d', $post['created'])
+            ];
+        }
+
+        $json = json_encode($index, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
+        self::saveToOptions($json);
+        return $json;
+    }
+
+    /**
+     * 保存索引到 options 表
+     */
+    private static function saveToOptions($json) {
+        $db = Typecho\Db::get();
+        $optionsTable = dygita_get_table('options');
+
+        $existing = $db->fetchRow($db->select()->from($optionsTable)->where('name = ?', self::OPTION_KEY));
+        if ($existing) {
+            $db->query($db->update($optionsTable)
+                ->rows(['value' => $json])
+                ->where('name = ?', self::OPTION_KEY));
+        } else {
+            $db->query($db->insert($optionsTable)->rows([
+                'name' => self::OPTION_KEY,
+                'value' => $json,
+                'user' => 0
+            ]));
+        }
+    }
+
+    /**
+     * 获取搜索索引
+     */
+    public static function get() {
+        $db = Typecho\Db::get();
+        $optionsTable = dygita_get_table('options');
+
+        $row = $db->fetchRow($db->select('value')->from($optionsTable)->where('name = ?', self::OPTION_KEY));
+        if ($row && !empty($row['value'])) {
+            return $row['value'];
+        }
+
+        return self::generate();
+    }
+
+    /**
+     * 文章发布/更新时重建索引
+     */
+    public static function onArticleChange($contents, $widget) {
+        try {
+            self::generate();
+        } catch (\Throwable $e) {
+            // 静默失败，绝不影响文章保存流程，但记录日志便于排查问题
+            error_log('[Dygita_Search_Index] onArticleChange failed: ' . $e->getMessage());
+        }
+    }
+}
+
+/**
+ * 搜索索引 Action — 通过 /action/dygita-search-index 路由提供搜索索引
+ */
+class Dygita_Action_Search_Index extends \Typecho\Widget implements \Widget\ActionInterface {
+    public function execute() {}
+
+    public function action() {
+        header('Content-Type: application/json; charset=utf-8');
+        header('Cache-Control: public, max-age=3600');
+        echo Dygita_Search_Index::get();
+        exit;
+    }
+}
+
+/**
+ * 注册搜索索引 Action
+ */
+function dygita_register_search_action() {
+    $actionTable = \Typecho\Widget::widget('Widget_Options')->actionTable;
+    if (empty($actionTable['dygita-search-index'])) {
+        \Utils\Helper::addAction('dygita-search-index', 'Dygita_Action_Search_Index');
+    }
+}

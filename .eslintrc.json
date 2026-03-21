@@ -34,6 +34,7 @@
     "no-inner-declarations": "off"
   },
   "globals": {
-    "DYGITA": "writable"
+    "DYGITA": "writable",
+    "particlesJS": "readonly"
   }
 }

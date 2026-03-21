@@ -2,42 +2,51 @@
 
 /* Merged from base/reset.css: Typography + link styles */
 h1, h2, h3, h4, h5, h6{
-	font-family: 'Lato', "PingFang SC", "Microsoft YaHei", sans-serif;
-	font-weight: bold;
-	line-height: 1.5;
-	margin: 20px 0 15px;
+    font-family: Lato, 'PingFang SC', 'Microsoft YaHei', sans-serif;
+    font-weight: bold;
+    line-height: 1.5;
+    margin: 20px 0 15px;
 }
+
 h1{
-	font-size: 1.5em;
+    font-size: 1.5em;
 }
+
 h2{
-	font-size: 1.375em;
+    font-size: 1.375em;
 }
+
 h3{
-	font-size: 1.25em;
+    font-size: 1.25em;
 }
+
 h4{
-	font-size: 1.125em;
+    font-size: 1.125em;
 }
+
 h5{
-	font-size: 1em;
+    font-size: 1em;
 }
+
 h6{
-	font-size: 0.875em;
+    font-size: 0.875em;
 }
+
 p{
-	margin: 0 0 20px 0;
+    margin: 0 0 20px;
 }
+
 a, span.exturl{
-	border-bottom: 1px solid var(--border-color);
-	color: var(--link-color);
-	outline: 0;
-	text-decoration: none;
-	overflow-wrap: break-word;
-	word-wrap: break-word;
-	cursor: pointer;
+    border-bottom: 1px solid var(--border-color);
+    color: var(--link-color);
+    outline: 0;
+    text-decoration: none;
+    overflow-wrap: break-word;
+    word-wrap: break-word;
+    cursor: pointer;
 }
+
 a:hover, span.exturl:hover{
-	border-bottom-color: var(--link-hover-color);
-	color: var(--link-hover-color);
+    border-bottom-color: var(--link-hover-color);
+    color: var(--link-hover-color);
 }

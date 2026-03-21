@@ -9,412 +9,468 @@ Description: Dygita Theme Ported to Typecho
 
 /* Base Style Reset */
 html{
-  line-height: 1.15;
-  -webkit-text-size-adjust: 100%;
-}body{
-  margin: 0;
-  padding: 0;
-  background-color: var(--body-bg-color);
-  color: var(--text-color);
-}main{
-  display: block;
-}h1{
-  font-size: 2em;
-  margin: 0.67em 0;
-}hr{
-  box-sizing: content-box;
-  height: 0;
-  overflow: visible;
-}pre{
-  font-family: monospace, monospace;
-  font-size: 1em;
-}a{
-  background: transparent;
-}abbr[title]{
-  border-bottom: none;
-  text-decoration: underline;
-  text-decoration: underline dotted;
-}b, strong{
-  font-weight: bolder;
-}code, kbd, samp{
-  font-family: monospace, monospace;
-  font-size: 1em;
-}small{
-  font-size: 80%;
-}sub, sup{
-  font-size: 75%;
-  line-height: 0;
-  position: relative;
-  vertical-align: baseline;
-}sub{
-  bottom: -0.25em;
-}sup{
-  top: -0.5em;
-}img{
-  border-style: none;
-}button, input, optgroup, select, textarea{
-  font-family: inherit;
-  font-size: 100%;
-  line-height: 1.15;
-  margin: 0;
-}button, input{
-  overflow: visible;
-}button, select{
-  text-transform: none;
-}button, [type='button'], [type='reset'], [type='submit']{
-  appearance: button;
-  -webkit-appearance: button;
-}button::-moz-focus-inner, [type='button']::-moz-focus-inner, [type='reset']::-moz-focus-inner, [type='submit']::-moz-focus-inner{
-  border-style: none;
-  padding: 0;
-}button:-moz-focusring, [type='button']:-moz-focusring, [type='reset']:-moz-focusring, [type='submit']:-moz-focusring{
-  outline: 1px dotted ButtonText;
-}fieldset{
-  padding: 0.35em 0.75em 0.625em;
-}legend{
-  box-sizing: border-box;
-  color: inherit;
-  display: table;
-  max-width: 100%;
-  padding: 0;
-  white-space: normal;
-}progress{
-  vertical-align: baseline;
-}textarea{
-  overflow: auto;
-}[type='checkbox'], [type='radio']{
-  box-sizing: border-box;
-  padding: 0;
-}[type='number']::-webkit-inner-spin-button, [type='number']::-webkit-outer-spin-button{
-  height: auto;
-}[type='search']{
-  outline-offset: -2px;
-  appearance: textfield;
-  -webkit-appearance: textfield;
-}[type='search']::-webkit-search-decoration{
-  -webkit-appearance: none;
-}::-webkit-file-upload-button{
-  font: inherit;
-  -webkit-appearance: button;
-}details{
-  display: block;
-}summary{
-  display: list-item;
-}template{
-  display: none;
-}[hidden]{
-  display: none;
-}::selection{
-  background: #262a30;
-  color: #eee;
+    line-height: 1.15;
+    text-size-adjust: 100%;
+}
+
+body{
+    margin: 0;
+    padding: 0;
+    background-color: var(--body-bg-color);
+    color: var(--text-color);
+}
+
+main{
+    display: block;
+}
+
+h1{
+    font-size: 2em;
+    margin: 0.67em 0;
+}
+
+hr{
+    box-sizing: content-box;
+    height: 0;
+    overflow: visible;
+}
+
+pre{
+    font-family: monospace;
+    font-size: 1em;
+}
+
+a{
+    background: transparent;
+}
+
+abbr[title]{
+    border-bottom: none;
+    text-decoration: underline;
+    text-decoration: underline dotted;
+}
+
+b, strong{
+    font-weight: bolder;
+}
+
+code, kbd, samp{
+    font-family: monospace;
+    font-size: 1em;
+}
+
+small{
+    font-size: 80%;
+}
+
+sub, sup{
+    font-size: 75%;
+    line-height: 0;
+    position: relative;
+    vertical-align: baseline;
+}
+
+sub{
+    bottom: -0.25em;
+}
+
+sup{
+    top: -0.5em;
+}
+
+img{
+    border-style: none;
+}
+
+button, input, optgroup, select, textarea{
+    font-family: inherit;
+    font-size: 100%;
+    line-height: 1.15;
+    margin: 0;
+}
+
+button, input{
+    overflow: visible;
+}
+
+button, select{
+    text-transform: none;
+}
+
+button, [type='button'], [type='reset'], [type='submit']{
+    appearance: button;
+}
+
+button::-moz-focus-inner, [type='button']::-moz-focus-inner, [type='reset']::-moz-focus-inner, [type='submit']::-moz-focus-inner{
+    border-style: none;
+    padding: 0;
+}
+
+button:-moz-focusring, [type='button']:-moz-focusring, [type='reset']:-moz-focusring, [type='submit']:-moz-focusring{
+    outline: 1px dotted ButtonText;
+}
+
+fieldset{
+    padding: 0.35em 0.75em 0.625em;
+}
+
+legend{
+    box-sizing: border-box;
+    color: inherit;
+    display: table;
+    max-width: 100%;
+    padding: 0;
+    white-space: normal;
+}
+
+progress{
+    vertical-align: baseline;
+}
+
+textarea{
+    overflow: auto;
+}
+
+[type='checkbox'], [type='radio']{
+    box-sizing: border-box;
+    padding: 0;
+}
+
+[type='number']::-webkit-inner-spin-button, [type='number']::-webkit-outer-spin-button{
+    height: auto;
+}
+
+[type='search']{
+    outline-offset: -2px;
+    appearance: textfield;
+}
+
+[type='search']::-webkit-search-decoration{
+    appearance: none;
+}
+
+::-webkit-file-upload-button{
+    font: inherit;
+    appearance: button;
+}
+
+details{
+    display: block;
+}
+
+summary{
+    display: list-item;
+}
+
+template{
+    display: none;
+}
+
+[hidden]{
+    display: none;
+}
+
+::selection{
+    background: #262a30;
+    color: #eee;
 }/* Disable unintended hover transforms globally */
 *, *::before, *::after{
-  --tw-translate-x: 0;
-  --tw-translate-y: 0;
-  --tw-rotate: 0;
-  --tw-skew-x: 0;
-  --tw-skew-y: 0;
-  --tw-scale-x: 1;
-  --tw-scale-y: 1;
+    --tw-translate-x: 0;
+    --tw-translate-y: 0;
+    --tw-rotate: 0;
+    --tw-skew-x: 0;
+    --tw-skew-y: 0;
+    --tw-scale-x: 1;
+    --tw-scale-y: 1;
 }/* Body Styles */
 html, body{
-  height: 100%;
-  width: 100%;
-  margin: 0;
-  padding: 0;
-}body{
-  background: var(--body-bg-color);
-  color: var(--text-color);
-  font-family: 'Lato', "PingFang SC", "Microsoft YaHei", sans-serif;
-  font-size: 1em;
-  line-height: 2;
+    height: 100%;
+    width: 100%;
+    margin: 0;
+    padding: 0;
 }
 
-@media (max-width: 992px) {body{
-    padding-left: 0;
-    padding-right: 0;
-  }
+body{
+    background: var(--body-bg-color);
+    color: var(--text-color);
+    font-family: Lato, 'PingFang SC', 'Microsoft YaHei', sans-serif;
+    font-size: 1em;
+    line-height: 2;
+}
+
+@media (width <= 992px) {body{
+        padding-left: 0;
+        padding-right: 0;
+    }
 }/* 确保所有容器元素都使用暗色主题 */
 .main-container, .content-wrap, .footer, .footer-inner, .footer-copyright{
-  background-color: var(--body-bg-color);
-  color: var(--text-color);
-  border-color: var(--border-color);
+    background-color: var(--body-bg-color);
+    color: var(--text-color);
+    border-color: var(--border-color);
 }/* 确保所有表单元素都使用暗色主题 */
 input, textarea, select{
-  background-color: var(--content-bg-color);
-  color: var(--text-color);
-  border-color: var(--border-color);
+    background-color: var(--content-bg-color);
+    color: var(--text-color);
+    border-color: var(--border-color);
 }/* 确保所有链接都使用暗色主题 */
 a{
-  color: var(--link-color);
-}a:hover{
-  color: var(--link-hover-color);
+    color: var(--link-color);
+}
+
+a:hover{
+    color: var(--link-hover-color);
 }/* 确保所有标题都使用暗色主题 */
 h1, h2, h3, h4, h5, h6{
-  color: var(--text-color);
+    color: var(--text-color);
 }/* 确保所有列表都使用暗色主题 */
 ul, ol{
-  color: var(--text-color);
+    color: var(--text-color);
 }/* 确保所有表格都使用暗色主题 */
 table{
-  border-color: var(--border-color);
-}th, td{
-  background-color: var(--content-bg-color);
-  color: var(--text-color);
-  border-color: var(--border-color);
-}/* 确保所有引用块都使用暗色主�?*/
+    border-color: var(--border-color);
+}
+
+th, td{
+    background-color: var(--content-bg-color);
+    color: var(--text-color);
+    border-color: var(--border-color);
+}/* 确保所有引用块都使用暗色主�? */
 blockquote{
-  background-color: var(--content-bg-color);
-  color: var(--blockquote-color);
-  border-color: var(--border-color);
-}/* 确保所有代码块都使用暗色主�?*/
+    background-color: var(--content-bg-color);
+    color: var(--blockquote-color);
+    border-color: var(--border-color);
+}/* 确保所有代码块都使用暗色主�? */
 code, pre{
-  background-color: var(--code-bg-color);
-  color: var(--code-text-color);
-  border-color: var(--border-color);
+    background-color: var(--code-bg-color);
+    color: var(--code-text-color);
+    border-color: var(--border-color);
 }/* 确保所有按钮都使用暗色主题 */
 button, .btn{
-  background-color: var(--btn-default-bg);
-  color: var(--btn-default-color);
-  border-color: var(--btn-default-border-color);
-}button:hover, .btn:hover{
-  background-color: var(--btn-default-hover-bg);
-  color: var(--btn-default-hover-color);
-  border-color: var(--btn-default-hover-border-color);
+    background-color: var(--btn-default-bg);
+    color: var(--btn-default-color);
+    border-color: var(--btn-default-border-color);
+}
+
+button:hover, .btn:hover{
+    background-color: var(--btn-default-hover-bg);
+    color: var(--btn-default-hover-color);
+    border-color: var(--btn-default-hover-border-color);
 }/* 确保所有导航元素都使用暗色主题 */
 .m-nav, .m-nav-all, .nav-container, .nav, .nav li, .nav li a{
-  background-color: var(--menu-item-bg-color);
-  color: var(--text-color);
-  border-color: var(--border-color);
-}.nav li a:hover, .nav li.active a{
-  background-color: var(--hover-bg-color);
-  color: var(--link-hover-color);
-}/* 确保侧边栏使用暗色主�?*/
+    background-color: var(--menu-item-bg-color);
+    color: var(--text-color);
+    border-color: var(--border-color);
+}
+
+.nav li a:hover, .nav li.active a{
+    background-color: var(--hover-bg-color);
+    color: var(--link-hover-color);
+}/* 确保侧边栏使用暗色主�? */
 .sidebar, .sidebar-left, .sidebar-right{
-  background-color: var(--sidebar-bg-color);
-  color: var(--text-color);
-  border-color: var(--border-color);
-}/* 确保小部件使用暗色主�?*/
+    background-color: var(--sidebar-bg-color);
+    color: var(--text-color);
+    border-color: var(--border-color);
+}/* 确保小部件使用暗色主�? */
 .widget{
-  background-color: var(--card-bg-color);
-  color: var(--text-color);
-  border-color: var(--border-color);
+    background-color: var(--card-bg-color);
+    color: var(--text-color);
+    border-color: var(--border-color);
 }/* 确保分页控件使用暗色主题 */
 .pagination{
-  background-color: var(--content-bg-color);
-  color: var(--text-color);
-}.pagination ul li a, .pagination ul li span{
-  background-color: var(--hover-bg-color);
-  color: var(--link-color);
-  border-color: var(--border-color);
-}/* 确保文章元信息使用暗色主�?*/
+    background-color: var(--content-bg-color);
+    color: var(--text-color);
+}
+
+.pagination ul li a, .pagination ul li span{
+    background-color: var(--hover-bg-color);
+    color: var(--link-color);
+    border-color: var(--border-color);
+}/* 确保文章元信息使用暗色主�? */
 .auth-span, .auth-span .muted, .auth-span .muted a{
-  color: var(--text-color);
-}/* 确保标签云使用暗色主�?*/
+    color: var(--text-color);
+}/* 确保标签云使用暗色主�? */
 #tag-cloud-tags{
-  background-color: var(--content-bg-color);
-  color: var(--text-color);
+    background-color: var(--content-bg-color);
+    color: var(--text-color);
 }/* 确保返回顶部按钮使用暗色主题 */
 .back-to-top{
-  background-color: var(--btn-default-bg);
-  color: var(--btn-default-color);
-  border-color: var(--btn-default-border-color);
-  z-index: var(--z-back-to-top, 1300);
-}.back-to-top:hover{
-  background-color: var(--btn-default-hover-bg);
-  color: var(--btn-default-hover-color);
-  border-color: var(--btn-default-hover-border-color);
-}/* 确保阅读进度条使用暗色主�?*/
-.reading-progress-bar{
-  background-color: var(--link-color);
-  z-index: var(--z-reading-progress, 1400);
+    background-color: var(--btn-default-bg);
+    color: var(--btn-default-color);
+    border-color: var(--btn-default-border-color);
+    z-index: var(--z-back-to-top, 1300);
 }
+
+.back-to-top:hover{
+    background-color: var(--btn-default-hover-bg);
+    color: var(--btn-default-hover-color);
+    border-color: var(--btn-default-hover-border-color);
+}/* 确保阅读进度条使用暗色主�? */
+.reading-progress-bar{
+    background-color: var(--link-color);
+    z-index: var(--z-reading-progress, 1400);
+}
+
 /* 确保文章标题和内容在暗黑主题下使用正确的颜色 */
 .article-title{
-  color: var(--text-color);
-}.article-header .meta{
-  color: var(--blockquote-color);
+    color: var(--text-color);
+}
+
+.article-header .meta{
+    color: var(--blockquote-color);
 }/* 确保评论表单在所有主题下使用正确的颜色和样式 */
 #respond{
-  background: var(--content-bg-color);
-  border-top: 1px solid var(--border-color);
-  padding: 30px;
-  border-radius: 8px;
-  margin-top: 30px;
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
-}#comment-form{
-  background: var(--content-bg-color);
-  color: var(--text-color);
-}#comment-form input, #comment-form textarea{
-  background: var(--content-bg-color);
-  border: 1px solid var(--border-color);
-  color: var(--text-color);
-  border-radius: 4px;
-  padding: 12px 16px;
-  width: 100%;
-  box-sizing: border-box;
-  margin-bottom: 15px;
-  font-size: 14px;
-  transition: border-color 0.3s ease, box-shadow 0.3s ease;
-}#comment-form input:focus, #comment-form textarea:focus{
-  border-color: var(--link-color);
-  outline: none;
-  box-shadow: 0 0 0 3px rgba(88, 166, 255, 0.1);
-}#comment-form #submit{
-  background: var(--link-color);
-  border: 1px solid var(--link-color);
-  color: var(--brand-color);
-  padding: 10px 20px;
-  border-radius: 4px;
-  cursor: pointer;
-  transition: all 0.3s ease;
-}#comment-form #submit:hover{
-  background: var(--link-hover-color);
-  border-color: var(--link-hover-color);
-}.highlight, pre{
-  background: var(--code-bg-color);
-  color: var(--code-text-color);
-}code{
-  background: var(--code-bg-color);
-  color: var(--code-text-color);
-}/* 暗色主题下的导航栏调�?*/
+    background: var(--content-bg-color);
+    border-top: 1px solid var(--border-color);
+    padding: 30px;
+    border-radius: 8px;
+    margin-top: 30px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+}
+
+#comment-form{
+    background: var(--content-bg-color);
+    color: var(--text-color);
+}
+
+#comment-form input, #comment-form textarea{
+    background: var(--content-bg-color);
+    border: 1px solid var(--border-color);
+    color: var(--text-color);
+    border-radius: 4px;
+    padding: 12px 16px;
+    width: 100%;
+    box-sizing: border-box;
+    margin-bottom: 15px;
+    font-size: 14px;
+    transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+#comment-form input:focus, #comment-form textarea:focus{
+    border-color: var(--link-color);
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(88, 166, 255, 0.1);
+}
+
+#comment-form #submit{
+    background: var(--link-color);
+    border: 1px solid var(--link-color);
+    color: var(--brand-color);
+    padding: 10px 20px;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+#comment-form #submit:hover{
+    background: var(--link-hover-color);
+    border-color: var(--link-hover-color);
+}
+
+.highlight, pre{
+    background: var(--code-bg-color);
+    color: var(--code-text-color);
+}
+
+code{
+    background: var(--code-bg-color);
+    color: var(--code-text-color);
+}/* 暗色主题下的导航栏调�? */
 .header{
-  background-color: var(--header-bg-color);
-}.header a{
-  color: var(--header-text-color);
+    background-color: var(--header-bg-color);
+}
+
+.header a{
+    color: var(--header-text-color);
 }/* Image Styles */
 iframe, img, video{
-  display: block;
-  margin-left: auto;
-  margin-right: auto;
-  max-width: 100%;
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+    max-width: 100%;
 }/* Horizontal Rule Styles */
 hr{
-  background-image: repeating-linear-gradient(-45deg, #ddd, #ddd 4px, transparent 4px, transparent 8px);
-  background-image: repeating-linear-gradient(-45deg, var(--border-color), var(--border-color) 4px, transparent 4px, transparent 8px);
-  border: 0;
-  height: 3px;
-  margin: 40px 0;
+    background-image: repeating-linear-gradient(-45deg, #ddd, #ddd 4px, transparent 4px, transparent 8px);
+    background-image: repeating-linear-gradient(-45deg, var(--border-color), var(--border-color) 4px, transparent 4px, transparent 8px);
+    border: 0;
+    height: 3px;
+    margin: 40px 0;
 }/* Blockquote Styles */
 blockquote{
-  border-left: 4px solid var(--border-color);
-  color: var(--blockquote-color);
-  margin: 0;
-  padding: 0 15px;
-}blockquote cite::before{
-  content: '-';
-  padding: 0 5px;
+    border-left: 4px solid var(--border-color);
+    color: var(--blockquote-color);
+    margin: 0;
+    padding: 0 15px;
+}
+
+blockquote cite::before{
+    content: '-';
+    padding: 0 5px;
 }/* KBD Styles */
 kbd{
-  background-color: var(--code-bg-color);
-  background-image: linear-gradient(var(--hover-bg-color), var(--content-bg-color), var(--hover-bg-color));
-  border: 1px solid var(--border-color);
-  border-radius: 0.2em;
-  box-shadow: 0.1em 0.1em 0.2em rgba(0, 0, 0, 0.1);
-  color: var(--text-color);
-  font-family: inherit;
-  padding: 0.1em 0.3em;
-  white-space: nowrap;
+    background-color: var(--code-bg-color);
+    background-image: linear-gradient(var(--hover-bg-color), var(--content-bg-color), var(--hover-bg-color));
+    border: 1px solid var(--border-color);
+    border-radius: 0.2em;
+    box-shadow: 0.1em 0.1em 0.2em rgba(0, 0, 0, 0.1);
+    color: var(--text-color);
+    font-family: inherit;
+    padding: 0.1em 0.3em;
+    white-space: nowrap;
 }
+
 img.lazy{
-  opacity: 0;
-  transition: opacity 0.3s ease-in-out;
-}img{
-  max-width: 100%;
-  height: auto;
+    opacity: 0;
+    transition: opacity 0.3s ease-in-out;
 }
 
-
-/* Merged from legacy: style-legacy-global.css */
-
-html{
-	background-color: var(--body-bg-color);
-}
-body{
-	background-color: var(--body-bg-color);
-	color: var(--text-color);
-}
-[data-theme="dark"] *{
-	-webkit-tap-highlight-color: transparent;
-}[data-theme="dark"] a:active, [data-theme="dark"] a:focus, [data-theme="dark"] button:active, [data-theme="dark"] button:focus{
-	background-color: transparent;
-}/* Button Styles */
-.btn{
-	background: var(--btn-default-bg);
-	border: 2px solid var(--btn-default-border-color);
-	border-radius: 2px;
-	color: var(--btn-default-color);
-	display: inline-block;
-	font-size: 0.875em;
-	line-height: 2;
-	padding: 0 20px;
-	text-decoration: none;
-	transition-property: background-color;
-	transition-delay: 0s;
-	transition-duration: 0.2s;
-	transition-timing-function: ease-in-out;
-}.btn:hover{
-	background: var(--btn-default-hover-bg);
-	border-color: var(--btn-default-hover-border-color);
-	color: var(--btn-default-hover-color);
-}.btn+.btn{
-	margin: 0 0 8px 8px;
-}/* KBD Styles */
-kbd{
-	background-color: var(--code-bg-color);
-	background-image: linear-gradient(var(--hover-bg-color), var(--content-bg-color), var(--hover-bg-color));
-	border: 1px solid var(--border-color);
-	border-radius: 0.2em;
-	box-shadow: 0.1em 0.1em 0.2em rgba(0, 0, 0, 0.1);
-	color: var(--text-color);
-	font-family: inherit;
-	padding: 0.1em 0.3em;
-	white-space: nowrap;
-}.excerpt:hover, .excerpt *:hover{
-	transform: none;
-	text-decoration: none;
+.excerpt:hover, .excerpt *:hover{
+    transform: none;
+    text-decoration: none;
 }/* Header Styles */
 .container{
-	max-width: 1640px;
-	width: 100%;
-	margin: 0 auto;
-	padding: 0;
-	box-sizing: border-box;
-}.container-inner{
-	width: 100%;
-	max-width: 1440px;
-	margin: 0 auto;
-	margin-top: 30px;
-	padding: 0;
-	box-sizing: border-box;
+    max-width: 1640px;
+    width: 100%;
+    margin: 0 auto;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+.container-inner{
+    width: 100%;
+    max-width: 1440px;
+    margin: 0 auto;
+    margin-top: 30px;
+    padding: 0;
+    box-sizing: border-box;
 }
 
 /* Skip navigation link: hidden until focused */
 .skip-nav {
-	position: absolute;
-	top: -100%;
-	left: 50%;
-	transform: translateX(-50%);
-	z-index: 10000;
-	padding: 0.75em 1.5em;
-	background: var(--bg-color, #fff);
-	color: var(--text-color, #333);
-	border: 2px solid var(--accent-color, #E74C3C);
-	border-radius: 4px;
-	font-size: 14px;
-	text-decoration: none;
-	white-space: nowrap;
+    position: absolute;
+    top: -100%;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 10000;
+    padding: 0.75em 1.5em;
+    background: var(--bg-color, #fff);
+    color: var(--text-color, #333);
+    border: 2px solid var(--accent-color, #e74c3c);
+    border-radius: 4px;
+    font-size: 14px;
+    text-decoration: none;
+    white-space: nowrap;
 }
+
 .skip-nav:focus {
-	top: 10px;
+    top: 10px;
 }
 
 /* Reduced motion: disable animations for users who prefer it */
 @media (prefers-reduced-motion: reduce) {
-	*, *::before, *::after {
-		animation-duration: 0.01ms !important;
-		animation-iteration-count: 1 !important;
-		transition-duration: 0.01ms !important;
-		scroll-behavior: auto !important;
-	}
+    *, *::before, *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+        scroll-behavior: auto !important;
+    }
 }

@@ -27,6 +27,7 @@
     pointer-events: auto;
     max-width: 350px;
     word-break: break-word;
+
     /* 动画初始状态 */
     transform: translateX(400px);
     opacity: 0;
@@ -69,14 +70,14 @@
 }
 
 /* 暗色主题适配 */
-[data-theme="dark"] .dygita-toast {
+[data-theme='dark'] .dygita-toast {
     background: var(--toast-bg-dark, #2d2d2d);
     color: var(--toast-text-dark, #c9d1d9);
     box-shadow: 0 2px 12px rgba(0, 0, 0, 0.4);
 }
 
 /* 响应式：小屏幕下全宽显示 */
-@media (max-width: 480px) {
+@media (width <= 480px) {
     #dygita-toast-container {
         left: 10px;
         right: 10px;

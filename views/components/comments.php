@@ -7,10 +7,34 @@
     if ($commentSystem === 'gitalk') {
         // Gitalk 评论系统（出于安全原因，不再在前端暴露 clientSecret）
         if (!empty($this->options->gitalkClientID) && !empty($this->options->gitalkRepo) && !empty($this->options->gitalkOwner)) {
+            $cdnProvider = dygita_opt($this->options, 'dygita_cdn_provider', 'git_cdn_provider') ?: 'jsdelivr';
+            $gitalkCssUrl = '';
+            $gitalkJsUrl = '';
+            switch ($cdnProvider) {
+                case 'staticfile':
+                    $gitalkCssUrl = 'https://cdn.staticfile.org/gitalk/1.7.2/gitalk.min.css';
+                    $gitalkJsUrl = 'https://cdn.staticfile.org/gitalk/1.7.2/gitalk.min.js';
+                    break;
+                case 'bootcdn':
+                    $gitalkCssUrl = 'https://cdn.bootcdn.net/ajax/libs/gitalk/1.7.2/gitalk.min.css';
+                    $gitalkJsUrl = 'https://cdn.bootcdn.net/ajax/libs/gitalk/1.7.2/gitalk.min.js';
+                    break;
+                case 'cdnjs':
+                    $gitalkCssUrl = 'https://cdnjs.cloudflare.com/ajax/libs/gitalk/1.7.2/gitalk.min.css';
+                    $gitalkJsUrl = 'https://cdnjs.cloudflare.com/ajax/libs/gitalk/1.7.2/gitalk.min.js';
+                    break;
+                case 'local':
+                    $gitalkCssUrl = $this->options->themeUrl('vendor/gitalk/gitalk.css');
+                    $gitalkJsUrl = $this->options->themeUrl('vendor/gitalk/gitalk.min.js');
+                    break;
+                default:
+                    $gitalkCssUrl = 'https://cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.css';
+                    $gitalkJsUrl = 'https://cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.js';
+            }
     ?>
         <div id="gitalk-container"></div>
-        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.css">
-        <script src="https://cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.js"></script>
+        <link rel="stylesheet" href="<?php echo $gitalkCssUrl; ?>">
+        <script src="<?php echo $gitalkJsUrl; ?>"></script>
         <!--
             安全提示：Gitalk 需要在前端暴露 clientSecret，这是 GitHub OAuth App 的已知限制。
             建议：1) 使用 GitHub OAuth App（非 GitHub App），其 clientSecret 泄露风险较低
@@ -35,9 +59,27 @@
     } elseif ($commentSystem === 'valine') {
         // Valine 评论系统
         if (!empty($this->options->valineAppId) && !empty($this->options->valineAppKey)) {
+            $cdnProvider = dygita_opt($this->options, 'dygita_cdn_provider', 'git_cdn_provider') ?: 'jsdelivr';
+            $valineJsUrl = '';
+            switch ($cdnProvider) {
+                case 'staticfile':
+                    $valineJsUrl = 'https://cdn.staticfile.org/valine/1.5.1/Valine.min.js';
+                    break;
+                case 'bootcdn':
+                    $valineJsUrl = 'https://cdn.bootcdn.net/ajax/libs/valine/1.5.1/Valine.min.js';
+                    break;
+                case 'cdnjs':
+                    $valineJsUrl = 'https://cdnjs.cloudflare.com/ajax/libs/valine/1.5.1/Valine.min.js';
+                    break;
+                case 'local':
+                    $valineJsUrl = $this->options->themeUrl('vendor/valine/Valine.min.js');
+                    break;
+                default:
+                    $valineJsUrl = 'https://cdn.jsdelivr.net/npm/valine@1/dist/Valine.min.js';
+            }
     ?>
         <div id="vcomment"></div>
-        <script src="https://cdn.jsdelivr.net/npm/valine@1/dist/Valine.min.js"></script>
+        <script src="<?php echo $valineJsUrl; ?>"></script>
         <script>
         new Valine({
             el: '#vcomment',

@@ -157,33 +157,39 @@
         // PJAX 内存泄漏修复：存储清理函数
         var cleanupFunctions = [];
 
+        var buildSearchIndexPromise = null;
+
         function buildSearchIndex() {
-            if (searchIndexReady) return;
+            if (searchIndexReady) return Promise.resolve();
+            if (buildSearchIndexPromise) return buildSearchIndexPromise;
 
-            var rawIndex = getSearchIndex();
-            if (!rawIndex || !rawIndex.length) {
-                searchIndexCache = [];
+            buildSearchIndexPromise = getSearchIndex().then(function(rawIndex) {
+                if (!rawIndex || !rawIndex.length) {
+                    searchIndexCache = [];
+                    searchIndexReady = true;
+                    return;
+                }
+
+                // 预处理：将标题和摘要转为小写，建立倒排索引
+                searchIndexCache = rawIndex.map(function(item) {
+                    var title = String(item.title || '');
+                    var excerpt = String(item.excerpt || '');
+                    return {
+                        title: title,
+                        excerpt: excerpt,
+                        url: item.url || '#',
+                        date: item.date || '',
+                        // 预先转换为小写，避免搜索时重复转换
+                        searchText: (title + ' ' + excerpt).toLowerCase(),
+                        // 计算权重：标题匹配权重更高
+                        titleLower: title.toLowerCase()
+                    };
+                });
+
                 searchIndexReady = true;
-                return;
-            }
-
-            // 预处理：将标题和摘要转为小写，建立倒排索引
-            searchIndexCache = rawIndex.map(function(item) {
-                var title = String(item.title || '');
-                var excerpt = String(item.excerpt || '');
-                return {
-                    title: title,
-                    excerpt: excerpt,
-                    url: item.url || '#',
-                    date: item.date || '',
-                    // 预先转换为小写，避免搜索时重复转换
-                    searchText: (title + ' ' + excerpt).toLowerCase(),
-                    // 计算权重：标题匹配权重更高
-                    titleLower: title.toLowerCase()
-                };
             });
 
-            searchIndexReady = true;
+            return buildSearchIndexPromise;
         }
 
         function ensureSearchPopup() {
@@ -294,18 +300,19 @@
                 e.preventDefault();
             }
 
-            // 延迟构建索引，只在首次打开搜索时构建
-            if (!searchIndexReady) {
-                buildSearchIndex();
-            }
-
             ensureSearchPopup();
             searchOverlay.classList.add('search-active');
             var input = searchPopup ? searchPopup.querySelector('.search-input') : null;
             if (input) {
                 input.focus();
-                renderLiveSearch(input.value.trim());
             }
+
+            // 延迟构建索引，只在首次打开搜索时构建
+            buildSearchIndex().then(function() {
+                if (input) {
+                    renderLiveSearch(input.value.trim());
+                }
+            });
         }
 
         var triggers = [
@@ -351,9 +358,39 @@
             });
         }
 
+        var searchIndexPromise = null;
+
+        function fetchSearchIndex() {
+            if (searchIndexPromise) return searchIndexPromise;
+
+            var searchIndexUrl = window.DYGITA && window.DYGITA.searchIndexUrl
+                ? window.DYGITA.searchIndexUrl
+                : '/action/dygita-search-index';
+
+            searchIndexPromise = fetch(searchIndexUrl, {
+                credentials: 'same-origin'
+            })
+                .then(function(res) {
+                    if (!res.ok) throw new Error('HTTP ' + res.status);
+                    return res.json();
+                })
+                .then(function(data) {
+                    window.DYGITA = window.DYGITA || {};
+                    window.DYGITA.searchIndex = data;
+                    return data;
+                })
+                .catch(function() {
+                    return [];
+                });
+
+            return searchIndexPromise;
+        }
+
         function getSearchIndex() {
-            if (!window.DYGITA || !Array.isArray(window.DYGITA.searchIndex)) return [];
-            return window.DYGITA.searchIndex;
+            if (window.DYGITA && Array.isArray(window.DYGITA.searchIndex)) {
+                return Promise.resolve(window.DYGITA.searchIndex);
+            }
+            return fetchSearchIndex();
         }
 
         function renderLiveSearch(keyword) {
@@ -364,79 +401,72 @@
                 return;
             }
 
-            // 确保索引已构建
-            if (!searchIndexReady) {
-                buildSearchIndex();
-            }
+            // 确保索引已构建（异步）
+            buildSearchIndex().then(function() {
+                var normalizedKeyword = keyword.toLowerCase();
+                var matched = [];
 
-            var normalizedKeyword = keyword.toLowerCase();
-            var matched = [];
+                // 性能优化：使用预处理的索引，避免重复转换小写
+                // 同时实现优先级排序：标题匹配 > 内容匹配
+                var titleMatches = [];
+                var contentMatches = [];
 
-            // 性能优化：使用预处理的索引，避免重复转换小写
-            // 同时实现优先级排序：标题匹配 > 内容匹配
-            var titleMatches = [];
-            var contentMatches = [];
+                for (var i = 0; i < searchIndexCache.length; i++) {
+                    var item = searchIndexCache[i];
 
-            for (var i = 0; i < searchIndexCache.length; i++) {
-                var item = searchIndexCache[i];
+                    // 检查是否匹配
+                    var matchIndex = item.searchText.indexOf(normalizedKeyword);
+                    if (matchIndex === -1) continue;
 
-                // 检查是否匹配
-                var matchIndex = item.searchText.indexOf(normalizedKeyword);
-                if (matchIndex === -1) continue;
-
-                // 区分标题匹配和内容匹配，标题匹配优先级更高
-                var titleMatchIndex = item.titleLower.indexOf(normalizedKeyword);
-                if (titleMatchIndex !== -1) {
-                    titleMatches.push({
-                        item: item,
-                        matchIndex: titleMatchIndex
-                    });
-                } else {
-                    contentMatches.push({
-                        item: item,
-                        matchIndex: matchIndex
-                    });
+                    // 区分标题匹配和内容匹配，标题匹配优先级更高
+                    var titleMatchIndex = item.titleLower.indexOf(normalizedKeyword);
+                    if (titleMatchIndex !== -1) {
+                        titleMatches.push({
+                            item: item,
+                            matchIndex: titleMatchIndex
+                        });
+                    } else {
+                        contentMatches.push({
+                            item: item,
+                            matchIndex: matchIndex
+                        });
+                    }
                 }
 
-                // 早期退出：如果已经找到足够的结果
-                if (titleMatches.length + contentMatches.length >= liveSearchLimit * 2) {
-                    break;
+                // 排序：标题匹配靠前，同类型按匹配位置排序（越靠前越相关）
+                titleMatches.sort(function(a, b) {
+                    return a.matchIndex - b.matchIndex;
+                });
+                contentMatches.sort(function(a, b) {
+                    return a.matchIndex - b.matchIndex;
+                });
+
+                // 合并结果，标题匹配优先
+                matched = titleMatches.concat(contentMatches).slice(0, liveSearchLimit);
+
+                if (!matched.length) {
+                    resultContent.innerHTML = '<div id="no-result"><p style="color:#999;font-size:14px;"><i class="fa fa-frown-o"></i> 未找到与 "<strong>' + escapeHtml(keyword) + '</strong>" 相关的内容，按回车尝试全站搜索</p></div>';
+                    return;
                 }
-            }
 
-            // 排序：标题匹配靠前，同类型按匹配位置排序（越靠前越相关）
-            titleMatches.sort(function(a, b) {
-                return a.matchIndex - b.matchIndex;
+                var html = '';
+                for (var j = 0; j < matched.length; j++) {
+                    var row = matched[j].item;
+                    var rowTitle = escapeHtml(row.title || '无标题');
+                    var rowUrl = escapeHtml(row.url);
+                    var rowExcerpt = escapeHtml(row.excerpt);
+                    var rowDate = escapeHtml(row.date);
+                    html += '<p class="search-result">'
+                        + '<a href="' + rowUrl + '" style="display:block;color:inherit;text-decoration:none;">'
+                        + '<strong style="display:block;margin-bottom:4px;">' + rowTitle + '</strong>'
+                        + '<span style="display:block;font-size:12px;color:#999;margin-bottom:4px;">' + rowDate + '</span>'
+                        + '<span style="display:block;font-size:13px;line-height:1.6;color:inherit;">' + rowExcerpt + '</span>'
+                        + '</a>'
+                        + '</p>';
+                }
+                html += '<p class="search-result" style="color:#999;font-size:12px;"><i class="fa fa-keyboard-o"></i> 回车可使用完整搜索页查看更多结果</p>';
+                resultContent.innerHTML = html;
             });
-            contentMatches.sort(function(a, b) {
-                return a.matchIndex - b.matchIndex;
-            });
-
-            // 合并结果，标题匹配优先
-            matched = titleMatches.concat(contentMatches).slice(0, liveSearchLimit);
-
-            if (!matched.length) {
-                resultContent.innerHTML = '<div id="no-result"><p style="color:#999;font-size:14px;"><i class="fa fa-frown-o"></i> 未找到与 "<strong>' + escapeHtml(keyword) + '</strong>" 相关的内容，按回车尝试全站搜索</p></div>';
-                return;
-            }
-
-            var html = '';
-            for (var j = 0; j < matched.length; j++) {
-                var row = matched[j].item;
-                var rowTitle = escapeHtml(row.title || '无标题');
-                var rowUrl = escapeHtml(row.url);
-                var rowExcerpt = escapeHtml(row.excerpt);
-                var rowDate = escapeHtml(row.date);
-                html += '<p class="search-result">'
-                    + '<a href="' + rowUrl + '" style="display:block;color:inherit;text-decoration:none;">'
-                    + '<strong style="display:block;margin-bottom:4px;">' + rowTitle + '</strong>'
-                    + '<span style="display:block;font-size:12px;color:#999;margin-bottom:4px;">' + rowDate + '</span>'
-                    + '<span style="display:block;font-size:13px;line-height:1.6;color:inherit;">' + rowExcerpt + '</span>'
-                    + '</a>'
-                    + '</p>';
-            }
-            html += '<p class="search-result" style="color:#999;font-size:12px;"><i class="fa fa-keyboard-o"></i> 回车可使用完整搜索页查看更多结果</p>';
-            resultContent.innerHTML = html;
         }
 
         // PJAX 内存泄漏修复：返回清理函数
@@ -467,6 +497,8 @@
             // 清除搜索索引缓存，确保 PJAX 跳转后使用新页面的 searchIndex 数据
             searchIndexCache = null;
             searchIndexReady = false;
+            buildSearchIndexPromise = null;
+            searchIndexPromise = null;
         };
     }
 

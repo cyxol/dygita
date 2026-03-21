@@ -15,9 +15,10 @@
     visibility: hidden ;
     opacity: 0 ;
     pointer-events: none ;
-}.search-pop-overlay{
     z-index: var(--z-overlay, 1500) ;
-}.search-pop-overlay.search-active{
+}
+
+.search-pop-overlay.search-active{
     visibility: visible ;
     opacity: 1 ;
     pointer-events: auto ;
@@ -110,19 +111,23 @@
 /* Download page - file links (download.php) */
 #filelink a{
     margin: 25px 15px 25px 0;
-    color: #4094EF;
+    color: #4094ef;
     padding: 5px 50px;
-    font-family: "Microsoft YaHei", "微软雅黑", sans-serif;
+    font-family: 'Microsoft YaHei', '微软雅黑', sans-serif;
     font-size: 19px;
-    border: 1px solid #4094EF;
+    border: 1px solid #4094ef;
     box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
     text-decoration: none;
-}#filelink a:hover{
-    background: #4094EF;
-    color: #FFF;
+}
+
+#filelink a:hover{
+    background: #4094ef;
+    color: #fff;
     transition-duration: 0.3s;
-    border-color: #FFF;
-}#filelink .filelink-inner{
+    border-color: #fff;
+}
+
+#filelink .filelink-inner{
     text-align: center;
 }
 
@@ -130,12 +135,18 @@
 .googlo-tougao .field-row{
     text-align: left;
     padding-top: 10px;
-}.googlo-tougao .field-row input, .googlo-tougao .field-row textarea{
+}
+
+.googlo-tougao .field-row input, .googlo-tougao .field-row textarea{
     width: 98%;
-}.googlo-tougao .actions-row{
+}
+
+.googlo-tougao .actions-row{
     text-align: center;
     padding-top: 10px;
-}.googlo-tougao .actions-row .button, .googlo-tougao .actions-row .buttn{
+}
+
+.googlo-tougao .actions-row .button, .googlo-tougao .actions-row .buttn{
     width: 100px;
     height: 30px;
 }
@@ -151,7 +162,9 @@
     margin: 40px 0;
     position: relative;
     overflow: hidden;
-}.error-404::before{
+}
+
+.error-404::before{
     content: '';
     position: absolute;
     top: -50%;
@@ -171,10 +184,14 @@
 }
 
 @keyframes gradient-shift {0%{ transform: translateX(0) translateY(0); }50%{ transform: translateX(-25%) translateY(-25%); }100%{ transform: translateX(0) translateY(0); }
-}.error-404 > *{
+}
+
+.error-404 > *{
     position: relative;
     z-index: var(--z-header-content, 1);
-}.error-404 .error-code{
+}
+
+.error-404 .error-code{
     font-size: 120px;
     font-weight: bold;
     color: var(--link-color);
@@ -185,23 +202,31 @@
 }
 
 @keyframes bounce {0%, 20%, 50%, 80%, 100%{ transform: translateY(0); }40%{ transform: translateY(-20px); }60%{ transform: translateY(-10px); }
-}.error-404 .error-message{
+}
+
+.error-404 .error-message{
     font-size: 24px;
     color: var(--text-color);
     margin: 20px 0;
-}.error-404 .error-description{
+}
+
+.error-404 .error-description{
     font-size: 16px;
     color: #999;
     margin: 20px 0 40px;
     max-width: 500px;
     margin-left: auto;
     margin-right: auto;
-}.error-404 .error-actions{
+}
+
+.error-404 .error-actions{
     margin: 30px 0;
     display: flex;
     justify-content: center;
     gap: 15px;
-}.error-404 .error-actions .btn{
+}
+
+.error-404 .error-actions .btn{
     display: inline-flex;
     align-items: center;
     justify-content: center;
@@ -212,27 +237,41 @@
     font-weight: bold;
     transition: all 0.3s ease;
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-}.error-404 .error-actions .btn i{
+}
+
+.error-404 .error-actions .btn i{
     margin-right: 8px;
-}.error-404 .error-actions .btn-primary{
+}
+
+.error-404 .error-actions .btn-primary{
     background: var(--link-color);
     color: white;
-}.error-404 .error-actions .btn-primary:hover{
+}
+
+.error-404 .error-actions .btn-primary:hover{
     background: var(--hover-color);
     transform: translateY(-3px);
     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
-}.error-404 .error-actions .btn-secondary{
+}
+
+.error-404 .error-actions .btn-secondary{
     background: #f0f0f0;
     color: var(--text-color);
-}.error-404 .error-actions .btn-secondary:hover{
+}
+
+.error-404 .error-actions .btn-secondary:hover{
     background: #e0e0e0;
     transform: translateY(-3px);
     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-}.error-404 .search-box{
+}
+
+.error-404 .search-box{
     margin: 40px auto;
     max-width: 500px;
     position: relative;
-}.error-404 .search-box input{
+}
+
+.error-404 .search-box input{
     width: 100%;
     padding: 15px 50px 15px 20px;
     border: 2px solid #ddd;
@@ -240,11 +279,15 @@
     font-size: 14px;
     transition: all 0.3s ease;
     box-sizing: border-box;
-}.error-404 .search-box input:focus{
+}
+
+.error-404 .search-box input:focus{
     outline: none;
     border-color: var(--link-color);
     box-shadow: 0 0 0 3px rgba(231, 76, 60, 0.1);
-}.error-404 .search-box button{
+}
+
+.error-404 .search-box button{
     position: absolute;
     right: 5px;
     top: 50%;
@@ -257,10 +300,14 @@
     height: 40px;
     cursor: pointer;
     transition: all 0.3s ease;
-}.error-404 .search-box button:hover{
+}
+
+.error-404 .search-box button:hover{
     background: var(--hover-color);
     transform: translateY(-50%) scale(1.05);
-}.error-404 .content-section{
+}
+
+.error-404 .content-section{
     display: flex;
     flex-wrap: wrap;
     justify-content: center;
@@ -269,46 +316,68 @@
     max-width: 900px;
     margin-left: auto;
     margin-right: auto;
-}.error-404 .content-block{
+}
+
+.error-404 .content-block{
     flex: 1 1 calc(50% - 20px);
     min-width: 300px;
     text-align: left;
-}.error-404 .content-block h3{
+}
+
+.error-404 .content-block h3{
     font-size: 18px;
     color: var(--text-color);
     margin-bottom: 20px;
     padding-bottom: 10px;
     border-bottom: 2px solid var(--link-color);
     display: inline-block;
-}.error-404 .content-block ul{
+}
+
+.error-404 .content-block ul{
     list-style: none;
     padding: 0;
-}.error-404 .content-block li{
+}
+
+.error-404 .content-block li{
     padding: 10px 0;
     border-bottom: 1px solid #f0f0f0;
     transition: all 0.3s ease;
-}.error-404 .content-block li:hover{
+}
+
+.error-404 .content-block li:hover{
     padding-left: 10px;
-}.error-404 .content-block li:last-child{
+}
+
+.error-404 .content-block li:last-child{
     border-bottom: none;
-}.error-404 .content-block a{
+}
+
+.error-404 .content-block a{
     color: var(--link-color);
     text-decoration: none;
     transition: color 0.3s ease;
     display: flex;
     align-items: center;
-}.error-404 .content-block a i{
+}
+
+.error-404 .content-block a i{
     margin-right: 8px;
     font-size: 12px;
-}.error-404 .content-block a:hover{
+}
+
+.error-404 .content-block a:hover{
     color: var(--hover-color);
     text-decoration: underline;
-}.error-404 .tags-cloud{
+}
+
+.error-404 .tags-cloud{
     display: flex;
     flex-wrap: wrap;
     gap: 10px;
     margin-top: 20px;
-}.error-404 .tags-cloud a{
+}
+
+.error-404 .tags-cloud a{
     background: #f0f0f0;
     color: var(--text-color);
     padding: 5px 15px;
@@ -316,35 +385,49 @@
     font-size: 13px;
     text-decoration: none;
     transition: all 0.3s ease;
-}.error-404 .tags-cloud a:hover{
+}
+
+.error-404 .tags-cloud a:hover{
     background: var(--link-color);
     color: white;
     transform: translateY(-2px);
 }
 
-@media (max-width: 768px) {.error-404{
+@media (width <= 768px) {.error-404{
         padding: 40px 15px;
         margin: 20px 0;
-    }.error-404 .error-code{
+    }
+
+    .error-404 .error-code{
         font-size: 80px;
-    }.error-404 .error-message{
+    }
+
+    .error-404 .error-message{
         font-size: 18px;
-    }.error-404 .error-actions{
+    }
+
+    .error-404 .error-actions{
         flex-direction: column;
         align-items: center;
         gap: 10px;
-    }.error-404 .error-actions .btn{
+    }
+
+    .error-404 .error-actions .btn{
         width: 200px;
-    }.error-404 .content-section{
+    }
+
+    .error-404 .content-section{
         flex-direction: column;
         gap: 30px;
-    }.error-404 .content-block{
+    }
+
+    .error-404 .content-block{
         flex: 1 1 100%;
     }
 }
 
 /* Mobile: keep hero header consistent with desktop (background/avatar/subtitle/title) */
-@media (max-width: 992px){
+@media (width <= 992px){
     .l-header{
         display: block !important;
     }
@@ -374,7 +457,7 @@
 }
 
 /* Mobile homepage list: compact left-thumbnail + right-text layout */
-@media (max-width: 768px){
+@media (width <= 768px){
     .index.posts-expand .excerpt,
     .index.posts-expand .excerpt-one{
         margin-bottom: 5px !important;
@@ -384,9 +467,9 @@
         display: grid;
         grid-template-columns: 96px minmax(0, 1fr);
         grid-template-areas:
-            "focus header"
-            "focus note"
-            "auth auth";
+            'focus header'
+            'focus note'
+            'auth auth';
         column-gap: 12px;
         row-gap: 6px;
         align-items: start;
