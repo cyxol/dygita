@@ -15,6 +15,7 @@ const path = require('path');
 
 const cssFiles = [
     'css/base/variables.css',
+    'css/base/skin.css',
     'css/base/reset.css',
     'css/base/typography.css',
     'css/layout/header.css',

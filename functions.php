@@ -435,29 +435,32 @@ function themeConfig($form)
 }
 
 /* 增加: 缩略图获取 */
+/**
+ * 缩略图解析核心（两个公开函数的共享逻辑）：
+ * 给定已提取的 thumb 字段值与文章内容 HTML，返回第一个可用的绝对 URL；
+ * 若都没有则返回随机占位图。
+ */
+function dygita_resolve_thumbnail_url($thumbValue, $contentHtml, $options) {
+    if ($thumbValue && preg_match('/^https?:\/\//i', $thumbValue)) {
+        return htmlspecialchars($thumbValue, ENT_QUOTES, 'UTF-8');
+    }
+    if ($contentHtml && preg_match('/<img.+?src=["\']([^"\']+)["\']/', $contentHtml, $match)
+        && preg_match('/^https?:\/\//i', $match[1])) {
+        return htmlspecialchars($match[1], ENT_QUOTES, 'UTF-8');
+    }
+    return dygita_get_random_placeholder_url($options);
+}
+
 function dygita_get_thumbnail($widget)
 {
-    $url = '';
-
-    // 1. 自定义字段 'thumb'
+    // 优先：自定义字段 thumb → 附件图片 → 正文第一图
+    $thumbValue = '';
     if ($widget->fields->thumb) {
-        $url = $widget->fields->thumb;
+        $thumbValue = $widget->fields->thumb;
+    } elseif (($attach = $widget->attachments(1)->attachment) && $attach && $attach->isImage) {
+        $thumbValue = $attach->url;
     }
-    // 2. 附件中的第一张图片
-    elseif (($attach = $widget->attachments(1)->attachment) && $attach && $attach->isImage) {
-        $url = $attach->url;
-    }
-    // 3. 文章内容中的第一张图片
-    elseif (preg_match('/<img.+?src=["\']([^"\']+)["\']/', $widget->content, $match)) {
-        $url = $match[1];
-    }
-
-    if ($url && preg_match('/^https?:\/\//i', $url)) {
-        return htmlspecialchars($url, ENT_QUOTES, 'UTF-8');
-    }
-
-    // 4. 随机占位图
-    return dygita_get_random_placeholder_url($widget->widget('Widget_Options'));
+    return dygita_resolve_thumbnail_url($thumbValue, $widget->content, $widget->widget('Widget_Options'));
 }
 
 /**
@@ -567,15 +570,14 @@ function dygita_get_skin_colors($skinKey) {
 }
 
 /**
- * 输出主题色相关 CSS 规则（供 header 内联样式使用）
- * @param string $skinKey 如 $this->options->git_skin_b
- * @return string CSS 规则文本
+ * 输出主题色 CSS 变量声明（供 header :root 内联使用）
+ * 选择器规则在 css/base/skin.css 中，通过 var() 引用这两个变量。
+ * @param string $skinKey 如 $this->options->dygita_skin_b
+ * @return string 两行 CSS 变量声明
  */
 function dygita_get_theme_skin_css($skinKey) {
     $c = dygita_get_skin_colors($skinKey);
-    $skin_nom = $c['nom'];
-    $skin_hover = $c['hover'];
-    return ".navbar .nav li:hover a, .navbar .nav li.current-menu-item a, .navbar .nav li.current-menu-parent a, .navbar .nav li.current_page_item a, .navbar .nav li.current-post-ancestor a,.toggle-search ,#submit ,.pagination ul>.active>a,.pagination ul>.active>span,.bdcs-container .bdcs-search-form-submit,.metacat a{background: {$skin_nom};}.footer,.title h2,.card-item .cardpricebtn{color: {$skin_nom};}.bdcs-container .bdcs-search-form-submit ,.bdcs-container .bdcs-search {border-color: {$skin_nom};}.pagination ul>li>a:hover,.navbar .nav li a:focus, .navbar .nav li a:hover,.toggle-search:hover,#submit:hover,.cardpricebtn .cardbuy {background-color: {$skin_hover};}.tooltip-inner{background-color:{$skin_hover};}.tooltip.top .tooltip-arrow{border-top-color:{$skin_hover};}.tooltip.right .tooltip-arrow{border-right-color:{$skin_hover};}.tooltip.left .tooltip-arrow{border-left-color:{$skin_hover};}.tooltip.bottom .tooltip-arrow{border-bottom-color:{$skin_hover};}";
+    return "--dygita-skin-color:{$c['nom']};--dygita-skin-hover:{$c['hover']};";
 }
 
 /**
@@ -727,22 +729,16 @@ function dygita_get_related_post_thumbnail($post)
     $db = Typecho\Db::get();
     $options = Typecho\Widget::widget('Widget_Options');
 
-    // 1. 自定义字段 'thumb'
+    $thumbValue = '';
     $fieldsTable = dygita_get_table('fields');
     $thumb = $db->fetchRow($db->select('str_value')->from($fieldsTable)
         ->where('cid = ?', $post['cid'])
         ->where('name = ?', 'thumb'));
     if ($thumb && !empty($thumb['str_value'])) {
-        return $thumb['str_value'];
+        $thumbValue = $thumb['str_value'];
     }
 
-    // 2. 文章内容中的第一张图片
-    if (isset($post['text']) && preg_match('/<img.+?src=["\']([^"\']+)["\']/', $post['text'], $match)) {
-        return $match[1];
-    }
-
-    // 3. 随机占位图
-    return dygita_get_random_placeholder_url($options);
+    return dygita_resolve_thumbnail_url($thumbValue, isset($post['text']) ? $post['text'] : '', $options);
 }
 
 /* 增加: 浏览量统计 */

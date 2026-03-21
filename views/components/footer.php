@@ -72,6 +72,17 @@ endif; ?>
 </div>
 <div class="reading-progress-bar" role="progressbar" aria-label="<?php dygita_e('阅读进度'); ?>" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"></div>
 
+<template id="tpl-search-popup">
+    <div class="search-header">
+        <span class="search-icon"><i class="fa fa-search"></i></span>
+        <form method="post" action="" id="search-form-popup" class="search-input-container" role="search">
+            <input type="text" class="search-input" placeholder="<?php dygita_e('请输入关键词搜索...'); ?>" name="s" id="search-input-js" />
+        </form>
+        <span class="popup-btn-close"><i class="fa fa-times"></i></span>
+    </div>
+    <div id="search-result"><div id="no-result"><i class="fa fa-search fa-5x"></i></div></div>
+</template>
+
 <script>
     requestAnimationFrame(function(){requestAnimationFrame(function(){document.documentElement.classList.remove('no-transitions')})});
 </script>

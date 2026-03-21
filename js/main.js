@@ -98,15 +98,10 @@
             if (!searchPopup) {
                 searchPopup = document.createElement('div');
                 searchPopup.className = 'search-popup';
-                searchPopup.innerHTML =
-                    '<div class="search-header">' +
-                    '<span class="search-icon"><i class="fa fa-search"></i></span>' +
-                    '<form method="post" action="" id="search-form-popup" class="search-input-container" role="search">' +
-                    '<input type="text" class="search-input" placeholder="请输入关键词搜索..." name="s" id="search-input-js" />' +
-                    '</form>' +
-                    '<span class="popup-btn-close"><i class="fa fa-times"></i></span>' +
-                    '</div>' +
-                    '<div id="search-result"><div id="no-result"><i class="fa fa-search fa-5x"></i></div></div>';
+                var tpl = document.getElementById('tpl-search-popup');
+                if (tpl) {
+                    searchPopup.appendChild(tpl.content.cloneNode(true));
+                }
                 searchOverlay.appendChild(searchPopup);
             }
 
@@ -191,7 +186,6 @@
             });
         }
 
-        // Search popup DOM is lazily created on first open to avoid no-CSS fallback duplication.
     }
 
     function initTocInteraction() {

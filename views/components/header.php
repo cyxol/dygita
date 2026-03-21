@@ -332,10 +332,8 @@ endif; ?>
     <!-- 合并后的主题样式（由分层 CSS 源文件构建生成） -->
     <link rel="stylesheet" href="<?php $this->options->themeUrl('css/build.css'); ?>?v=<?php echo filemtime(dirname(__DIR__, 2) . '/css/build.css'); ?>">
 
-    <!-- 动态主题色样式 -->
-    <style>
-        <?php echo dygita_get_theme_skin_css(dygita_opt($this->options, 'dygita_skin_b', 'git_skin_b') ?: 'git_red_b'); ?>
-    </style>
+    <!-- 动态主题色变量 (规则在 css/base/skin.css) -->
+    <style>:root{<?php echo dygita_get_theme_skin_css(dygita_opt($this->options, 'dygita_skin_b', 'git_skin_b') ?: 'git_red_b'); ?>}</style>
 </head>
 
 <body itemscope itemtype="http://schema.org/WebPage">

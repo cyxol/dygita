@@ -1,4 +1,4 @@
-/* Dygita Theme - Build: 2026-03-21T15:23:00.776Z */
+/* Dygita Theme - Build: 2026-03-21T15:33:11.834Z */
 
 /* === css/base/variables.css === */
 /* Dygita CSS 层次：变量层（设计令牌，仅定义 CSS 变量） */
@@ -91,6 +91,55 @@
   --post-bg-color: #2d2d2d;
   --post-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
 }
+
+/* === css/base/skin.css === */
+/* Dygita Skin Color — uses CSS variables set inline by PHP */
+
+/* Background: skin color */
+.navbar .nav li:hover a,
+.navbar .nav li.current-menu-item a,
+.navbar .nav li.current-menu-parent a,
+.navbar .nav li.current_page_item a,
+.navbar .nav li.current-post-ancestor a,
+.toggle-search,
+#submit,
+.pagination ul > .active > a,
+.pagination ul > .active > span,
+.bdcs-container .bdcs-search-form-submit,
+.metacat a {
+    background: var(--dygita-skin-color);
+}
+
+/* Text: skin color */
+.footer,
+.title h2,
+.card-item .cardpricebtn {
+    color: var(--dygita-skin-color);
+}
+
+/* Border: skin color */
+.bdcs-container .bdcs-search-form-submit,
+.bdcs-container .bdcs-search {
+    border-color: var(--dygita-skin-color);
+}
+
+/* Hover: skin hover color */
+.pagination ul > li > a:hover,
+.navbar .nav li a:focus,
+.navbar .nav li a:hover,
+.toggle-search:hover,
+#submit:hover,
+.cardpricebtn .cardbuy {
+    background-color: var(--dygita-skin-hover);
+}
+
+/* Tooltips */
+.tooltip-inner { background-color: var(--dygita-skin-hover); }
+.tooltip.top    .tooltip-arrow { border-top-color:    var(--dygita-skin-hover); }
+.tooltip.right  .tooltip-arrow { border-right-color:  var(--dygita-skin-hover); }
+.tooltip.left   .tooltip-arrow { border-left-color:   var(--dygita-skin-hover); }
+.tooltip.bottom .tooltip-arrow { border-bottom-color: var(--dygita-skin-hover); }
+
 
 /* === css/base/reset.css === */
 /* Dygita CSS 层次：基础层（Reset + HTML 元素默认样式） */
