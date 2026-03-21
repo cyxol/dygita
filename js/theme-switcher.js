@@ -3,6 +3,14 @@
  * 依赖: window.DYGITA.savedTheme, window.DYGITA.savedHeaderColor, window.DYGITA.config.hostname
  */
 (function() {
+    function setCookie(name, value, days) {
+        var maxAge = Math.max(1, parseInt(days, 10) || 365) * 24 * 60 * 60;
+        var cookie = encodeURIComponent(name) + '=' + encodeURIComponent(value)
+            + '; path=/; max-age=' + String(maxAge) + '; SameSite=Lax';
+        if (location.protocol === 'https:') cookie += '; Secure';
+        document.cookie = cookie;
+    }
+
     function safeStorage(method, key, value) {
         try {
             if (typeof localStorage === 'undefined') return null;
@@ -47,6 +55,7 @@
                 themeToggle.innerHTML = '<i class="fa fa-moon-o"></i>';
             }
             safeStorage('set', 'theme', newTheme);
+            setCookie('dygita_theme_pref', newTheme, 365);
             dygitaSavePreference('theme', newTheme);
         });
     }
@@ -68,6 +77,7 @@
             var newColor = headerColors[currentColorIndex];
             document.documentElement.style.setProperty('--header-bg-color', newColor);
             safeStorage('set', 'headerColor', newColor);
+            setCookie('dygita_header_color', newColor, 365);
             dygitaSavePreference('headerColor', newColor);
         });
     }

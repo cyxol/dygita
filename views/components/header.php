@@ -323,10 +323,10 @@ endif; ?>
     <!-- PrismJS: core + autoloader（按需加载语言，替代 6 个固定语言文件） -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/prismjs@1/themes/prism-tomorrow.min.css" onerror="this.onerror=null;this.href='https://unpkg.com/prismjs@1/themes/prism-tomorrow.min.css'">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/prismjs@1/plugins/toolbar/prism-toolbar.min.css" onerror="this.onerror=null;this.href='https://unpkg.com/prismjs@1/plugins/toolbar/prism-toolbar.min.css'">
-    <script defer src="https://cdn.jsdelivr.net/npm/prismjs@1/prism.min.js" onerror="this.onerror=null;this.src='https://unpkg.com/prismjs@1/prism.min.js'"></script>
-    <script defer src="https://cdn.jsdelivr.net/npm/prismjs@1/plugins/toolbar/prism-toolbar.min.js" onerror="this.onerror=null;this.src='https://unpkg.com/prismjs@1/plugins/toolbar/prism-toolbar.min.js'"></script>
-    <script defer src="https://cdn.jsdelivr.net/npm/prismjs@1/plugins/autoloader/prism-autoloader.min.js" onerror="this.onerror=null;this.src='https://unpkg.com/prismjs@1/plugins/autoloader/prism-autoloader.min.js'"></script>
-    <script defer src="https://cdn.jsdelivr.net/npm/prismjs@1/plugins/copy-to-clipboard/prism-copy-to-clipboard.min.js" onerror="this.onerror=null;this.src='https://unpkg.com/prismjs@1/plugins/copy-to-clipboard/prism-copy-to-clipboard.min.js'"></script>
+    <script src="https://cdn.jsdelivr.net/npm/prismjs@1/prism.min.js" onerror="this.onerror=null;this.src='https://unpkg.com/prismjs@1/prism.min.js'"></script>
+    <script src="https://cdn.jsdelivr.net/npm/prismjs@1/plugins/toolbar/prism-toolbar.min.js" onerror="this.onerror=null;this.src='https://unpkg.com/prismjs@1/plugins/toolbar/prism-toolbar.min.js'"></script>
+    <script src="https://cdn.jsdelivr.net/npm/prismjs@1/plugins/autoloader/prism-autoloader.min.js" onerror="this.onerror=null;this.src='https://unpkg.com/prismjs@1/plugins/autoloader/prism-autoloader.min.js'"></script>
+    <script src="https://cdn.jsdelivr.net/npm/prismjs@1/plugins/copy-to-clipboard/prism-copy-to-clipboard.min.js" onerror="this.onerror=null;this.src='https://unpkg.com/prismjs@1/plugins/copy-to-clipboard/prism-copy-to-clipboard.min.js'"></script>
     <?php endif; ?>
 
     <!-- 合并后的主题样式（由分层 CSS 源文件构建生成） -->
@@ -402,7 +402,7 @@ endif; ?>
     $navRenderArchivesUrl = $navArchivesUrl;
     $navRenderTagCloudUrl = $navTagCloudUrl;
     $navRenderCategoriesUrl = $navCategoriesUrl;
-    if (isset($navLinks['links']) && is_array($navLinks['links'])) {
+    if (is_array($navLinks) && isset($navLinks['links']) && is_array($navLinks['links'])) {
         foreach ($navLinks['links'] as $link) {
             $nameRaw = isset($link['name']) ? trim($link['name']) : '';
             if ($nameRaw === '作者') {

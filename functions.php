@@ -31,8 +31,24 @@ function dygita_register_routes() {
     \Utils\Helper::addRoute('categories_page', '/categories/', '\Widget\Archive', 'render');
 }
 
-// 每次请求时确保路由已注册（idempotent，Typecho 会跳过已存在的路由）
-dygita_register_routes();
+/**
+ * 主题激活时注册路由与动作（避免常驻全局作用域每次请求执行）
+ */
+function themeActivate() {
+    dygita_register_routes();
+    dygita_register_actions();
+}
+
+/**
+ * 运行期兜底注册（仅首次执行），兼容老站点未重新激活主题的场景
+ */
+function dygita_bootstrap_runtime() {
+    static $bootstrapped = false;
+    if ($bootstrapped) return;
+    dygita_register_routes();
+    dygita_register_actions();
+    $bootstrapped = true;
+}
 
 /**
  * 点赞 Action — 通过 /action/dygita-like 路由处理 AJAX 点赞请求
@@ -108,8 +124,6 @@ function dygita_register_actions() {
     }
 }
 
-dygita_register_actions();
-
 /**
  * 文章目录功能
  */
@@ -134,45 +148,29 @@ class Dygita_ArticleCatalog {
      */
     public $catalog_item = '<a data-scroll href="#article_menu_index_{menu_id}" title="{title}">{title}</a>';
 
-    /**
-     * 解析
-     *
-     * @access public
-     * @param array $matches 解析值
-     * @return string
-     */
-    public function parseCallback( $match ) {
+    private function appendMenuItem($n, $title) {
         $parent = &$this->tree;
-
-        $h = $match[0];
-        $n = $match[1];
         $menu = array(
-            'num' => $n,
-            'title' => trim( strip_tags( $h ) ),
+            'num' => (int) $n,
+            'title' => trim((string) $title),
             'id' => $this->id,
             'sub' => array()
         );
         $current = array();
-        if( !empty( $parent ) ) {
-            $current = &$parent[ count( $parent ) - 1 ];
+        if (!empty($parent)) {
+            $current = &$parent[count($parent) - 1];
         }
-        // 根
-        if( ! $parent || ( isset( $current['num'] ) && $n <= $current['num'] ) ) {
+        if (!$parent || (isset($current['num']) && $n <= $current['num'])) {
             $parent[] = $menu;
         } else {
-            while( is_array( $current[ 'sub' ] ) ) {
-                // 父子关系
-                if( $current['num'] == $n - 1 ) {
-                    $current[ 'sub' ][] = $menu;
+            while (is_array($current['sub'])) {
+                if ($current['num'] == $n - 1) {
+                    $current['sub'][] = $menu;
                     break;
-                }
-                // 后代关系，并存在子菜单
-                elseif( $current['num'] < $n && $current[ 'sub' ] ) {
-                    $current = &$current['sub'][ count( $current['sub'] ) - 1 ];
-                }
-                // 后代关系，不存在子菜单
-                else {
-                    for( $i = 0; $i < $n - $current['num']; $i++ ) {
+                } elseif ($current['num'] < $n && $current['sub']) {
+                    $current = &$current['sub'][count($current['sub']) - 1];
+                } else {
+                    for ($i = 0; $i < $n - $current['num']; $i++) {
                         $current['sub'][] = array(
                             'num' => $current['num'] + 1,
                             'sub' => array()
@@ -185,14 +183,69 @@ class Dygita_ArticleCatalog {
             }
         }
         $this->id++;
-        return str_replace('{menu_id}', $menu['id'], $this->anchor) . $h;
+        return $menu['id'];
+    }
+
+    /**
+     * 解析
+     *
+     * @access public
+     * @param array $matches 解析值
+     * @return string
+     */
+    public function parseCallback( $match ) {
+        $h = $match[0];
+        $n = $match[1];
+        $menuId = $this->appendMenuItem((int) $n, trim(strip_tags($h)));
+        return str_replace('{menu_id}', $menuId, $this->anchor) . $h;
     }
 
     public function renderHtml($html, $anchor='') {
         if ($anchor) {
             $this->anchor = $anchor;
         }
-        $html = preg_replace_callback( '/<h([1-6])[^>]*>.*?<\/h\1>/s', array( $this, 'parseCallback' ), $html );
+        $this->id = 1;
+        $this->tree = array();
+
+        if (class_exists('DOMDocument') && class_exists('DOMXPath')) {
+            $prevUseErrors = libxml_use_internal_errors(true);
+            $dom = new DOMDocument();
+            $wrapped = '<div id="dygita-catalog-root">' . $html . '</div>';
+            $flags = 0;
+            if (defined('LIBXML_HTML_NOIMPLIED')) $flags |= LIBXML_HTML_NOIMPLIED;
+            if (defined('LIBXML_HTML_NODEFDTD')) $flags |= LIBXML_HTML_NODEFDTD;
+            $loaded = $dom->loadHTML('<?xml encoding="utf-8" ?>' . $wrapped, $flags);
+            if ($loaded) {
+                $xpath = new DOMXPath($dom);
+                $root = $xpath->query('//*[@id="dygita-catalog-root"]')->item(0);
+                if ($root) {
+                    $headings = $xpath->query('.//h1|.//h2|.//h3|.//h4|.//h5|.//h6', $root);
+                    if ($headings && $headings->length > 0) {
+                        foreach ($headings as $heading) {
+                            $tagName = strtolower($heading->nodeName);
+                            $level = (int) substr($tagName, 1);
+                            $title = trim((string) $heading->textContent);
+                            $menuId = $this->appendMenuItem($level, $title);
+
+                            $fragment = $dom->createDocumentFragment();
+                            $fragment->appendXML(str_replace('{menu_id}', $menuId, $this->anchor));
+                            $heading->parentNode->insertBefore($fragment, $heading);
+                        }
+                        $output = '';
+                        foreach ($root->childNodes as $childNode) {
+                            $output .= $dom->saveHTML($childNode);
+                        }
+                        libxml_clear_errors();
+                        libxml_use_internal_errors($prevUseErrors);
+                        return $output;
+                    }
+                }
+            }
+            libxml_clear_errors();
+            libxml_use_internal_errors($prevUseErrors);
+        }
+
+        $html = preg_replace_callback('/<h([1-6])[^>]*>.*?<\/h\1>/s', array($this, 'parseCallback'), $html);
         return $html;
     }
 
@@ -589,21 +642,31 @@ function dygita_get_theme_skin_css($skinKey) {
  * @return array ['theme' => string, 'headerColor' => string]
  */
 function dygita_get_saved_theme_prefs() {
+    $options = Typecho\Widget::widget('Widget_Options');
     $theme = '';
     $headerColor = '';
-    try {
-        $db = Typecho\Db::get();
-        $prefix = $db->getPrefix();
-        $row = $db->fetchRow($db->select()->from($prefix . 'options')->where('name = ?', 'dygita_theme'));
-        if ($row) {
-            $theme = $row['value'];
-        }
-        $row = $db->fetchRow($db->select()->from($prefix . 'options')->where('name = ?', 'dygita_headerColor'));
-        if ($row) {
-            $headerColor = $row['value'];
-        }
-    } catch (Exception $e) {
+
+    if (isset($options->dygita_theme) && $options->dygita_theme !== null && $options->dygita_theme !== '') {
+        $theme = trim((string) $options->dygita_theme);
     }
+    if (isset($options->dygita_headerColor) && $options->dygita_headerColor !== null && $options->dygita_headerColor !== '') {
+        $headerColor = trim((string) $options->dygita_headerColor);
+    }
+
+    // 访客兜底：从 Cookie 读取，避免仅 localStorage 导致首屏主题闪烁
+    if ($theme === '' && isset($_COOKIE['dygita_theme_pref'])) {
+        $cookieTheme = trim((string) $_COOKIE['dygita_theme_pref']);
+        if ($cookieTheme === 'light' || $cookieTheme === 'dark') {
+            $theme = $cookieTheme;
+        }
+    }
+    if ($headerColor === '' && isset($_COOKIE['dygita_header_color'])) {
+        $cookieHeaderColor = trim((string) $_COOKIE['dygita_header_color']);
+        if (preg_match('/^#[0-9a-fA-F]{6}$/', $cookieHeaderColor)) {
+            $headerColor = $cookieHeaderColor;
+        }
+    }
+
     return array('theme' => $theme, 'headerColor' => $headerColor);
 }
 
@@ -684,44 +747,41 @@ function dygita_escape_url($url) {
 }
 
 /**
- * 获取相关文章（三级 fallback：标签 → 分类 → 空数组表示使用热门文章）
+ * 获取相关文章（三级 fallback：标签+分类 → 仅分类 → 热门文章）
+ * 返回 Typecho 标准 Contents Widget，便于模板用 next()/字段属性遍历。
  * @param int $cid 当前文章 ID
  * @param int $limit 最多返回条数
- * @return array ['posts' => array, 'use_hot' => bool]
+ * @return array ['posts' => \Widget\Contents\Related|null, 'use_hot' => bool]
  */
 function dygita_get_related_posts($cid, $limit = 6) {
     $db = \Typecho\Db::get();
+    $cid = (int) $cid;
+    $limit = max(1, (int) $limit);
 
-    // 帮助函数：给定 mid 列表，JOIN 一步查出相关文章，避免中间 ID 数组查询
-    $fetchByMids = function (array $mids) use ($db, $cid, $limit) {
-        return $db->fetchAll(
-            $db->select(
-                'table.contents.cid',
-                'table.contents.title',
-                'table.contents.slug',
-                'table.contents.created',
-                'table.contents.text'
-            )
-            ->from('table.contents')
-            ->join('table.relationships', 'table.contents.cid = table.relationships.cid')
-            ->where('table.relationships.mid IN ?', $mids)
-            ->where('table.contents.cid != ?', $cid)
-            ->where('table.contents.status = ?', 'publish')
-            ->where('table.contents.type = ?', 'post')
-            ->group('table.contents.cid')
-            ->order('table.contents.created', \Typecho\Db::SORT_DESC)
-            ->limit($limit)
-        );
+    $buildRelatedWidget = function (array $mids) use ($cid, $limit) {
+        $mids = array_values(array_unique(array_map('intval', $mids)));
+        if (empty($mids)) return null;
+        $tagRows = array();
+        foreach ($mids as $mid) {
+            $tagRows[] = array('mid' => $mid);
+        }
+        $widget = \Widget\Contents\Related::alloc(array(
+            'cid' => $cid,
+            'type' => 'post',
+            'tags' => $tagRows,
+            'limit' => $limit
+        ));
+        return $widget->have() ? $widget : null;
     };
 
-    // 方法1: 基于所有共享 meta（标签 + 分类）— 单次关联查询
+    // 方法1：共享 meta（标签+分类）
     $mids = $db->fetchAll($db->select('mid')->from('table.relationships')->where('cid = ?', $cid));
     if (!empty($mids)) {
-        $posts = $fetchByMids(array_column($mids, 'mid'));
-        if (!empty($posts)) return array('posts' => $posts, 'use_hot' => false);
+        $widget = $buildRelatedWidget(array_column($mids, 'mid'));
+        if ($widget) return array('posts' => $widget, 'use_hot' => false);
     }
 
-    // 方法2: 仅基于分类（回退）— 单次关联查询
+    // 方法2：仅分类
     $catRows = $db->fetchAll(
         $db->select('table.metas.mid')
         ->from('table.metas')
@@ -730,30 +790,35 @@ function dygita_get_related_posts($cid, $limit = 6) {
         ->where('table.metas.type = ?', 'category')
     );
     if (!empty($catRows)) {
-        $posts = $fetchByMids(array_column($catRows, 'mid'));
-        if (!empty($posts)) return array('posts' => $posts, 'use_hot' => false);
+        $widget = $buildRelatedWidget(array_column($catRows, 'mid'));
+        if ($widget) return array('posts' => $widget, 'use_hot' => false);
     }
 
-    // 方法3: 回退到热门文章
-    return array('posts' => array(), 'use_hot' => true);
+    // 方法3：回退到热门文章
+    return array('posts' => null, 'use_hot' => true);
 }
 
-/* 增加: 相关文章缩略图获取（用于数组形式的文章数据） */
+/* 增加: 相关文章缩略图获取（兼容数组与 Widget 对象） */
 function dygita_get_related_post_thumbnail($post)
 {
     $db = Typecho\Db::get();
     $options = Typecho\Widget::widget('Widget_Options');
+    $cid = is_array($post) ? intval($post['cid'] ?? 0) : intval($post->cid ?? 0);
+    $content = is_array($post) ? (string)($post['text'] ?? '') : (string)($post->text ?? '');
+    if ($cid <= 0) {
+        return dygita_get_random_placeholder_url($options);
+    }
 
     $thumbValue = '';
     $fieldsTable = dygita_get_table('fields');
     $thumb = $db->fetchRow($db->select('str_value')->from($fieldsTable)
-        ->where('cid = ?', $post['cid'])
+        ->where('cid = ?', $cid)
         ->where('name = ?', 'thumb'));
     if ($thumb && !empty($thumb['str_value'])) {
         $thumbValue = $thumb['str_value'];
     }
 
-    return dygita_resolve_thumbnail_url($thumbValue, isset($post['text']) ? $post['text'] : '', $options);
+    return dygita_resolve_thumbnail_url($thumbValue, $content, $options);
 }
 
 /* 增加: 浏览量统计 */
@@ -999,6 +1064,7 @@ function dygita_e($key) {
 
 // 主题初始化函数
 function themeInit($archive) {
+    dygita_bootstrap_runtime();
     $routeType = '';
     if (isset($archive->parameter)) {
         if (is_object($archive->parameter) && isset($archive->parameter->type)) {

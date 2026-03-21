@@ -83,6 +83,26 @@ endif; ?>
     <div id="search-result"><div id="no-result"><i class="fa fa-search fa-5x"></i></div></div>
 </template>
 
+<?php
+$dygitaSearchIndex = array();
+$this->widget('Widget_Contents_Post_Recent', 'pageSize=120')->to($dygitaSearchPosts);
+while ($dygitaSearchPosts->next()):
+    ob_start();
+    $dygitaSearchPosts->excerpt(120, '...');
+    $dygitaSearchExcerpt = trim(strip_tags((string) ob_get_clean()));
+    $dygitaSearchIndex[] = array(
+        'title' => (string) $dygitaSearchPosts->title,
+        'url' => (string) $dygitaSearchPosts->permalink,
+        'excerpt' => $dygitaSearchExcerpt,
+        'date' => date('Y-m-d', (int) $dygitaSearchPosts->created)
+    );
+endwhile;
+?>
+<script>
+window.DYGITA = window.DYGITA || {};
+window.DYGITA.searchIndex = <?php echo json_encode($dygitaSearchIndex, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES); ?>;
+</script>
+
 <script>
     requestAnimationFrame(function(){requestAnimationFrame(function(){document.documentElement.classList.remove('no-transitions')})});
 </script>

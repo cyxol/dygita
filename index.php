@@ -22,7 +22,7 @@ $this->need('views/components/sidebar-left.php'); ?>
                             $swiperSlides = json_decode($this->options->swiperSlides, true);
                             $indexThemeBaseUrl = rtrim($this->options->themeUrl, '/');
                             $indexSiteBaseUrl = rtrim($this->options->siteUrl, '/');
-                            if (isset($swiperSlides['slides']) && is_array($swiperSlides['slides'])) {
+                            if (is_array($swiperSlides) && isset($swiperSlides['slides']) && is_array($swiperSlides['slides'])) {
                                 foreach ($swiperSlides['slides'] as $slide) {
                                     $image = isset($slide['image']) ? $slide['image'] : '';
                                     $title = isset($slide['title']) ? htmlspecialchars($slide['title'], ENT_QUOTES, 'UTF-8') : '';

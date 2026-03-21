@@ -84,10 +84,10 @@ $parsedContent = $catalog->renderHtml($this->content);
                     </div>
                 <?php else: ?>
                     <ul class="related-list">
-                        <?php foreach ($related['posts'] as $post):
-                            $permalink = Typecho\Router::url('post', $post, Typecho\Widget::widget('Widget_Options')->index);
-                            $title = htmlspecialchars($post['title'], ENT_QUOTES, 'UTF-8');
-                            $thumb = dygita_get_related_post_thumbnail($post);
+                        <?php while ($related['posts']->next()):
+                            $permalink = $related['posts']->permalink;
+                            $title = htmlspecialchars((string) $related['posts']->title, ENT_QUOTES, 'UTF-8');
+                            $thumb = dygita_get_related_post_thumbnail($related['posts']);
                         ?>
                         <li class="related-item">
                             <a href="<?php echo $permalink; ?>" title="<?php echo $title; ?>" target="_blank" rel="noopener noreferrer">
@@ -95,7 +95,7 @@ $parsedContent = $catalog->renderHtml($this->content);
                                 <span class="related-item-title"><?php echo $title; ?></span>
                             </a>
                         </li>
-                        <?php endforeach; ?>
+                        <?php endwhile; ?>
                     </ul>
                 <?php endif; ?>
             </div>

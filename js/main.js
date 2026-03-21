@@ -1,8 +1,6 @@
 // Dygita main interactions (vanilla DOM only)
 (function () {
     if (typeof window === 'undefined' || typeof document === 'undefined') return;
-    if (window.__dygitaMainInitialized) return;
-    window.__dygitaMainInitialized = true;
 
     function onReady(fn) {
         if (document.readyState === 'loading') {
@@ -82,6 +80,8 @@
         var searchForm = null;
         var searchInput = null;
         var resultContent = null;
+        var liveSearchLimit = 8;
+        var searchDebounceTimer = null;
 
         function ensureSearchPopup() {
             if (searchOverlay && searchPopup) return;
@@ -134,12 +134,10 @@
 
             if (searchInput && resultContent && !searchInput.dataset.bound) {
                 searchInput.addEventListener('input', function () {
-                    var keyword = searchInput.value.trim();
-                    if (keyword.length > 0) {
-                        resultContent.innerHTML = '<div id="no-result"><p style="color:#999;font-size:14px;"><i class="fa fa-keyboard-o"></i> 按回车键搜索 "<strong>' + escapeHtml(keyword) + '</strong>"</p></div>';
-                    } else {
-                        resultContent.innerHTML = '<div id="no-result"><i class="fa fa-search fa-5x"></i></div>';
-                    }
+                    if (searchDebounceTimer) window.clearTimeout(searchDebounceTimer);
+                    searchDebounceTimer = window.setTimeout(function () {
+                        renderLiveSearch(searchInput.value.trim());
+                    }, 120);
                 });
 
                 searchInput.addEventListener('keypress', function (e) {
@@ -161,7 +159,10 @@
             ensureSearchPopup();
             searchOverlay.classList.add('search-active');
             var input = searchPopup ? searchPopup.querySelector('.search-input') : null;
-            if (input) input.focus();
+            if (input) {
+                input.focus();
+                renderLiveSearch(input.value.trim());
+            }
         }
 
         var triggers = [
@@ -170,12 +171,17 @@
             document.querySelector('.search-toggle')
         ];
         triggers.forEach(function (node) {
-            if (node) node.addEventListener('click', openSearch);
+            if (!node || node.dataset.searchBound === '1') return;
+            node.addEventListener('click', openSearch);
+            node.dataset.searchBound = '1';
         });
 
-        document.addEventListener('keydown', function (e) {
-            if (e.key === 'Escape' && searchOverlay) searchOverlay.classList.remove('search-active');
-        });
+        if (!window.__dygitaSearchEscBound) {
+            document.addEventListener('keydown', function (e) {
+                if (e.key === 'Escape' && searchOverlay) searchOverlay.classList.remove('search-active');
+            });
+            window.__dygitaSearchEscBound = true;
+        }
 
         function escapeHtml(str) {
             return str.replace(/[&<>"']/g, function (ch) {
@@ -189,9 +195,65 @@
             });
         }
 
+        function getSearchIndex() {
+            if (!window.DYGITA || !Array.isArray(window.DYGITA.searchIndex)) return [];
+            return window.DYGITA.searchIndex;
+        }
+
+        function renderLiveSearch(keyword) {
+            if (!resultContent) return;
+
+            if (!keyword) {
+                resultContent.innerHTML = '<div id="no-result"><i class="fa fa-search fa-5x"></i></div>';
+                return;
+            }
+
+            var normalizedKeyword = keyword.toLowerCase();
+            var searchIndex = getSearchIndex();
+            var matched = [];
+
+            for (var i = 0; i < searchIndex.length; i++) {
+                var item = searchIndex[i] || {};
+                var title = String(item.title || '');
+                var excerpt = String(item.excerpt || '');
+                var haystack = (title + ' ' + excerpt).toLowerCase();
+                if (haystack.indexOf(normalizedKeyword) === -1) continue;
+                matched.push(item);
+                if (matched.length >= liveSearchLimit) break;
+            }
+
+            if (!matched.length) {
+                resultContent.innerHTML = '<div id="no-result"><p style="color:#999;font-size:14px;"><i class="fa fa-frown-o"></i> 未找到与 "<strong>' + escapeHtml(keyword) + '</strong>" 相关的内容，按回车尝试全站搜索</p></div>';
+                return;
+            }
+
+            var html = '';
+            for (var j = 0; j < matched.length; j++) {
+                var row = matched[j] || {};
+                var rowTitle = escapeHtml(String(row.title || '无标题'));
+                var rowUrl = escapeHtml(String(row.url || '#'));
+                var rowExcerpt = escapeHtml(String(row.excerpt || ''));
+                var rowDate = escapeHtml(String(row.date || ''));
+                html += '<p class="search-result">'
+                    + '<a href="' + rowUrl + '" style="display:block;color:inherit;text-decoration:none;">'
+                    + '<strong style="display:block;margin-bottom:4px;">' + rowTitle + '</strong>'
+                    + '<span style="display:block;font-size:12px;color:#999;margin-bottom:4px;">' + rowDate + '</span>'
+                    + '<span style="display:block;font-size:13px;line-height:1.6;color:inherit;">' + rowExcerpt + '</span>'
+                    + '</a>'
+                    + '</p>';
+            }
+            html += '<p class="search-result" style="color:#999;font-size:12px;"><i class="fa fa-keyboard-o"></i> 回车可使用完整搜索页查看更多结果</p>';
+            resultContent.innerHTML = html;
+        }
+
     }
 
     function initTocInteraction() {
+        if (typeof window.__dygitaTocCleanup === 'function') {
+            window.__dygitaTocCleanup();
+            window.__dygitaTocCleanup = null;
+        }
+
         var catalogContent = document.querySelector('.catalog-content');
         if (!catalogContent) return;
 
@@ -209,7 +271,7 @@
         if (!anchors.length) return;
 
         // Smooth scroll on TOC link click
-        catalogContent.addEventListener('click', function (e) {
+        function onCatalogClick(e) {
             var link = e.target.closest('a[href^="#"]');
             if (!link) return;
             var target = document.getElementById(link.getAttribute('href').slice(1));
@@ -217,35 +279,99 @@
             e.preventDefault();
             var offsetTop = target.getBoundingClientRect().top + window.scrollY - 80;
             window.scrollTo({ top: Math.max(offsetTop, 0), behavior: 'smooth' });
-        });
+        }
+        catalogContent.addEventListener('click', onCatalogClick);
 
-        // Active section tracking on scroll
-        var ticking = false;
-        function updateCurrentSection() {
-            var scrollPosition = window.scrollY + 100;
-            var current = null;
-            anchors.forEach(function (anchor) {
-                var top = anchor.el.getBoundingClientRect().top + window.scrollY;
-                if (scrollPosition >= top) current = anchor;
-            });
+        function updateCurrentSection(current) {
             links.forEach(function (link) { link.classList.remove('active'); });
             if (current) current.link.classList.add('active');
         }
 
-        window.addEventListener('scroll', function () {
-            if (ticking) return;
-            ticking = true;
-            window.requestAnimationFrame(function () {
-                updateCurrentSection();
-                ticking = false;
-            });
-        }, { passive: true });
+        var activeAnchor = anchors[0] || null;
+        updateCurrentSection(activeAnchor);
 
-        updateCurrentSection();
+        var anchorOrderMap = new WeakMap();
+        anchors.forEach(function (item, idx) {
+            anchorOrderMap.set(item.el, idx);
+        });
+
+        var visibleEntries = new Map();
+        var tocObserver = null;
+
+        function pickActiveAnchor() {
+            if (!visibleEntries.size) return;
+            var best = null;
+            visibleEntries.forEach(function (entry) {
+                if (!best) {
+                    best = entry;
+                    return;
+                }
+                if (entry.boundingClientRect.top < best.boundingClientRect.top) {
+                    best = entry;
+                }
+            });
+            if (!best || !best.target) return;
+            var idx = anchorOrderMap.get(best.target);
+            if (typeof idx !== 'number' || !anchors[idx]) return;
+            activeAnchor = anchors[idx];
+            updateCurrentSection(activeAnchor);
+        }
+
+        if ('IntersectionObserver' in window) {
+            tocObserver = new IntersectionObserver(function (entries) {
+                entries.forEach(function (entry) {
+                    if (entry.isIntersecting) {
+                        visibleEntries.set(entry.target, entry);
+                    } else {
+                        visibleEntries.delete(entry.target);
+                    }
+                });
+                pickActiveAnchor();
+            }, {
+                root: null,
+                rootMargin: '-10% 0px -70% 0px',
+                threshold: [0, 0.01, 0.1, 0.25, 0.5, 1]
+            });
+            anchors.forEach(function (anchor) {
+                tocObserver.observe(anchor.el);
+            });
+        } else {
+            // Fallback for very old browsers without IntersectionObserver.
+            var ticking = false;
+            function onScrollFallback() {
+                if (ticking) return;
+                ticking = true;
+                window.requestAnimationFrame(function () {
+                    var scrollPosition = window.scrollY + 100;
+                    var current = null;
+                    anchors.forEach(function (anchor) {
+                        var top = anchor.el.getBoundingClientRect().top + window.scrollY;
+                        if (scrollPosition >= top) current = anchor;
+                    });
+                    if (current) {
+                        activeAnchor = current;
+                        updateCurrentSection(activeAnchor);
+                    }
+                    ticking = false;
+                });
+            }
+            window.addEventListener('scroll', onScrollFallback, { passive: true });
+            window.__dygitaTocCleanup = function () {
+                catalogContent.removeEventListener('click', onCatalogClick);
+                window.removeEventListener('scroll', onScrollFallback);
+            };
+            return;
+        }
+
+        window.__dygitaTocCleanup = function () {
+            catalogContent.removeEventListener('click', onCatalogClick);
+            if (tocObserver) tocObserver.disconnect();
+            visibleEntries.clear();
+        };
     }
 
     function initLazyLoad() {
-        var images = document.querySelectorAll('img[data-src]');
+        var images = document.querySelectorAll('img[data-src]:not([data-lazy-bound="1"])');
         if (!images.length) return;
 
         function loadImage(img) {
@@ -255,50 +381,85 @@
         }
 
         if ('IntersectionObserver' in window) {
-            var imageObserver = new IntersectionObserver(function (entries, observer) {
-                entries.forEach(function (entry) {
-                    if (!entry.isIntersecting) return;
-                    loadImage(entry.target);
-                    observer.unobserve(entry.target);
+            if (!window.__dygitaLazyObserver) {
+                window.__dygitaLazyObserver = new IntersectionObserver(function (entries, observer) {
+                    entries.forEach(function (entry) {
+                        if (!entry.isIntersecting) return;
+                        loadImage(entry.target);
+                        observer.unobserve(entry.target);
+                    });
                 });
-            });
+            }
 
             images.forEach(function (img) {
-                imageObserver.observe(img);
+                img.dataset.lazyBound = '1';
+                window.__dygitaLazyObserver.observe(img);
             });
             return;
         }
 
-        var fallbackTicking = false;
-        function fallbackLoad() {
-            if (fallbackTicking) return;
-            fallbackTicking = true;
-            window.requestAnimationFrame(function () {
-                fallbackTicking = false;
-                var lazyImages = document.querySelectorAll('img[data-src]');
-                if (!lazyImages.length) {
-                    document.removeEventListener('scroll', fallbackLoad);
-                    window.removeEventListener('resize', fallbackLoad);
-                    window.removeEventListener('orientationchange', fallbackLoad);
-                    return;
-                }
-                lazyImages.forEach(function (img) {
-                    var rect = img.getBoundingClientRect();
-                    if (rect.top <= window.innerHeight && rect.bottom >= 0) loadImage(img);
+        if (!window.__dygitaLazyFallbackLoad) {
+            window.__dygitaLazyFallbackTicking = false;
+            window.__dygitaLazyFallbackLoad = function () {
+                if (window.__dygitaLazyFallbackTicking) return;
+                window.__dygitaLazyFallbackTicking = true;
+                window.requestAnimationFrame(function () {
+                    window.__dygitaLazyFallbackTicking = false;
+                    var lazyImages = document.querySelectorAll('img[data-src]');
+                    if (!lazyImages.length) return;
+                    lazyImages.forEach(function (img) {
+                        var rect = img.getBoundingClientRect();
+                        if (rect.top <= window.innerHeight && rect.bottom >= 0) loadImage(img);
+                    });
                 });
-            });
+            };
         }
 
-        document.addEventListener('scroll', fallbackLoad, { passive: true });
-        window.addEventListener('resize', fallbackLoad);
-        window.addEventListener('orientationchange', fallbackLoad);
-        fallbackLoad();
+        if (!window.__dygitaLazyFallbackBound) {
+            document.addEventListener('scroll', window.__dygitaLazyFallbackLoad, { passive: true });
+            window.addEventListener('resize', window.__dygitaLazyFallbackLoad);
+            window.addEventListener('orientationchange', window.__dygitaLazyFallbackLoad);
+            window.__dygitaLazyFallbackBound = true;
+        }
+
+        images.forEach(function (img) {
+            img.dataset.lazyBound = '1';
+        });
+
+        window.__dygitaLazyFallbackLoad();
     }
 
-    onReady(function () {
-        initLikeAction();
+    function initPageFeatures() {
         initSearch();
         initTocInteraction();
         initLazyLoad();
+    }
+
+    function bindPageLifecycle() {
+        if (window.__dygitaPageLifecycleBound) return;
+
+        function reinitPageFeatures() {
+            window.requestAnimationFrame(function () {
+                initPageFeatures();
+            });
+        }
+
+        var events = ['pjax:complete', 'pjax:end', 'pjax:success', 'turbolinks:load', 'dygita:page-ready'];
+        events.forEach(function (eventName) {
+            document.addEventListener(eventName, reinitPageFeatures);
+        });
+
+        window.DYGITA = window.DYGITA || {};
+        window.DYGITA.reinitPageFeatures = reinitPageFeatures;
+        window.__dygitaPageLifecycleBound = true;
+    }
+
+    onReady(function () {
+        if (!window.__dygitaMainGlobalBound) {
+            initLikeAction();
+            window.__dygitaMainGlobalBound = true;
+        }
+        bindPageLifecycle();
+        initPageFeatures();
     });
 })();
