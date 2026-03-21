@@ -17,7 +17,6 @@ const cssFiles = [
     'css/base/variables.css',
     'css/base/reset.css',
     'css/base/typography.css',
-    'css/layout/grid.css',
     'css/layout/header.css',
     'css/layout/sidebar-left.css',
     'css/layout/main-content.css',

@@ -65,7 +65,7 @@
         <div class="title"><h2><?php dygita_e('友情链接'); ?></h2></div>
         <div class="widget-content">
             <ul>
-                <?php getLinks(); ?>
+                <?php dygita_get_links(); ?>
             </ul>
         </div>
     </div>

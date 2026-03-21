@@ -14,7 +14,7 @@
 
         <div class="mgr-10 of-hide cate-content">
             <?php
-            $links = parseLinks($this->options->links);
+            $links = dygita_parse_links($this->options->links);
 
             if (!empty($links)) {
                 echo '<ul class="clearfix">';

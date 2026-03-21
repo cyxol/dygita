@@ -194,73 +194,45 @@
         // Search popup DOM is lazily created on first open to avoid no-CSS fallback duplication.
     }
 
-    function initCatalog() {
-        var toc = document.getElementById('toc-content');
-        var articleContent = document.querySelector('.article-content');
-        if (!toc || !articleContent) return;
+    function initTocInteraction() {
+        var catalogContent = document.querySelector('.catalog-content');
+        if (!catalogContent) return;
 
-        var headers = articleContent.querySelectorAll('h2, h3');
-        if (!headers.length) {
-            var tocWidget = document.getElementById('widget-toc');
-            if (tocWidget) tocWidget.style.display = 'none';
-            return;
-        }
+        var links = catalogContent.querySelectorAll('a[href^="#"]');
+        if (!links.length) return;
 
-        var frag = document.createDocumentFragment();
-        var ul = document.createElement('ul');
-
-        headers.forEach(function (header, index) {
-            var id = 'section-' + index;
-            header.id = id;
-
-            var li = document.createElement('li');
-            if (header.tagName.toLowerCase() === 'h3') {
-                li.style.marginLeft = '15px';
-                li.style.listStyle = 'circle';
-            }
-
-            var a = document.createElement('a');
-            a.setAttribute('href', '#' + id);
-            a.textContent = header.textContent || '';
-            li.appendChild(a);
-            ul.appendChild(li);
+        // Build anchor-to-link map from PHP-generated TOC
+        var anchors = [];
+        links.forEach(function (link) {
+            var id = link.getAttribute('href').slice(1);
+            var el = document.getElementById(id);
+            if (el) anchors.push({ el: el, link: link });
         });
 
-        frag.appendChild(ul);
-        toc.innerHTML = '';
-        toc.appendChild(frag);
+        if (!anchors.length) return;
 
-        document.addEventListener('click', function (e) {
-            var link = e.target.closest('.catalog-content a');
+        // Smooth scroll on TOC link click
+        catalogContent.addEventListener('click', function (e) {
+            var link = e.target.closest('a[href^="#"]');
             if (!link) return;
-
-            var targetId = link.getAttribute('href');
-            if (!targetId || targetId.charAt(0) !== '#') return;
-
-            var targetElement = document.querySelector(targetId);
-            if (!targetElement) return;
-
+            var target = document.getElementById(link.getAttribute('href').slice(1));
+            if (!target) return;
             e.preventDefault();
-            var offsetTop = targetElement.getBoundingClientRect().top + window.scrollY - 80;
+            var offsetTop = target.getBoundingClientRect().top + window.scrollY - 80;
             window.scrollTo({ top: Math.max(offsetTop, 0), behavior: 'smooth' });
         });
 
+        // Active section tracking on scroll
         var ticking = false;
         function updateCurrentSection() {
             var scrollPosition = window.scrollY + 100;
-            var currentSection = '';
-
-            headers.forEach(function (header) {
-                var sectionTop = header.getBoundingClientRect().top + window.scrollY;
-                if (scrollPosition >= sectionTop) currentSection = '#' + header.id;
+            var current = null;
+            anchors.forEach(function (anchor) {
+                var top = anchor.el.getBoundingClientRect().top + window.scrollY;
+                if (scrollPosition >= top) current = anchor;
             });
-
-            if (!currentSection) return;
-
-            var links = document.querySelectorAll('.catalog-content a');
-            links.forEach(function (a) {
-                a.classList.toggle('active', a.getAttribute('href') === currentSection);
-            });
+            links.forEach(function (link) { link.classList.remove('active'); });
+            if (current) current.link.classList.add('active');
         }
 
         window.addEventListener('scroll', function () {
@@ -300,18 +272,23 @@
             return;
         }
 
+        var fallbackTicking = false;
         function fallbackLoad() {
-            var lazyImages = document.querySelectorAll('img[data-src]');
-            if (!lazyImages.length) {
-                document.removeEventListener('scroll', fallbackLoad);
-                window.removeEventListener('resize', fallbackLoad);
-                window.removeEventListener('orientationchange', fallbackLoad);
-                return;
-            }
-
-            lazyImages.forEach(function (img) {
-                var rect = img.getBoundingClientRect();
-                if (rect.top <= window.innerHeight && rect.bottom >= 0) loadImage(img);
+            if (fallbackTicking) return;
+            fallbackTicking = true;
+            window.requestAnimationFrame(function () {
+                fallbackTicking = false;
+                var lazyImages = document.querySelectorAll('img[data-src]');
+                if (!lazyImages.length) {
+                    document.removeEventListener('scroll', fallbackLoad);
+                    window.removeEventListener('resize', fallbackLoad);
+                    window.removeEventListener('orientationchange', fallbackLoad);
+                    return;
+                }
+                lazyImages.forEach(function (img) {
+                    var rect = img.getBoundingClientRect();
+                    if (rect.top <= window.innerHeight && rect.bottom >= 0) loadImage(img);
+                });
             });
         }
 
@@ -324,7 +301,7 @@
     onReady(function () {
         initLikeAction();
         initSearch();
-        initCatalog();
+        initTocInteraction();
         initLazyLoad();
     });
 })();

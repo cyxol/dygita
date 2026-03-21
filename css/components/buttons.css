@@ -4,15 +4,15 @@
     background: transparent;
     box-shadow: none;
     border: 0;
-    text-align: center !important;
-    padding: 0 !important;
-    margin: 0 auto !important;
+    text-align: center;
+    padding: 0;
+    margin: 0 auto;
 }
 .content-wrap .content > .author-about-flat .author-about-inner{
     max-width: 760px;
     margin: 0 auto;
     padding: 16px 8px 6px;
-    text-align: center !important;
+    text-align: center;
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -46,7 +46,7 @@
     word-break: keep-all;
     overflow-wrap: normal;
     width: 100%;
-    text-align: center !important;
+    text-align: center;
 }
 .content-wrap .content > .author-about-flat .author-lines{
     width: 100%;
@@ -59,7 +59,7 @@
     color: #000;
     width: 100%;
     display: block;
-    text-align: center !important;
+    text-align: center;
     margin-left: auto;
     margin-right: auto;
     white-space: nowrap;
@@ -72,7 +72,7 @@
         max-width: 760px;
         margin: 0 auto;
         padding: 16px 8px 6px;
-        text-align: center !important;
+        text-align: center;
         align-items: center;
     }
     .content-wrap .content > .author-about-flat .author-avatar img{
@@ -82,12 +82,12 @@
     .content-wrap .content > .author-about-flat .author-name{
         font-size: 34px;
         line-height: 1.15;
-        text-align: center !important;
+        text-align: center;
     }
     .content-wrap .content > .author-about-flat .author-tagline{
         font-size: 30px;
         line-height: 1.5;
-        text-align: center !important;
+        text-align: center;
     }
     .content-wrap .content > .author-about-flat .author-lines p{
         margin: 18px 0;
@@ -95,7 +95,7 @@
         line-height: 1.5;
         width: 100%;
         display: block;
-        text-align: center !important;
+        text-align: center;
         margin-left: auto;
         margin-right: auto;
     }

@@ -229,7 +229,7 @@ endif; ?>
         <meta property="og:title" content="<?php $this->title(); ?>">
         <meta property="og:url" content="<?php $this->permalink(); ?>">
         <meta property="og:description" content="<?php $this->excerpt(150); ?>">
-        <meta property="og:image" content="<?php echo getThumbnail($this); ?>">
+        <meta property="og:image" content="<?php echo dygita_get_thumbnail($this); ?>">
         <meta property="article:published_time" content="<?php $this->date('c'); ?>">
         <meta property="article:modified_time" content="<?php $this->modified('c'); ?>">
         <meta property="article:author" content="<?php $this->author(); ?>">
@@ -241,7 +241,7 @@ endif; ?>
     endwhile; ?>
         <meta name="twitter:title" content="<?php $this->title(); ?>">
         <meta name="twitter:description" content="<?php $this->excerpt(150); ?>">
-        <meta name="twitter:image" content="<?php echo getThumbnail($this); ?>">
+        <meta name="twitter:image" content="<?php echo dygita_get_thumbnail($this); ?>">
 
         <!-- 文章结构化数据 -->
         <?php
@@ -272,7 +272,7 @@ endif; ?>
             ),
             "description" => strip_tags($ldExcerpt),
             "mainEntityOfPage" => $ldPermalink,
-            "image" => getThumbnail($this)
+            "image" => dygita_get_thumbnail($this)
         );
         ?>
         <script type="application/ld+json">
@@ -320,15 +320,12 @@ endif; ?>
 
     <!-- 代码语法高亮 - 仅在文章/页面中加载 -->
     <?php if ($this->is('post') || $this->is('page')): ?>
+    <!-- PrismJS: core + autoloader（按需加载语言，替代 6 个固定语言文件） -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/prismjs@1/themes/prism-tomorrow.min.css" onerror="this.onerror=null;this.href='https://unpkg.com/prismjs@1/themes/prism-tomorrow.min.css'">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/prismjs@1/plugins/toolbar/prism-toolbar.min.css" onerror="this.onerror=null;this.href='https://unpkg.com/prismjs@1/plugins/toolbar/prism-toolbar.min.css'">
     <script defer src="https://cdn.jsdelivr.net/npm/prismjs@1/prism.min.js" onerror="this.onerror=null;this.src='https://unpkg.com/prismjs@1/prism.min.js'"></script>
     <script defer src="https://cdn.jsdelivr.net/npm/prismjs@1/plugins/toolbar/prism-toolbar.min.js" onerror="this.onerror=null;this.src='https://unpkg.com/prismjs@1/plugins/toolbar/prism-toolbar.min.js'"></script>
-    <script defer src="https://cdn.jsdelivr.net/npm/prismjs@1/components/prism-bash.min.js" onerror="this.onerror=null;this.src='https://unpkg.com/prismjs@1/components/prism-bash.min.js'"></script>
-    <script defer src="https://cdn.jsdelivr.net/npm/prismjs@1/components/prism-json.min.js" onerror="this.onerror=null;this.src='https://unpkg.com/prismjs@1/components/prism-json.min.js'"></script>
-    <script defer src="https://cdn.jsdelivr.net/npm/prismjs@1/components/prism-python.min.js" onerror="this.onerror=null;this.src='https://unpkg.com/prismjs@1/components/prism-python.min.js'"></script>
-    <script defer src="https://cdn.jsdelivr.net/npm/prismjs@1/components/prism-javascript.min.js" onerror="this.onerror=null;this.src='https://unpkg.com/prismjs@1/components/prism-javascript.min.js'"></script>
-    <script defer src="https://cdn.jsdelivr.net/npm/prismjs@1/components/prism-css.min.js" onerror="this.onerror=null;this.src='https://unpkg.com/prismjs@1/components/prism-css.min.js'"></script>
-    <script defer src="https://cdn.jsdelivr.net/npm/prismjs@1/components/prism-markup.min.js" onerror="this.onerror=null;this.src='https://unpkg.com/prismjs@1/components/prism-markup.min.js'"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/prismjs@1/plugins/autoloader/prism-autoloader.min.js" onerror="this.onerror=null;this.src='https://unpkg.com/prismjs@1/plugins/autoloader/prism-autoloader.min.js'"></script>
     <script defer src="https://cdn.jsdelivr.net/npm/prismjs@1/plugins/copy-to-clipboard/prism-copy-to-clipboard.min.js" onerror="this.onerror=null;this.src='https://unpkg.com/prismjs@1/plugins/copy-to-clipboard/prism-copy-to-clipboard.min.js'"></script>
     <?php endif; ?>
 

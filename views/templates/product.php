@@ -54,7 +54,7 @@ if (!empty($cids)) {
                     } elseif (preg_match('/<img.+?src=["\']([^"\']+)["\']/', $row['text'], $m)) {
                         $thumbnail = $m[1];
                     } else {
-                        $thumbnail = getRandomPlaceholderImageUrl($options);
+                        $thumbnail = dygita_get_random_placeholder_url($options);
                     }
                     if ($thumbnail && !preg_match('/^https?:\/\//i', $thumbnail)) {
                         $thumbnail = rtrim($options->siteUrl, '/') . '/' . ltrim($thumbnail, '/');
@@ -92,12 +92,12 @@ if (!empty($cids)) {
             $sep = strpos($baseUrl, '?') !== false ? '&' : '?';
             if ($page > 1) {
                 $prevUrl = $page == 2 ? $baseUrl : $baseUrl . $sep . 'page=' . ($page - 1);
-                echo '<a href="' . htmlspecialchars($prevUrl, ENT_QUOTES, 'UTF-8') . '">上一�?/a> ';
+                echo '<a href="' . htmlspecialchars($prevUrl, ENT_QUOTES, 'UTF-8') . '">上一�?/a> ';
             }
             echo '<span>' . $page . ' / ' . $totalPages . '</span>';
             if ($page < $totalPages) {
                 $nextUrl = $baseUrl . $sep . 'page=' . ($page + 1);
-                echo ' <a href="' . htmlspecialchars($nextUrl, ENT_QUOTES, 'UTF-8') . '">下一�?/a>';
+                echo ' <a href="' . htmlspecialchars($nextUrl, ENT_QUOTES, 'UTF-8') . '">下一�?/a>';
             }
             ?>
         </div>

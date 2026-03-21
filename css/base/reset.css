@@ -228,19 +228,8 @@ button, .btn{
 .reading-progress-bar{
   background-color: var(--link-color);
   z-index: var(--z-reading-progress, 1400);
-}/* 暗色主题下的边框和阴影调�?*/
-.post-block, .content-wrap, .sidebar{
-  border: 1px solid var(--border-color);
-  box-shadow: var(--post-shadow);
-  background: var(--content-bg-color);
-  color: var(--text-color);
-}/* 确保内部元素不重复添加边框和背景 */
-.widget, .content, .article-header, .article-content{
-  border: none;
-  box-shadow: none;
-  background: transparent;
-  color: var(--text-color);
-}/* 确保文章标题和内容在暗黑主题下使用正确的颜色 */
+}
+/* 确保文章标题和内容在暗黑主题下使用正确的颜色 */
 .article-title{
   color: var(--text-color);
 }.article-header .meta{
@@ -398,51 +387,6 @@ kbd{
 	margin-top: 30px;
 	padding: 0;
 	box-sizing: border-box;
-}/* Header styles from GreenGrapes */
-.l-header{
-	position: relative;
-	padding: 60px 0;
-	text-align: center;
-	color: var(--header-text-color);
-	background-color: var(--header-bg-color);
-	background-size: cover;
-	background-position: center;
-	width: 100%;
-}.l-header .m-about{
-	position: relative;
-	z-index: 2;
-}.l-header #logo{
-	margin-bottom: 20px;
-}.l-header #logo img{
-	width: 80px;
-	height: 80px;
-	border-radius: 50%;
-	border: 3px solid rgba(255, 255, 255, 0.3);
-}.l-header .tit{
-	font-size: 2.5rem;
-	margin: 0 0 10px;
-	font-weight: bold;
-}.l-header .tit a{
-	color: var(--header-text-color);
-	text-decoration: none;
-	border-bottom: none;
-}.l-header .about{
-	font-size: 1.2rem;
-	opacity: 0.9;
-	max-width: 800px;
-	margin: 0 auto;
-}.header{
-	width: 100%;
-	margin: 0 auto;
-	padding: 20px 0;
-	box-sizing: border-box;
-	background-color: var(--header-bg-color);
-	color: var(--header-text-color);
-}.header a{
-	color: var(--header-text-color);
-	border-bottom: none;
-}.header a:hover{
-	color: var(--header-text-color);
 }
 
 /* Skip navigation link: hidden until focused */

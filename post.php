@@ -1,6 +1,6 @@
 <?php if (!defined('__TYPECHO_ROOT_DIR__')) exit; ?>
 <?php
-$catalog = ArticleCatalog::instance();
+$catalog = Dygita_ArticleCatalog::instance();
 $parsedContent = $catalog->renderHtml($this->content);
 ?>
 <?php $this->need('views/components/header.php'); ?>
@@ -11,7 +11,7 @@ $parsedContent = $catalog->renderHtml($this->content);
             <div class="meta">
                 <span class="muted"><i class="fa fa-user"></i> <a href="<?php $this->author->permalink(); ?>"><?php $this->author(); ?></a></span>
                 <span class="muted"><i class="fa fa-clock-o"></i> <?php $this->date('Y-m-d G:i:s'); ?></span>
-                <span class="muted"><i class="fa fa-eye"></i> <?php dygita_e('浏览'); ?>(<?php getPostView($this); ?>)</span>
+                <span class="muted"><i class="fa fa-eye"></i> <?php dygita_e('浏览'); ?>(<?php dygita_get_post_view($this); ?>)</span>
                 <span class="muted"><i class="fa fa-comments-o"></i> <a href="<?php $this->permalink() ?>#comments"><?php $this->commentsNum('0个评论', '1个评论', '%d个评论'); ?></a></span>
             </div>
         </header>
@@ -56,7 +56,7 @@ $parsedContent = $catalog->renderHtml($this->content);
             'url' => $shareUrl,
             'title' => $shareTitle,
             'excerpt' => strip_tags($shareExcerpt),
-            'pic' => getThumbnail($this)
+            'pic' => dygita_get_thumbnail($this)
         );
         ?>
         <script>
@@ -80,14 +80,14 @@ $parsedContent = $catalog->renderHtml($this->content);
                 ?>
                     <div class="no-related">
                         <h4><?php dygita_e('热门文章'); ?></h4>
-                        <ul class="hot-posts"><?php getHotPosts(6); ?></ul>
+                        <ul class="hot-posts"><?php dygita_get_hot_posts(6); ?></ul>
                     </div>
                 <?php else: ?>
                     <ul class="related-list">
                         <?php foreach ($related['posts'] as $post):
                             $permalink = Typecho\Router::url('post', $post, Typecho\Widget::widget('Widget_Options')->index);
                             $title = htmlspecialchars($post['title'], ENT_QUOTES, 'UTF-8');
-                            $thumb = getRelatedPostThumbnail($post);
+                            $thumb = dygita_get_related_post_thumbnail($post);
                         ?>
                         <li class="related-item">
                             <a href="<?php echo $permalink; ?>" title="<?php echo $title; ?>" target="_blank" rel="noopener noreferrer">

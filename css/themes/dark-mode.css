@@ -77,9 +77,9 @@
 [data-theme="dark"] .theme-toggle-li .btn:active, [data-theme="dark"] .theme-toggle-li .btn:focus,
 [data-theme="dark"] .lang-toggle-li .btn:active, [data-theme="dark"] .lang-toggle-li .btn:focus,
 [data-theme="dark"] .m-nav .nav li a:active, [data-theme="dark"] .m-nav .nav li a:focus{
-	background-color: var(--nav-bg-color) !important;
-	border-color: transparent !important;
-	box-shadow: none !important;
+	background-color: var(--nav-bg-color);
+	border-color: transparent;
+	box-shadow: none;
 }
 [data-theme="dark"] .m-nav .nav li,
 [data-theme="dark"] .m-nav .nav li:active,
@@ -106,8 +106,8 @@
 [data-theme="dark"] .lang-toggle-li .btn:active,
 [data-theme="dark"] .lang-toggle-li .btn:focus,
 [data-theme="dark"] .lang-toggle-li .btn:hover{
-	background-color: var(--nav-bg-color) !important;
-	background-image: none !important;
+	background-color: var(--nav-bg-color);
+	background-image: none;
 }
 /* 暗色导航栏文字颜色：默认白色，当前页高亮 */
 [data-theme="dark"] .m-nav .nav li a,
@@ -115,15 +115,15 @@
 [data-theme="dark"] .m-nav .nav li a:visited,
 [data-theme="dark"] .m-nav .nav li a:focus,
 [data-theme="dark"] .m-nav .nav li a:active{
-	color: #c9d1d9 !important;
+	color: #c9d1d9;
 }
 [data-theme="dark"] .m-nav .nav li a:hover{
-	color: #fff !important;
+	color: #fff;
 }
 [data-theme="dark"] .m-nav .nav li.active > a,
 [data-theme="dark"] .m-nav .nav li.active > a:link,
 [data-theme="dark"] .m-nav .nav li.active > a:visited{
-	color: var(--link-hover-color, #79b8ff) !important;
+	color: var(--link-hover-color, #79b8ff);
 }
 
 [data-theme="dark"] .archive-header{

@@ -14,31 +14,32 @@ if (!defined('__TYPECHO_ROOT_DIR__'))
 // 主题版本
 define('DYGITA_THEME_VERSION', '1.1.0');
 
-// 自动注册主题自定义路由（写入数据库，仅在路由缺失时执行一次）
-(function () {
+/**
+ * 注册主题自定义路由（统一入口，避免重复定义）
+ */
+function dygita_register_routes() {
     $rt = \Widget\Options::alloc()->routingTable;
-    $exists = isset($rt['tags_cloud']) || (isset($rt[0]) && isset($rt[0]['tags_cloud']));
-    $aliasExists = isset($rt['tags_cloud_page']) || (isset($rt[0]) && isset($rt[0]['tags_cloud_page']));
-    $archivesExists = isset($rt['archives_list']) || (isset($rt[0]) && isset($rt[0]['archives_list']));
-    // Keep tag cloud entry on /tags/ and reserve /tag/{slug}/ for tag archives.
     \Utils\Helper::addRoute('tags_cloud', '/tags/', '\Widget\Archive', 'render');
     \Utils\Helper::addRoute('tags_cloud_tag', '/tags/', '\Widget\Archive', 'render');
     \Utils\Helper::addRoute('tags_cloud_tag_plain', '/tags', '\Widget\Archive', 'render');
-    if (!$aliasExists) {
+    if (!isset($rt['tags_cloud_page']) && !(isset($rt[0]) && isset($rt[0]['tags_cloud_page']))) {
         \Utils\Helper::addRoute('tags_cloud_page', '/page-tag-cloud.html', '\Widget\Archive', 'render');
     }
-    if (!$archivesExists) {
+    if (!isset($rt['archives_list']) && !(isset($rt[0]) && isset($rt[0]['archives_list']))) {
         \Utils\Helper::addRoute('archives_list', '/archives/', '\Widget\Archive', 'render');
     }
-    // Always enforce /categories/ for the category overview page to avoid
-    // conflicting with Typecho's native /category/{slug}/ archive route.
     \Utils\Helper::addRoute('categories_page', '/categories/', '\Widget\Archive', 'render');
-})();
+}
+
+// 每次请求时确保路由已注册（idempotent，Typecho 会跳过已存在的路由）
+dygita_register_routes();
 
 /**
  * 主题激活时初始化默认设置
  */
 function dygita_theme_activate() {
+    dygita_register_routes();
+
     $options = Typecho\Widget::widget('Widget_Options');
     $db = Typecho\Db::get();
     $optionsTable = $db->getPrefix() . 'options';
@@ -108,7 +109,7 @@ function dygita_reset_options() {
 /**
  * 文章目录功能
  */
-class ArticleCatalog {
+class Dygita_ArticleCatalog {
     /**
      * 索引ID
      */
@@ -238,20 +239,6 @@ class ArticleCatalog {
 
 function themeConfig($form)
 {
-    // 注册自定义路由（访问设置页时即写入数据库）
-    $rt = \Utils\Helper::options()->routingTable;
-    \Utils\Helper::addRoute('tags_cloud', '/tags/', '\Widget\Archive', 'render');
-    \Utils\Helper::addRoute('tags_cloud_tag', '/tags/', '\Widget\Archive', 'render');
-    \Utils\Helper::addRoute('tags_cloud_tag_plain', '/tags', '\Widget\Archive', 'render');
-    if (!isset($rt['tags_cloud_page']) && !(isset($rt[0]) && isset($rt[0]['tags_cloud_page']))) {
-        \Utils\Helper::addRoute('tags_cloud_page', '/page-tag-cloud.html', '\Widget\Archive', 'render');
-    }
-    if (!isset($rt['archives_list']) && !(isset($rt[0]) && isset($rt[0]['archives_list']))) {
-        \Utils\Helper::addRoute('archives_list', '/archives/', '\Widget\Archive', 'render');
-    }
-    // Keep categories overview route stable at /categories/.
-    \Utils\Helper::addRoute('categories_page', '/categories/', '\Widget\Archive', 'render');
-
     // 获取全局配置（注意：在函数上下文中不能使用 $this->options）
     $options = Typecho\Widget::widget('Widget_Options');
     // 站点Logo
@@ -448,7 +435,7 @@ function themeConfig($form)
 }
 
 /* 增加: 缩略图获取 */
-function getThumbnail($widget)
+function dygita_get_thumbnail($widget)
 {
     $url = '';
 
@@ -470,7 +457,7 @@ function getThumbnail($widget)
     }
 
     // 4. 随机占位图
-    return getRandomPlaceholderImageUrl($widget->widget('Widget_Options'));
+    return dygita_get_random_placeholder_url($widget->widget('Widget_Options'));
 }
 
 /**
@@ -556,7 +543,7 @@ function dygita_get_archive_posts() {
  * @param \Widget_Options $options
  * @return string
  */
-function getRandomPlaceholderImageUrl($options) {
+function dygita_get_random_placeholder_url($options) {
     $random = mt_rand(1, 12);
     return rtrim($options->themeUrl, '/') . '/img/pic/' . $random . '.jpg';
 }
@@ -735,7 +722,7 @@ function dygita_get_related_posts($cid, $limit = 6) {
 }
 
 /* 增加: 相关文章缩略图获取（用于数组形式的文章数据） */
-function getRelatedPostThumbnail($post)
+function dygita_get_related_post_thumbnail($post)
 {
     $db = Typecho\Db::get();
     $options = Typecho\Widget::widget('Widget_Options');
@@ -755,11 +742,11 @@ function getRelatedPostThumbnail($post)
     }
 
     // 3. 随机占位图
-    return getRandomPlaceholderImageUrl($options);
+    return dygita_get_random_placeholder_url($options);
 }
 
 /* 增加: 浏览量统计 */
-function getPostView($archive)
+function dygita_get_post_view($archive)
 {
     $cid    = $archive->cid;
     $db     = Typecho\Db::get();
@@ -805,7 +792,7 @@ function getPostView($archive)
 }
 
 /* 增加: 点赞数量获取 */
-function agreeNum($cid) {
+function dygita_agree_num($cid) {
     $db = Typecho\Db::get();
     $fieldsTable = dygita_get_table('fields');
     $row = $db->fetchRow($db->select('str_value')->from($fieldsTable)
@@ -821,7 +808,7 @@ function agreeNum($cid) {
 // 此函数已移至文件末尾，与标签云页面处理逻辑合并
 
 /* 增加: 热门文章 */
-function getHotPosts($limit = 5) {
+function dygita_get_hot_posts($limit = 5) {
     $db = Typecho\Db::get();
     $contentsTable = dygita_get_table('contents');
     $fieldsTable = dygita_get_table('fields');
@@ -843,7 +830,7 @@ function getHotPosts($limit = 5) {
 }
 
 /* 增加: 随机文章 */
-function getRandomPosts($limit = 5) {
+function dygita_get_random_posts($limit = 5) {
     $db = Typecho\Db::get();
     $contentsTable = dygita_get_table('contents');
     $adapterName = $db->getAdapterName();
@@ -873,7 +860,7 @@ function getRandomPosts($limit = 5) {
 }
 
 /* 增加: 站点统计 */
-function getStat() {
+function dygita_get_stat() {
     $db = Typecho\Db::get();
     $contentsTable = dygita_get_table('contents');
     $commentsTable = dygita_get_table('comments');
@@ -905,42 +892,6 @@ function getStat() {
     );
 }
 
-/* 增加: 统一处理文章元数据 */
-function postMeta(
-    \Widget\Archive $archive,
-    string $metaType = 'archive'
-) {
-    $titleTag = $metaType == 'archive' ? 'h2' : 'h1';
-?>
-    <<?php echo $titleTag ?> class="post-title" itemprop="name headline">
-        <a itemprop="url"
-           href="<?php $archive->permalink() ?>"><?php $archive->title() ?></a>
-    </<?php echo $titleTag ?>>
-    <?php if ($metaType != 'page'): ?>
-        <ul class="post-meta">
-            <li itemprop="author" itemscope itemtype="http://schema.org/Person">
-                <?php _e('作者'); ?>: <a itemprop="name"
-                                       href="<?php $archive->author->permalink(); ?>">
-                                       <?php $archive->author(); ?></a>
-            </li>
-            <li><?php _e('时间'); ?>:
-                <time datetime="<?php $archive->date('c'); ?>" itemprop="datePublished">
-                <?php $archive->date(); ?></time>
-            </li>
-            <li><?php dygita_e('分类'); ?>: <?php $archive->category(','); ?></li>
-            <li><?php _e('浏览'); ?>(<?php getPostView($archive); ?>)</li>
-            <?php if ($metaType == 'archive'): ?>
-                <li itemprop="interactionCount">
-                    <a itemprop="discussionUrl"
-                       href="<?php $archive->permalink() ?>#comments">
-                       <?php $archive->commentsNum(_t('暂无评论'), _t('1 条评论'), _t('%d 条评论')); ?></a>
-                </li>
-            <?php endif; ?>
-        </ul>
-    <?php endif; ?>
-<?php
-}
-
 /* 增加: 支持自定义字段 */
 function themeFields($layout) {
     $thumb = new \Typecho\Widget\Helper\Form\Element\Text(
@@ -970,7 +921,7 @@ function themeFields($layout) {
  * @param string $linksText
  * @return array
  */
-function parseLinks($linksText) {
+function dygita_parse_links($linksText) {
     $result = array();
     if (!$linksText) return $result;
     foreach (preg_split('/\r?\n/', $linksText) as $line) {
@@ -987,9 +938,9 @@ function parseLinks($linksText) {
     return $result;
 }
 
-function getLinks() {
+function dygita_get_links() {
     $options = Typecho\Widget::widget('Widget_Options');
-    foreach (parseLinks($options->links) as $link) {
+    foreach (dygita_parse_links($options->links) as $link) {
         $name = htmlspecialchars($link['name'], ENT_QUOTES, 'UTF-8');
         $url  = htmlspecialchars($link['url'],  ENT_QUOTES, 'UTF-8');
         $desc = htmlspecialchars($link['description'], ENT_QUOTES, 'UTF-8');

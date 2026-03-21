@@ -16,7 +16,7 @@
                     <p>Yacine Tsai</p>
                     <p>大数据产品经理</p>
                     <p>Vibe Coding</p>
-                    <?php $profileStat = getStat(); ?>
+                    <?php $profileStat = dygita_get_stat(); ?>
                     <div class="profile-stats" aria-label="站点统计">
                         <div class="profile-stats-item">
                             <span class="profile-stats-num"><?php echo (int) $profileStat['posts']; ?></span>
@@ -42,7 +42,7 @@
         <div class="title"><h2><?php dygita_e('热门文章'); ?></h2></div>
         <div class="widget-content">
             <ul>
-                <?php getHotPosts(); ?>
+                <?php dygita_get_hot_posts(); ?>
             </ul>
         </div>
     </div>
@@ -53,7 +53,7 @@
         <div class="title"><h2><?php dygita_e('猜你喜欢'); ?></h2></div>
         <div class="widget-content">
             <ul>
-                <?php getRandomPosts(); ?>
+                <?php dygita_get_random_posts(); ?>
             </ul>
         </div>
     </div>
@@ -78,7 +78,7 @@
         <div class="title"><h2><?php dygita_e('网站统计'); ?></h2></div>
         <div class="widget-content">
             <ul>
-                <?php $stat = getStat(); ?>
+                <?php $stat = dygita_get_stat(); ?>
                 <li><?php dygita_e('文章总数'); ?>: <?php echo $stat['posts']; ?></li>
                 <li><?php dygita_e('评论总数'); ?>: <?php echo $stat['comments']; ?></li>
                 <li><?php dygita_e('分类总数'); ?>: <?php echo $stat['categories']; ?></li>
@@ -95,7 +95,7 @@
         </div>
         <div class="widget-content">
             <?php 
-                $catalog = ArticleCatalog::instance();
+                $catalog = Dygita_ArticleCatalog::instance();
                 $catalogHtml = $catalog->renderCatalogHtml();
                 if (!empty($catalogHtml)) {
                     echo '<div class="catalog-content">' . $catalogHtml . '</div>';

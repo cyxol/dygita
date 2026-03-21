@@ -197,7 +197,7 @@ html, body{
 }.m-nav-all{
   display: flex;
   align-items: center;
-  justify-content: space-between;
+  justify-content: center;
   flex-wrap: nowrap;
   overflow: hidden;
   width: 100%;
@@ -244,30 +244,31 @@ html, body{
   --link-hover-color: var(--nav-text-hover-color);
 }
 .m-nav .nav li a{
-  padding: 15px 20px;
-  /* Align text with sidebar padding (20px) */
-  display: block;
-  transition: all 0.2s;
+  padding: 0 15px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  transition: none;
   background-color: transparent;
-  color: var(--nav-text-color) !important;
+  color: var(--nav-text-color);
 }.m-nav .nav li a:link,
 .m-nav .nav li a:visited{
-  color: var(--nav-text-color) !important;
+  color: var(--nav-text-color);
 }.m-nav .nav li a:hover, .m-nav .nav li a:active, .m-nav .nav li a:focus{
   transform: none;
-  color: var(--nav-text-hover-color) !important;
+  color: var(--nav-text-hover-color);
 }.m-nav .nav li.active a,
 .m-nav .nav li.active a:link,
 .m-nav .nav li.active a:visited{
-  color: var(--nav-text-active-color) !important;
+  color: var(--nav-text-active-color);
 }
 .m-nav .nav .search-toggle-li{
-  display: block;
-  margin-left: auto;
+  margin-left: 0;
   white-space: nowrap;
-}/* Push color toggle to the left of search */
+}
 .m-nav .nav .color-toggle-li{
-  margin-left: auto;
+  margin-left: 0;
 }/* Search form styles */
 .m-nav form{
   display: none;
@@ -505,6 +506,7 @@ html, body{
 .content-wrap, .sidebar{
   float: none;
   margin: 0;
+  border: 1px solid var(--border-color);
 }.content-wrap{
   flex: 1;
   min-width: 500px;
@@ -691,15 +693,8 @@ html, body{
 .excerpt-one{
   display: flex;
   flex-wrap: wrap;
-  background: var(--content-bg-color);
-  padding: 25px;
-  margin-bottom: 20px;
-  border-radius: 10px;
-  box-shadow: 0 2px 15px rgba(0, 0, 0, 0.05);
-  transition: all 0.3s ease;
-}.excerpt-one:hover{
-  box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
-  transform: translateY(-2px);
+  padding: 0 10px;
+  margin-bottom: 40px;
 }.excerpt-one > header{
   width: 100%;
   margin-bottom: 15px;
@@ -728,6 +723,7 @@ html, body{
 
 .post-block{
   background: var(--content-bg-color);
+  border: 1px solid var(--border-color);
   border-radius: 10px;
   padding: 25px;
   margin-bottom: 20px;
@@ -1741,36 +1737,36 @@ html, body{
 /* 移动端内容页统一居中：消除多层左右内边距叠加导致的偏移 */
 @media (max-width: 768px) {
   .main-container {
-    padding-left: 0 !important;
-    padding-right: 0 !important;
+    padding-left: 0;
+    padding-right: 0;
   }
   .content-wrap {
-    margin-left: auto !important;
-    margin-right: auto !important;
-    padding-left: 12px !important;
-    padding-right: 12px !important;
+    margin-left: auto;
+    margin-right: auto;
+    padding-left: 12px;
+    padding-right: 12px;
   }
   .content-wrap > .content,
   .single .content,
   .page .content {
-    margin-left: auto !important;
-    margin-right: auto !important;
-    padding-left: 0 !important;
-    padding-right: 0 !important;
+    margin-left: auto;
+    margin-right: auto;
+    padding-left: 0;
+    padding-right: 0;
   }
   .content .article-content,
   .main-container .content-wrap .content .article-content {
-    max-width: 100% !important;
-    margin-left: auto !important;
-    margin-right: auto !important;
-    padding-left: 0 !important;
-    padding-right: 0 !important;
+    max-width: 100%;
+    margin-left: auto;
+    margin-right: auto;
+    padding-left: 0;
+    padding-right: 0;
     box-sizing: border-box;
   }
   .article-content p {
-    margin-left: 0 !important;
-    margin-right: 0 !important;
-    max-width: 100% !important;
+    margin-left: 0;
+    margin-right: 0;
+    max-width: 100%;
   }
 }
 
