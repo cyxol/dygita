@@ -11,7 +11,6 @@
     </div>
 </footer>
 
-<script src="<?php $this->options->themeUrl('js/jquery.min.js'); ?>"></script>
 <script defer src="<?php $this->options->themeUrl('js/main.js'); ?>"></script>
 <!-- Swiper.js 轮播图 - CDN + 本地备用 -->
 <?php if ($this->options->swiperEnabled == '1'): ?>
@@ -19,10 +18,8 @@
 <?php
 endif; ?>
 <!-- 粒子背景动画 -->
-<script defer src="<?php $this->options->themeUrl('js/particles.min.js'); ?>"></script>
+<script defer src="<?php $this->options->themeUrl('js/vendor/particles.min.js'); ?>"></script>
 <script defer src="<?php $this->options->themeUrl('js/headerCanvas.js'); ?>"></script>
-<!-- 标签云功能 -->
-<script defer src="<?php $this->options->themeUrl('js/tagcanvas.min.js'); ?>"></script>
 <script defer src="<?php $this->options->themeUrl('js/sidebar.js'); ?>"></script>
 <script defer src="<?php $this->options->themeUrl('js/theme-switcher.js'); ?>"></script>
 <script defer src="<?php $this->options->themeUrl('js/reading-progress.js'); ?>"></script>
