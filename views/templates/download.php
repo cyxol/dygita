@@ -27,9 +27,9 @@ $permalink    = $dlData['permalink'];
             <h2><?php dygita_e('资源信息'); ?></h2>
             <div class="alert alert-success">
                 <ul class="infos clearfix">
-                    <li><?php dygita_e('资源名称'); ?>�??php echo htmlspecialchars($theCode1, ENT_QUOTES, 'UTF-8'); ?></li>
-                    <li><?php dygita_e('文件大小'); ?>�??php echo htmlspecialchars($theCode2, ENT_QUOTES, 'UTF-8'); ?></li>
-                    <li><?php dygita_e('更新日期'); ?>�??php echo date('Y-m-d H:i:s', $postModified); ?></li>
+                    <li><?php dygita_e('资源名称'); ?>: <?php echo htmlspecialchars($theCode1, ENT_QUOTES, 'UTF-8'); ?></li>
+                    <li><?php dygita_e('文件大小'); ?>: <?php echo htmlspecialchars($theCode2, ENT_QUOTES, 'UTF-8'); ?></li>
+                    <li><?php dygita_e('更新日期'); ?>: <?php echo date('Y-m-d H:i:s', $postModified); ?></li>
                 </ul>
             </div>
             

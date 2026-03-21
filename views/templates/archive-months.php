@@ -20,9 +20,9 @@
                 }
                 $safeMonthName = htmlspecialchars($monthName, ENT_QUOTES, 'UTF-8');
                 echo '<div class="xControl">';
-                echo '<a href="javascript:void(0)" class="collapseButton xButton" role="button">';
+                echo '<button type="button" class="collapseButton xButton" aria-expanded="true">';
                 echo '<div class="item"><h3>' . $safeMonthName . '</h3></div>';
-                echo '</a>';
+                echo '</button>';
                 echo '<ul class="archives-list">';
                 $ulOpen = true;
                 $currentYear = $year;

@@ -21,11 +21,11 @@
 }.cate-content .link-1{
 	border-radius: 4px 4px 0 0;
 }.cate-content .link-2{
-	border-bottom: 1px solid #eee;
+	border-bottom: 1px solid var(--border-color, #eee);
 }.cate-content a{
 	text-decoration: none;
 }.cate-content a:hover{
-	color: #1098F7;
+	color: var(--link-hover-color, #1098F7);
 }.cate-content .link-name{
 	text-overflow: ellipsis;
 	word-wrap: break-word;

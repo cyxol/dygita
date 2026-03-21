@@ -118,6 +118,18 @@ var particlesOptions = {
 
 var _particlesInitialized = false;
 var _fallbackAnimationId = null;
+var _resizeHandler = null;
+
+function cleanupParticles() {
+    if (_fallbackAnimationId) {
+        cancelAnimationFrame(_fallbackAnimationId);
+        _fallbackAnimationId = null;
+    }
+    if (_resizeHandler) {
+        window.removeEventListener('resize', _resizeHandler);
+        _resizeHandler = null;
+    }
+}
 
 function initParticles() {
     if (_particlesInitialized) return;
@@ -198,13 +210,13 @@ function initParticles() {
         animate();
         _particlesInitialized = true;
 
-        window.addEventListener('resize', function() {
-            if (!_particlesInitialized) return;
+        _resizeHandler = function() {
             var newSize = getCanvasSize();
             if (newSize.width > 0 && newSize.height > 0) {
                 applyCanvasSize(newSize);
             }
-        });
+        };
+        window.addEventListener('resize', _resizeHandler);
     } catch (e) { /* silently fail */ }
 }
 

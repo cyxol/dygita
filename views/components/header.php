@@ -342,6 +342,7 @@ endif; ?>
 </head>
 
 <body itemscope itemtype="http://schema.org/WebPage">
+    <a class="skip-nav" href="#main-content"><?php dygita_e('跳转到主内容'); ?></a>
     <header id="l-header" class="l-header">
         <div class="hdbg skin-bg"></div>
         <div class="m-about">
@@ -569,4 +570,4 @@ endif; ?>
         <h1><a href="<?php $this->options->siteUrl(); ?>"><?php $this->options->title(); ?></a></h1>
         <div id="search-trigger" class="right m-header-search"></div>
     </div>
-    <section class="container-inner"> 
+    <section id="main-content" class="container-inner"> 

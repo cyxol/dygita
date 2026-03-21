@@ -90,7 +90,7 @@ $parsedContent = $catalog->renderHtml($this->content);
                             $thumb = getRelatedPostThumbnail($post);
                         ?>
                         <li class="related-item">
-                            <a href="<?php echo $permalink; ?>" title="<?php echo $title; ?>" target="_blank">
+                            <a href="<?php echo $permalink; ?>" title="<?php echo $title; ?>" target="_blank" rel="noopener noreferrer">
                                 <img class="related-thumb" src="<?php echo $thumb; ?>" alt="<?php echo $title; ?>" loading="lazy" />
                                 <span class="related-item-title"><?php echo $title; ?></span>
                             </a>

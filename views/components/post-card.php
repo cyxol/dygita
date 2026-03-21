@@ -23,14 +23,14 @@ if ($showCategoryCorner) {
             </span>
         <?php endif; ?>
         <h2>
-            <a target="_blank" href="<?php $this->permalink(); ?>" title="<?php $this->title(); ?>">
+            <a target="_blank" rel="noopener noreferrer" href="<?php $this->permalink(); ?>" title="<?php $this->title(); ?>">
                 <?php $this->title(); ?>
             </a>
         </h2>
     </header>
 
     <div class="focus">
-        <a target="_blank" href="<?php $this->permalink(); ?>">
+        <a target="_blank" rel="noopener noreferrer" href="<?php $this->permalink(); ?>">
             <img class="thumb" src="<?php echo getThumbnail($this); ?>" alt="<?php $this->title(); ?>" loading="lazy" />
         </a>
     </div>
@@ -54,7 +54,7 @@ if ($showCategoryCorner) {
         </span>
         <span class="muted">
             <i class="fa fa-comments-o"></i>
-            <a target="_blank" href="<?php $this->permalink(); ?>#comments">
+            <a target="_blank" rel="noopener noreferrer" href="<?php $this->permalink(); ?>#comments">
                 <?php $this->commentsNum(dygita_t('0评论'), dygita_t('1评论'), dygita_t('%d评论')); ?>
             </a>
         </span>

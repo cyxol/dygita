@@ -3,18 +3,22 @@
  * 依赖: window.DYGITA.savedTheme, window.DYGITA.savedHeaderColor, window.DYGITA.config.hostname
  */
 (function() {
+    function safeStorage(method, key, value) {
+        try {
+            if (typeof localStorage === 'undefined') return null;
+            if (method === 'get') return localStorage.getItem(key);
+            if (method === 'set') localStorage.setItem(key, value);
+        } catch (e) { return null; }
+    }
+
     function dygitaSavePreference(type, value) {
         var baseUrl = (window.DYGITA && window.DYGITA.config && window.DYGITA.config.hostname) ? window.DYGITA.config.hostname : (window.location.origin + '/');
         var xhr = new XMLHttpRequest();
         xhr.open('POST', baseUrl, true);
         xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
-        xhr.onreadystatechange = function() {
-            if (xhr.readyState === 4 && xhr.status === 200) {
-                if (typeof console !== 'undefined' && console.log) {
-                    console.log('Preference saved: ' + type + '=' + value);
-                }
-            }
-        };
+        xhr.timeout = 5000;
+        xhr.onerror = function() {};
+        xhr.ontimeout = function() {};
         xhr.send('action=savePreference&type=' + encodeURIComponent(type) + '&value=' + encodeURIComponent(value));
     }
 
@@ -22,7 +26,7 @@
         var themeToggle = document.getElementById('theme-toggle');
         if (!themeToggle) return;
 
-        var savedTheme = (window.DYGITA && window.DYGITA.savedTheme ? window.DYGITA.savedTheme : null) || (typeof localStorage !== 'undefined' ? localStorage.getItem('theme') : null);
+        var savedTheme = (window.DYGITA && window.DYGITA.savedTheme ? window.DYGITA.savedTheme : null) || safeStorage('get', 'theme');
         var prefersDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
 
         if (savedTheme === 'dark' || (!savedTheme && prefersDark)) {
@@ -42,7 +46,7 @@
             } else {
                 themeToggle.innerHTML = '<i class="fa fa-moon-o"></i>';
             }
-            if (typeof localStorage !== 'undefined') localStorage.setItem('theme', newTheme);
+            safeStorage('set', 'theme', newTheme);
             dygitaSavePreference('theme', newTheme);
         });
     }
@@ -52,7 +56,7 @@
         if (!colorToggle) return;
 
         var headerColors = ['#E74C3C', '#3498db', '#27ae60', '#f39c12', '#9b59b6', '#1abc9c'];
-        var savedColor = (window.DYGITA && window.DYGITA.savedHeaderColor ? window.DYGITA.savedHeaderColor : null) || (typeof localStorage !== 'undefined' ? localStorage.getItem('headerColor') : null);
+        var savedColor = (window.DYGITA && window.DYGITA.savedHeaderColor ? window.DYGITA.savedHeaderColor : null) || safeStorage('get', 'headerColor');
         if (savedColor) {
             document.documentElement.style.setProperty('--header-bg-color', savedColor);
         }
@@ -63,7 +67,7 @@
             currentColorIndex = (currentColorIndex + 1) % headerColors.length;
             var newColor = headerColors[currentColorIndex];
             document.documentElement.style.setProperty('--header-bg-color', newColor);
-            if (typeof localStorage !== 'undefined') localStorage.setItem('headerColor', newColor);
+            safeStorage('set', 'headerColor', newColor);
             dygitaSavePreference('headerColor', newColor);
         });
     }

@@ -1,4 +1,4 @@
-/* Dygita Theme - Build: 2026-03-20T18:59:01.566Z */
+/* Dygita Theme - Build: 2026-03-21T13:56:02.823Z */
 
 /* === css/base/variables.css === */
 /* Dygita CSS 层次：变量层（设计令牌，仅定义 CSS 变量） */
@@ -540,6 +540,36 @@ kbd{
 	color: var(--header-text-color);
 }
 
+/* Skip navigation link: hidden until focused */
+.skip-nav {
+	position: absolute;
+	top: -100%;
+	left: 50%;
+	transform: translateX(-50%);
+	z-index: 10000;
+	padding: 0.75em 1.5em;
+	background: var(--bg-color, #fff);
+	color: var(--text-color, #333);
+	border: 2px solid var(--accent-color, #E74C3C);
+	border-radius: 4px;
+	font-size: 14px;
+	text-decoration: none;
+	white-space: nowrap;
+}
+.skip-nav:focus {
+	top: 10px;
+}
+
+/* Reduced motion: disable animations for users who prefer it */
+@media (prefers-reduced-motion: reduce) {
+	*, *::before, *::after {
+		animation-duration: 0.01ms !important;
+		animation-iteration-count: 1 !important;
+		transition-duration: 0.01ms !important;
+		scroll-behavior: auto !important;
+	}
+}
+
 
 /* === css/base/typography.css === */
 /* Dygita CSS 层次：排版层（文字与链接表现） */
@@ -804,26 +834,27 @@ a:hover, span.exturl:hover{
 	box-shadow: none ;
 	outline: none ;
 	transition: background-color 0.3s ease, color 0.3s ease ;
-	-webkit-box-shadow: none ;
-	-moz-box-shadow: none ;
 }.m-nav .nav li a, .m-nav .nav li a:hover, .m-nav .nav li a:active, .m-nav .nav li a:focus, .m-nav .nav li.active a{
 	outline: none ;
 	box-shadow: none ;
-	-webkit-box-shadow: none ;
-	-moz-box-shadow: none ;
 }.search-toggle-li .btn, .color-toggle-li .btn, .theme-toggle-li .btn{
 	transition: none ;
 	outline: none ;
 	box-shadow: none ;
-	-webkit-box-shadow: none ;
-	-moz-box-shadow: none ;
 }.search-toggle-li .btn:hover, .search-toggle-li .btn:active, .search-toggle-li .btn:focus, .color-toggle-li .btn:hover, .color-toggle-li .btn:active, .color-toggle-li .btn:focus, .theme-toggle-li .btn:hover, .theme-toggle-li .btn:active, .theme-toggle-li .btn:focus, .lang-toggle-li .btn:hover, .lang-toggle-li .btn:active, .lang-toggle-li .btn:focus{
 	transition: none ;
 	transform: none ;
 	outline: none ;
 	box-shadow: none ;
-	-webkit-box-shadow: none ;
-	-moz-box-shadow: none ;
+}/* Keyboard focus: restore visible outline for :focus-visible */
+.navbar .nav li a:focus-visible,
+.m-nav .nav li a:focus-visible,
+.search-toggle-li .btn:focus-visible,
+.color-toggle-li .btn:focus-visible,
+.theme-toggle-li .btn:focus-visible,
+.lang-toggle-li .btn:focus-visible{
+	outline: 2px solid var(--accent-color) ;
+	outline-offset: 2px ;
 }.search-toggle-li, .color-toggle-li, .theme-toggle-li, .lang-toggle-li{
 	display: flex;
 	align-items: center;
@@ -3452,7 +3483,7 @@ pre[class*="language-python"]::before, pre[class*="language-javascript"]::before
     margin-top: 0;
     margin-bottom: 15px;
     font-size: 16px;
-    color: #333;
+    color: var(--text-color, #333);
 }.share-buttons{
     display: flex;
     flex-wrap: wrap;
@@ -4168,6 +4199,23 @@ html, body{
 }/* Archives page (archives.php) */
 .archives-list{
     display: none;
+}
+/* Archive collapse button: reset native button styles */
+button.collapseButton{
+    display: block;
+    width: 100%;
+    padding: 0;
+    margin: 0;
+    background: none;
+    border: none;
+    cursor: pointer;
+    text-align: left;
+    font: inherit;
+    color: inherit;
+}
+button.collapseButton:focus-visible{
+    outline: 2px solid var(--accent-color, #E74C3C);
+    outline-offset: 2px;
 }
 /* 文章列表时间线 */
 .archives-timeline{

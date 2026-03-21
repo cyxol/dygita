@@ -12,6 +12,8 @@ document.addEventListener('DOMContentLoaded', function () {
         list.style.display = list.style.display === 'none' ? 'block' : 'none';
       }
       this.classList.toggle('collapsed');
+      var expanded = this.getAttribute('aria-expanded') === 'true';
+      this.setAttribute('aria-expanded', expanded ? 'false' : 'true');
     });
   });
 });

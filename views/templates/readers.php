@@ -1,9 +1,9 @@
 <?php if (!defined('__TYPECHO_ROOT_DIR__')) exit; ?>
 <?php
 // 读者墙函数
-function readers_wall($outer = '1', $timer = '100', $limit = '60') {
+function readers_wall($outer = '1', $timer = 100, $limit = 60) {
     $db = Typecho\Db::get();
-    $startTime = time() - ($timer * 30 * 24 * 3600); // 计算开始时�?
+    $startTime = time() - ($timer * 30 * 24 * 3600); // 计算开始时�?
     
     // 查询评论数据
     $query = $db->query(
@@ -36,7 +36,7 @@ function readers_wall($outer = '1', $timer = '100', $limit = '60') {
         $author = isset($count['author']) ? htmlspecialchars((string) $count['author'], ENT_QUOTES, 'UTF-8') : '';
         $commentCount = isset($count['cnt']) ? (int) $count['cnt'] : 0;
         $avatar = Typecho\Common::gravatarUrl($count['mail'], 64, '', '', true);
-        $type .= '<a id="duzhe" target="_blank" rel="noopener noreferrer nofollow" href="' . htmlspecialchars($c_url, ENT_QUOTES, 'UTF-8') . '" title="[' . $author . ']近期评论' . $commentCount . '�?><img src="' . htmlspecialchars($avatar, ENT_QUOTES, 'UTF-8') . '" alt="' . $author . '"><span>' . $author . '</span></a>';
+        $type .= '<a id="duzhe" target="_blank" rel="noopener noreferrer nofollow" href="' . htmlspecialchars($c_url, ENT_QUOTES, 'UTF-8') . '" title="[' . $author . ']近期评论' . $commentCount . '�?><img src="' . htmlspecialchars($avatar, ENT_QUOTES, 'UTF-8') . '" alt="' . $author . '"><span>' . $author . '</span></a>';
     }
     
     echo $type;

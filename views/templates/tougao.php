@@ -73,7 +73,7 @@ if (isset($_POST['tougao_form']) && $_POST['tougao_form'] == 'send') {
     if ($insertId) {
         // 投稿成功给博主发送邮件（需要服务器支持邮件功能）
         if ($tomail) {
-            @mail($tomail, "站长，有新投稿！ ", $title . "\n\n" . $post_content);
+            mail($tomail, "=?UTF-8?B?" . base64_encode(dygita_t('站长，有新投稿！')) . "?=", $title . "\n\n" . $post_content, "Content-Type: text/plain; charset=UTF-8\r\n");
         }
         throw new \Typecho\Widget\Exception(dygita_t('投稿成功！感谢投稿！<a href="' . $current_url . '">点此返回</a>'), 200);
     } else {

@@ -444,3 +444,33 @@ kbd{
 }.header a:hover{
 	color: var(--header-text-color);
 }
+
+/* Skip navigation link: hidden until focused */
+.skip-nav {
+	position: absolute;
+	top: -100%;
+	left: 50%;
+	transform: translateX(-50%);
+	z-index: 10000;
+	padding: 0.75em 1.5em;
+	background: var(--bg-color, #fff);
+	color: var(--text-color, #333);
+	border: 2px solid var(--accent-color, #E74C3C);
+	border-radius: 4px;
+	font-size: 14px;
+	text-decoration: none;
+	white-space: nowrap;
+}
+.skip-nav:focus {
+	top: 10px;
+}
+
+/* Reduced motion: disable animations for users who prefer it */
+@media (prefers-reduced-motion: reduce) {
+	*, *::before, *::after {
+		animation-duration: 0.01ms !important;
+		animation-iteration-count: 1 !important;
+		transition-duration: 0.01ms !important;
+		scroll-behavior: auto !important;
+	}
+}

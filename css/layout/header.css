@@ -93,26 +93,27 @@
 	box-shadow: none ;
 	outline: none ;
 	transition: background-color 0.3s ease, color 0.3s ease ;
-	-webkit-box-shadow: none ;
-	-moz-box-shadow: none ;
 }.m-nav .nav li a, .m-nav .nav li a:hover, .m-nav .nav li a:active, .m-nav .nav li a:focus, .m-nav .nav li.active a{
 	outline: none ;
 	box-shadow: none ;
-	-webkit-box-shadow: none ;
-	-moz-box-shadow: none ;
 }.search-toggle-li .btn, .color-toggle-li .btn, .theme-toggle-li .btn{
 	transition: none ;
 	outline: none ;
 	box-shadow: none ;
-	-webkit-box-shadow: none ;
-	-moz-box-shadow: none ;
 }.search-toggle-li .btn:hover, .search-toggle-li .btn:active, .search-toggle-li .btn:focus, .color-toggle-li .btn:hover, .color-toggle-li .btn:active, .color-toggle-li .btn:focus, .theme-toggle-li .btn:hover, .theme-toggle-li .btn:active, .theme-toggle-li .btn:focus, .lang-toggle-li .btn:hover, .lang-toggle-li .btn:active, .lang-toggle-li .btn:focus{
 	transition: none ;
 	transform: none ;
 	outline: none ;
 	box-shadow: none ;
-	-webkit-box-shadow: none ;
-	-moz-box-shadow: none ;
+}/* Keyboard focus: restore visible outline for :focus-visible */
+.navbar .nav li a:focus-visible,
+.m-nav .nav li a:focus-visible,
+.search-toggle-li .btn:focus-visible,
+.color-toggle-li .btn:focus-visible,
+.theme-toggle-li .btn:focus-visible,
+.lang-toggle-li .btn:focus-visible{
+	outline: 2px solid var(--accent-color) ;
+	outline-offset: 2px ;
 }.search-toggle-li, .color-toggle-li, .theme-toggle-li, .lang-toggle-li{
 	display: flex;
 	align-items: center;
