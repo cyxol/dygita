@@ -75,6 +75,7 @@ Description: Dygita Theme Ported to Typecho
 .content-wrap {
   flex: 1;
   min-width: 0;
+  max-width: 800px; /* 限制最大宽度，优化阅读体验 */
   order: 2;
   box-sizing: border-box;
   background: var(--content-bg-color);
