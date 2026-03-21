@@ -47,6 +47,11 @@ function dygita_bootstrap_runtime() {
     if ($bootstrapped) return;
     dygita_register_routes();
     dygita_register_actions();
+
+    // 注册文章目录缓存钩子：文章发布/更新时自动生成 TOC 缓存
+    $catalogPlugin = \Typecho\Plugin::factory('Widget_Abstract_Contents');
+    $catalogPlugin->finishPublish = [Dygita_Catalog_Cache::class, 'onFinishPublish'];
+
     $bootstrapped = true;
 }
 
@@ -291,6 +296,190 @@ class Dygita_ArticleCatalog {
             $instance = new static();
         }
         return $instance;
+    }
+}
+
+/**
+ * 文章目录缓存
+ *
+ * 在文章保存/发布时预生成目录和带锚点的HTML，存入 custom fields。
+ * 前端渲染时直接读取缓存，避免每次请求都进行 DOM 解析或正则替换。
+ *
+ * 缓存策略：
+ * - 写时：通过 finishPublish 钩子，在文章发布/更新时生成缓存
+ * - 读时：优先从 custom fields 读取，无缓存时回退到实时解析（兼容性保障）
+ * - 请求级静态缓存：同一请求内不会重复查询数据库
+ */
+class Dygita_Catalog_Cache {
+    /** custom fields 字段名：带锚点的文章 HTML */
+    const FIELD_PARSED = 'dygita_parsed_content';
+    /** custom fields 字段名：目录 HTML */
+    const FIELD_CATALOG = 'dygita_catalog_html';
+
+    /**
+     * 请求级缓存（同一 PHP 请求内复用，避免重复查库）
+     * @var array<int, array{parsed: string, catalog: string}|null>
+     */
+    private static $requestCache = [];
+
+    /**
+     * 文章发布/更新钩子回调
+     *
+     * 在 Markdown→HTML 转换后，调用 ArticleCatalog 生成带锚点的 HTML
+     * 和目录 HTML，一并写入 custom fields。
+     *
+     * @param array $contents 已保存的文章数据（text 字段可能含 <!--markdown--> 前缀）
+     * @param \Widget\Contents\Post\Edit|\Widget\Contents\Page\Edit $widget
+     */
+    public static function onFinishPublish($contents, $widget)
+    {
+        try {
+            $cid = isset($widget->cid) ? (int) $widget->cid : 0;
+            $text = isset($contents['text']) ? (string) $contents['text'] : '';
+
+            if ($cid <= 0 || $text === '') {
+                return;
+            }
+
+            // 去掉 <!--markdown--> 前缀后进行 Markdown→HTML 转换
+            $isMarkdown = (strpos($text, '<!--markdown-->') === 0);
+            $rawText = $isMarkdown ? substr($text, 15) : $text;
+
+            $html = $isMarkdown
+                ? \Utils\Markdown::convert($rawText)
+                : $rawText;
+
+            // 生成目录（需要全新实例，避免与前端单例冲突）
+            $catalog = new Dygita_ArticleCatalog();
+            $parsedHtml = $catalog->renderHtml($html);
+            $catalogHtml = $catalog->renderCatalogHtml();
+
+            self::saveCache($cid, $parsedHtml, $catalogHtml);
+        } catch (\Throwable $e) {
+            // 静默失败，绝不影响文章保存流程
+        }
+    }
+
+    /**
+     * 获取缓存的目录数据
+     *
+     * @param int $cid 文章 ID
+     * @return array{parsed: string, catalog: string}|null
+     */
+    public static function getCache($cid)
+    {
+        $cid = (int) $cid;
+        if ($cid <= 0) {
+            return null;
+        }
+
+        // 请求级缓存
+        if (array_key_exists($cid, self::$requestCache)) {
+            return self::$requestCache[$cid];
+        }
+
+        try {
+            $db = \Typecho\Db::get();
+            $fieldsTable = dygita_get_table('fields');
+
+            $rows = $db->fetchAll(
+                $db->select('name', 'str_value')
+                    ->from($fieldsTable)
+                    ->where('cid = ?', $cid)
+                    ->where('name IN ?', [self::FIELD_PARSED, self::FIELD_CATALOG])
+            );
+
+            $parsed = '';
+            $catalog = '';
+            foreach ($rows as $row) {
+                if ($row['name'] === self::FIELD_PARSED) {
+                    $parsed = $row['str_value'];
+                }
+                if ($row['name'] === self::FIELD_CATALOG) {
+                    $catalog = $row['str_value'];
+                }
+            }
+
+            $result = ($parsed !== '' && $catalog !== '')
+                ? ['parsed' => $parsed, 'catalog' => $catalog]
+                : null;
+        } catch (\Throwable $e) {
+            $result = null;
+        }
+
+        self::$requestCache[$cid] = $result;
+        return $result;
+    }
+
+    /**
+     * 写入缓存到 custom fields
+     */
+    private static function saveCache($cid, $parsedHtml, $catalogHtml)
+    {
+        $db = \Typecho\Db::get();
+        $fieldsTable = dygita_get_table('fields');
+
+        self::upsertField($db, $fieldsTable, $cid, self::FIELD_PARSED, $parsedHtml);
+        self::upsertField($db, $fieldsTable, $cid, self::FIELD_CATALOG, $catalogHtml);
+
+        // 刷新请求级缓存
+        self::$requestCache[$cid] = [
+            'parsed' => $parsedHtml,
+            'catalog' => $catalogHtml
+        ];
+    }
+
+    /**
+     * Upsert 单个 custom field
+     */
+    private static function upsertField($db, $table, $cid, $name, $value)
+    {
+        $exists = $db->fetchRow(
+            $db->select('cid')->from($table)
+                ->where('cid = ?', $cid)
+                ->where('name = ?', $name)
+        );
+
+        if ($exists) {
+            $db->query(
+                $db->update($table)
+                    ->rows(['str_value' => $value])
+                    ->where('cid = ?', $cid)
+                    ->where('name = ?', $name)
+            );
+        } else {
+            $db->query(
+                $db->insert($table)->rows([
+                    'cid'         => $cid,
+                    'name'        => $name,
+                    'type'        => 'str',
+                    'str_value'   => $value,
+                    'int_value'   => 0,
+                    'float_value' => 0
+                ])
+            );
+        }
+    }
+
+    /**
+     * 清除指定文章的目录缓存（文章删除或内容变更时调用）
+     */
+    public static function clearCache($cid)
+    {
+        $cid = (int) $cid;
+        unset(self::$requestCache[$cid]);
+
+        try {
+            $db = \Typecho\Db::get();
+            $fieldsTable = dygita_get_table('fields');
+            $db->query(
+                $db->delete($fieldsTable)
+                    ->where('cid = ?', $cid)
+                    ->where('name IN ?', [self::FIELD_PARSED, self::FIELD_CATALOG])
+            );
+        } catch (\Throwable $e) {
+            // 静默
+        }
     }
 }
 
@@ -744,6 +933,100 @@ function dygita_escape_url($url) {
         return htmlspecialchars($url, ENT_QUOTES, 'UTF-8');
     }
     return '';
+}
+
+/**
+ * 按 slug 高效获取单个页面（请求级静态缓存）
+ * 解决 header.php 中全量遍历所有页面查找特定 slug 的性能瓶颈
+ * @param string $slug 页面缩略名
+ * @return array|null ['title' => '', 'permalink' => ''] 或 null
+ */
+function dygita_get_page_by_slug($slug) {
+    static $cache = [];
+    $slug = trim((string) $slug);
+    if ($slug === '') return null;
+
+    if (isset($cache[$slug])) {
+        return $cache[$slug];
+    }
+
+    $db = \Typecho\Db::get();
+    $row = $db->fetchRow($db->select(['title', 'permalink'])
+        ->from('table.contents')
+        ->where('slug = ?', $slug)
+        ->where('type = ?', 'page')
+        ->where('status = ?', 'publish')
+        ->limit(1));
+
+    if ($row) {
+        $cache[$slug] = ['title' => $row['title'], 'permalink' => $row['permalink']];
+    } else {
+        $cache[$slug] = null;
+    }
+
+    return $cache[$slug];
+}
+
+/**
+ * 缓存导航链接配置（请求级静态缓存）
+ * 解决 header.php 中每次请求都 json_decode navLinks 的性能问题
+ * @param string|null $navLinksJson navLinks 字段的原始 JSON 字符串，传 null 时自动获取
+ * @return array 解析后的配置数组 ['links' => [...]]
+ */
+function dygita_get_nav_links_cached($navLinksJson = null) {
+    static $parsedCache = null;
+    static $sourceHash = null;
+
+    if ($navLinksJson === null) {
+        $options = \Widget\Options::alloc();
+        $navLinksJson = isset($options->navLinks) ? (string) $options->navLinks : '';
+    }
+
+    $currentHash = md5($navLinksJson);
+    if ($parsedCache === null || $sourceHash !== $currentHash) {
+        $parsedCache = json_decode($navLinksJson, true);
+        if (!is_array($parsedCache)) {
+            $parsedCache = ['links' => []];
+        }
+        if (!isset($parsedCache['links']) || !is_array($parsedCache['links'])) {
+            $parsedCache['links'] = [];
+        }
+        $sourceHash = $currentHash;
+    }
+
+    return $parsedCache;
+}
+
+/**
+ * 获取所有页面列表（请求级静态缓存）
+ * 解决 header.php 中每次请求都遍历所有页面的性能问题
+ * @param bool $refresh 强制刷新缓存
+ * @return array [['slug' => '', 'title' => '', 'permalink' => ''], ...]
+ */
+function dygita_get_all_pages_cached($refresh = false) {
+    static $cache = null;
+
+    if ($cache !== null && !$refresh) {
+        return $cache;
+    }
+
+    $cache = [];
+    $db = \Typecho\Db::get();
+    $rows = $db->fetchAll($db->select(['slug', 'title', 'permalink'])
+        ->from('table.contents')
+        ->where('type = ?', 'page')
+        ->where('status = ?', 'publish')
+        ->order('order', \Typecho\Db::SORT_ASC));
+
+    foreach ($rows as $row) {
+        $cache[] = [
+            'slug' => $row['slug'],
+            'title' => $row['title'],
+            'permalink' => $row['permalink']
+        ];
+    }
+
+    return $cache;
 }
 
 /**

@@ -1,0 +1,90 @@
+/**
+ * Toast 提示框组件样式
+ * 与 JS 中的 showToast() 函数配合使用
+ */
+
+/* Toast 容器 - 固定定位在右上角 */
+#dygita-toast-container {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    z-index: 99999;
+    pointer-events: none;
+}
+
+/* Toast 基础样式 */
+.dygita-toast {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 12px 20px;
+    margin-bottom: 10px;
+    background: #fff;
+    border-radius: 4px;
+    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.15);
+    font-size: 14px;
+    line-height: 1.5;
+    pointer-events: auto;
+    max-width: 350px;
+    word-break: break-word;
+    /* 动画初始状态 */
+    transform: translateX(400px);
+    opacity: 0;
+    transition: transform 0.3s ease, opacity 0.3s ease;
+}
+
+/* Toast 显示状态（由 JS 动态添加） */
+.dygita-toast.dygita-toast--visible {
+    transform: translateX(0);
+    opacity: 1;
+}
+
+/* Toast 关闭状态（由 JS 动态添加） */
+.dygita-toast.dygita-toast--hiding {
+    transform: translateX(400px);
+    opacity: 0;
+}
+
+/* 图标样式 */
+.dygita-toast i {
+    font-size: 16px;
+    flex-shrink: 0;
+}
+
+/* 类型颜色 - 使用 CSS 自定义属性，便于主题覆盖 */
+.dygita-toast-success i {
+    color: var(--toast-success-color, #52c41a);
+}
+
+.dygita-toast-error i {
+    color: var(--toast-error-color, #f5222d);
+}
+
+.dygita-toast-info i {
+    color: var(--toast-info-color, #1890ff);
+}
+
+.dygita-toast-warning i {
+    color: var(--toast-warning-color, #faad14);
+}
+
+/* 暗色主题适配 */
+[data-theme="dark"] .dygita-toast {
+    background: var(--toast-bg-dark, #2d2d2d);
+    color: var(--toast-text-dark, #c9d1d9);
+    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.4);
+}
+
+/* 响应式：小屏幕下全宽显示 */
+@media (max-width: 480px) {
+    #dygita-toast-container {
+        left: 10px;
+        right: 10px;
+        top: 10px;
+    }
+
+    .dygita-toast {
+        max-width: none;
+        width: 100%;
+    }
+}

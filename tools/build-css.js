@@ -30,6 +30,7 @@ const cssFiles = [
     'css/components/tag-cloud.css',
     'css/components/toc.css',
     'css/components/pagination.css',
+    'css/components/toast.css',
     'css/themes/dark-mode.css'
 ];
 

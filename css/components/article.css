@@ -318,60 +318,47 @@ pre[class*="language-python"]::before, pre[class*="language-javascript"]::before
     box-sizing: border-box ;
     align-items: stretch ;
 }/* 左侧边栏 */
-.sidebar-left{
-    width: 540px ;
-    min-width: 540px ;
-    max-width: 540px ;
-    flex: 0 0 540px ;
-    flex-shrink: 0 ;
-    order: 1 ;
-    box-sizing: border-box ;
-}/* 右侧边栏 */
-.sidebar-right{
-    width: 540px ;
-    min-width: 540px ;
-    max-width: 540px ;
-    flex: 0 0 540px ;
-    flex-shrink: 0 ;
-    order: 3 ;
-    box-sizing: border-box ;
-}/* 中间内容区域 */
-.content-wrap{
-    width: 1080px ;
-    min-width: 1080px ;
-    max-width: 1080px ;
-    flex: 0 0 1080px ;
-    order: 2 ;
-    box-sizing: border-box ;
-    padding: 0 ;
-    overflow: visible ;
+.sidebar-left {
+    flex: 0 0 540px;
+    order: 1;
+    box-sizing: border-box;
 }
 
-@media (max-width: 2160px) {.sidebar-left, .sidebar-right{
-        width: 25% ;
-        min-width: 0 ;
-        max-width: none ;
-        flex: 0 0 25% ;
-    }.content-wrap{
-        width: 50% ;
-        min-width: 0 ;
-        max-width: none ;
-        flex: 0 0 50% ;
+/* 右侧边栏 */
+.sidebar-right {
+    flex: 0 0 540px;
+    order: 3;
+    box-sizing: border-box;
+}
+
+/* 中间内容区域 */
+.content-wrap {
+    flex: 0 0 1080px;
+    order: 2;
+    box-sizing: border-box;
+    padding: 0;
+    overflow: visible;
+}
+
+@media (max-width: 2160px) {
+    .sidebar-left, .sidebar-right {
+        flex: 0 0 25%;
+    }
+    .content-wrap {
+        flex: 0 0 50%;
     }
 }
 
 /* 响应式调整 */
-@media (max-width: 1200px) {.sidebar-left, .sidebar-right{
-        width: 20% ;
-        min-width: 20% ;
-        max-width: 20% ;
+@media (max-width: 1200px) {
+    .sidebar-left, .sidebar-right {
+        flex: 0 0 20%;
     }
 }
 
-@media (max-width: 992px) {.sidebar-left, .sidebar-right{
-        width: 20% ;
-        min-width: 20% ;
-        max-width: 20% ;
+@media (max-width: 992px) {
+    .sidebar-left, .sidebar-right {
+        flex: 0 0 20%;
     }
 }/* 防止正文元素横向溢出，覆盖右侧栏 */
 .content-wrap .content, .content-wrap .article-content{
@@ -390,21 +377,21 @@ pre[class*="language-python"]::before, pre[class*="language-javascript"]::before
     overflow-x: auto ;
 }
 
-@media (max-width: 768px) {.main-container{
-        flex-direction: column ;
-        padding: 10px ;
-    }.sidebar-left, .sidebar-right{
-        width: 100% ;
-        min-width: 100% ;
-        max-width: 100% ;
-        order: 1 ;
-    }.content-wrap{
-        width: 100% ;
-        max-width: 100% ;
-        min-width: 100% ;
-        order: 2 ;
-    }.sidebar-right{
-        order: 3 ;
+@media (max-width: 768px) {
+    .main-container {
+        flex-direction: column;
+        padding: 10px;
+    }
+    .sidebar-left, .sidebar-right {
+        flex: 0 0 100%;
+        order: 1;
+    }
+    .content-wrap {
+        flex: 0 0 100%;
+        order: 2;
+    }
+    .sidebar-right {
+        order: 3;
     }
 }
 /* Archive collapse button: reset native button styles */

@@ -94,9 +94,14 @@
             <h2><i class="fa fa-list"></i> <?php dygita_e('文章目录'); ?></h2>
         </div>
         <div class="widget-content">
-            <?php 
-                $catalog = Dygita_ArticleCatalog::instance();
-                $catalogHtml = $catalog->renderCatalogHtml();
+            <?php
+                $catalogCache = Dygita_Catalog_Cache::getCache($this->cid);
+                if ($catalogCache !== null) {
+                    $catalogHtml = $catalogCache['catalog'];
+                } else {
+                    $catalog = Dygita_ArticleCatalog::instance();
+                    $catalogHtml = $catalog->renderCatalogHtml();
+                }
                 if (!empty($catalogHtml)) {
                     echo '<div class="catalog-content">' . $catalogHtml . '</div>';
                 } else {

@@ -20,6 +20,8 @@ endif; ?>>
     <meta name="theme-color" content="#222">
 
     <!-- 主题偏好：阻塞式初始化，防止暗色主题闪白 -->
+    <!-- 关键 CSS 抽离为外部文件，可被浏览器缓存，减少每个 HTML 页面体积 -->
+    <link rel="stylesheet" href="<?php $this->options->themeUrl('css/dark-init.css'); ?>">
     <script>
         window.DYGITA = window.DYGITA || {};
         window.DYGITA.savedTheme = <?php echo json_encode($savedTheme, JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_QUOT); ?>;
@@ -35,71 +37,6 @@ endif; ?>>
             document.documentElement.classList.add('no-transitions');
         })();
     </script>
-    <style>
-        /* 页面加载期间禁止所有过渡动画，防止闪烁 */
-        html.no-transitions,
-        html.no-transitions *,
-        html.no-transitions *::before,
-        html.no-transitions *::after {
-            transition: none !important;
-        }
-        /* 暗色主题关键元素背景——内联保证首屏无白闪 */
-        /* CSS变量定义（与variables.css中的[data-theme="dark"]保持一致） */
-        html[data-theme="dark"] {
-            color-scheme: dark;
-            --body-bg-color: #1e1e1e;
-            --content-bg-color: #252525;
-            --text-color: #c9d1d9;
-            --nav-bg-color: #000;
-            --sidebar-bg-color: #2d2d2d;
-            --border-color: #30363d;
-            --link-color: #c9d1d9;
-            --link-hover-color: #fff;
-            --link-active-color: #79b8ff;
-        }
-        html[data-theme="dark"],
-        html[data-theme="dark"] body {
-            background-color: var(--body-bg-color);
-            color: var(--text-color);
-        }
-        html[data-theme="dark"] .content-wrap,
-        html[data-theme="dark"] .sidebar,
-        html[data-theme="dark"] .sidebar-left,
-        html[data-theme="dark"] .sidebar-right {
-            background-color: var(--content-bg-color);
-        }
-        html[data-theme="dark"] .m-nav,
-        html[data-theme="dark"] .m-header,
-        html[data-theme="dark"] .m-nav .nav li,
-        html[data-theme="dark"] .search-toggle .btn,
-        html[data-theme="dark"] .color-toggle .btn,
-        html[data-theme="dark"] .theme-toggle .btn,
-        html[data-theme="dark"] .lang-toggle .btn {
-            background-color: var(--nav-bg-color);
-        }
-        html[data-theme="dark"] .sidebar-toggle {
-            background-color: var(--sidebar-bg-color);
-            border-color: var(--border-color);
-            color: var(--text-color);
-        }
-        html[data-theme="dark"] .m-nav {
-            --link-color: #c9d1d9;
-            --link-hover-color: #fff;
-        }
-        html[data-theme="dark"] .m-nav .nav li a,
-        html[data-theme="dark"] .m-nav .nav li a:link,
-        html[data-theme="dark"] .m-nav .nav li a:visited {
-            color: var(--link-color) !important;
-        }
-        html[data-theme="dark"] .m-nav .nav li a:hover {
-            color: var(--link-hover-color) !important;
-        }
-        html[data-theme="dark"] .m-nav .nav li.active a,
-        html[data-theme="dark"] .m-nav .nav li.active a:link,
-        html[data-theme="dark"] .m-nav .nav li.active a:visited {
-            color: var(--link-active-color) !important;
-        }
-    </style>
 
     <title><?php
 if ($this->is('author')) {
@@ -377,18 +314,14 @@ endif; ?>
             $navTagCloudSlug = null;
 
             $navAuthorUrl = null;
-            $navAllPages = [];
-            $pageListWidget = $this->widget('Widget_Contents_Page_List');
-            while ($pageListWidget->next()) {
-                $s = $pageListWidget->slug;
-                $pTitle = $pageListWidget->title;
-                $pLink = $pageListWidget->permalink;
-                $navAllPages[] = ['slug' => $s, 'title' => $pTitle, 'permalink' => $pLink];
-                if ($navAuthorUrl === null && in_array($s, ['about', 'author', 'author_page'])) {
-                    $navAuthorUrl = $pLink;
+            $navAllPages = dygita_get_all_pages_cached();
+            foreach ($navAllPages as $page) {
+                $s = $page['slug'];
+                if ($navAuthorUrl === null && in_array($s, ['about', 'author', 'author_page'], true)) {
+                    $navAuthorUrl = $page['permalink'];
                 }
                 if ($navTagCloudUrl === null && in_array($s, ['page-tag-cloud', 'tag-cloud', 'tags'], true)) {
-                    $navTagCloudUrl = $pLink;
+                    $navTagCloudUrl = $page['permalink'];
                     $navTagCloudSlug = $s;
                 }
             }
@@ -404,7 +337,7 @@ endif; ?>
                 <ul class="nav" role="menubar">
                     <?php if ($this->options->navLinksEnabled == '1'): ?>
                         <?php
-    $navLinks = json_decode($this->options->navLinks, true);
+    $navLinks = dygita_get_nav_links_cached();
     $navDeferredAuthorItem = '';
     $navArchivesTarget = '_self';
     $navTagCloudTarget = '_self';

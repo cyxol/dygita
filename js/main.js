@@ -11,22 +11,23 @@
     }
 
     // Toast 提示框 - 替代原生 alert，提供更好的用户体验
+    // 样式已迁移到 css/components/toast.css，通过 CSS 类控制
     function showToast(message, type) {
         type = type || 'info'; // 'success', 'error', 'info', 'warning'
-        
+
         // 创建 toast 容器（如果不存在）
         var container = document.getElementById('dygita-toast-container');
         if (!container) {
             container = document.createElement('div');
             container.id = 'dygita-toast-container';
-            container.style.cssText = 'position:fixed;top:20px;right:20px;z-index:99999;pointer-events:none;';
+            // 容器定位样式在 CSS 中定义 (#dygita-toast-container)
             document.body.appendChild(container);
         }
-        
-        // 创建 toast 元素
+
+        // 创建 toast 元素 - 样式通过 CSS 类控制
         var toast = document.createElement('div');
         toast.className = 'dygita-toast dygita-toast-' + type;
-        
+
         // 图标映射
         var icons = {
             'success': 'fa-check-circle',
@@ -35,38 +36,19 @@
             'warning': 'fa-exclamation-triangle'
         };
         var iconClass = icons[type] || icons.info;
-        
+
         toast.innerHTML = '<i class="fa ' + iconClass + '"></i><span>' + escapeHtml(message) + '</span>';
-        
-        // 样式
-        toast.style.cssText = 'display:flex;align-items:center;gap:8px;padding:12px 20px;margin-bottom:10px;'
-            + 'background:#fff;border-radius:4px;box-shadow:0 2px 12px rgba(0,0,0,0.15);'
-            + 'font-size:14px;line-height:1.5;pointer-events:auto;'
-            + 'transform:translateX(400px);transition:transform 0.3s ease,opacity 0.3s ease;opacity:0;'
-            + 'max-width:350px;word-break:break-word;';
-        
-        // 类型颜色
-        var colors = {
-            'success': '#52c41a',
-            'error': '#f5222d',
-            'info': '#1890ff',
-            'warning': '#faad14'
-        };
-        var color = colors[type] || colors.info;
-        toast.querySelector('i').style.color = color;
-        
+
         container.appendChild(toast);
-        
-        // 触发动画
-        setTimeout(function() {
-            toast.style.transform = 'translateX(0)';
-            toast.style.opacity = '1';
-        }, 10);
-        
+
+        // 触发动画 - 通过添加 CSS 类控制
+        requestAnimationFrame(function() {
+            toast.classList.add('dygita-toast--visible');
+        });
+
         // 自动关闭
         setTimeout(function() {
-            toast.style.transform = 'translateX(400px)';
-            toast.style.opacity = '0';
+            toast.classList.add('dygita-toast--hiding');
             setTimeout(function() {
                 if (toast.parentNode) {
                     toast.parentNode.removeChild(toast);
@@ -77,11 +59,10 @@
                 }
             }, 300);
         }, 3000);
-        
+
         // 点击关闭
         toast.addEventListener('click', function() {
-            toast.style.transform = 'translateX(400px)';
-            toast.style.opacity = '0';
+            toast.classList.add('dygita-toast--hiding');
             setTimeout(function() {
                 if (toast.parentNode) {
                     toast.parentNode.removeChild(toast);
@@ -89,7 +70,7 @@
             }, 300);
         });
     }
-    
+
     function escapeHtml(str) {
         var div = document.createElement('div');
         div.textContent = str;
@@ -168,24 +149,24 @@
         var resultContent = null;
         var liveSearchLimit = 8;
         var searchDebounceTimer = null;
-        
+
         // 性能优化：预建立搜索索引，避免每次搜索都遍历全部数据
         var searchIndexCache = null;
         var searchIndexReady = false;
-        
+
         // PJAX 内存泄漏修复：存储清理函数
         var cleanupFunctions = [];
 
         function buildSearchIndex() {
             if (searchIndexReady) return;
-            
+
             var rawIndex = getSearchIndex();
             if (!rawIndex || !rawIndex.length) {
                 searchIndexCache = [];
                 searchIndexReady = true;
                 return;
             }
-            
+
             // 预处理：将标题和摘要转为小写，建立倒排索引
             searchIndexCache = rawIndex.map(function(item) {
                 var title = String(item.title || '');
@@ -201,7 +182,7 @@
                     titleLower: title.toLowerCase()
                 };
             });
-            
+
             searchIndexReady = true;
         }
 
@@ -216,7 +197,7 @@
                     resultContent = null;
                 }
             }
-            
+
             if (searchOverlay && searchPopup) return;
 
             var existedOverlay = document.querySelector('.search-pop-overlay');
@@ -254,7 +235,7 @@
                 };
                 closeBtn.addEventListener('click', closeBtnHandler);
                 closeBtn.dataset.bound = '1';
-                
+
                 // 注册清理函数
                 cleanupFunctions.push(function() {
                     closeBtn.removeEventListener('click', closeBtnHandler);
@@ -268,7 +249,7 @@
                 };
                 searchOverlay.addEventListener('click', overlayHandler);
                 searchOverlay.dataset.bound = '1';
-                
+
                 // 注册清理函数
                 cleanupFunctions.push(function() {
                     searchOverlay.removeEventListener('click', overlayHandler);
@@ -286,18 +267,18 @@
                         renderLiveSearch(searchInput.value.trim());
                     }, 120);
                 };
-                
+
                 var keypressHandler = function(e) {
                     if (e.key !== 'Enter') return;
                     var keyword = searchInput.value.trim();
                     if (!keyword) return;
                     if (searchForm) searchForm.submit();
                 };
-                
+
                 searchInput.addEventListener('input', inputHandler);
                 searchInput.addEventListener('keypress', keypressHandler);
                 searchInput.dataset.bound = '1';
-                
+
                 // 注册清理函数
                 cleanupFunctions.push(function() {
                     searchInput.removeEventListener('input', inputHandler);
@@ -312,12 +293,12 @@
                 e.stopPropagation();
                 e.preventDefault();
             }
-            
+
             // 延迟构建索引，只在首次打开搜索时构建
             if (!searchIndexReady) {
                 buildSearchIndex();
             }
-            
+
             ensureSearchPopup();
             searchOverlay.classList.add('search-active');
             var input = searchPopup ? searchPopup.querySelector('.search-input') : null;
@@ -336,7 +317,7 @@
             if (!node || node.dataset.searchBound === '1') return;
             node.addEventListener('click', openSearch);
             node.dataset.searchBound = '1';
-            
+
             // 注册清理函数
             cleanupFunctions.push(function() {
                 node.removeEventListener('click', openSearch);
@@ -350,7 +331,7 @@
             };
             document.addEventListener('keydown', escHandler);
             window.__dygitaSearchEscBound = true;
-            
+
             // 注册清理函数
             cleanupFunctions.push(function() {
                 document.removeEventListener('keydown', escHandler);
@@ -390,19 +371,19 @@
 
             var normalizedKeyword = keyword.toLowerCase();
             var matched = [];
-            
+
             // 性能优化：使用预处理的索引，避免重复转换小写
             // 同时实现优先级排序：标题匹配 > 内容匹配
             var titleMatches = [];
             var contentMatches = [];
-            
+
             for (var i = 0; i < searchIndexCache.length; i++) {
                 var item = searchIndexCache[i];
-                
+
                 // 检查是否匹配
                 var matchIndex = item.searchText.indexOf(normalizedKeyword);
                 if (matchIndex === -1) continue;
-                
+
                 // 区分标题匹配和内容匹配，标题匹配优先级更高
                 var titleMatchIndex = item.titleLower.indexOf(normalizedKeyword);
                 if (titleMatchIndex !== -1) {
@@ -416,13 +397,13 @@
                         matchIndex: matchIndex
                     });
                 }
-                
+
                 // 早期退出：如果已经找到足够的结果
                 if (titleMatches.length + contentMatches.length >= liveSearchLimit * 2) {
                     break;
                 }
             }
-            
+
             // 排序：标题匹配靠前，同类型按匹配位置排序（越靠前越相关）
             titleMatches.sort(function(a, b) {
                 return a.matchIndex - b.matchIndex;
@@ -430,7 +411,7 @@
             contentMatches.sort(function(a, b) {
                 return a.matchIndex - b.matchIndex;
             });
-            
+
             // 合并结果，标题匹配优先
             matched = titleMatches.concat(contentMatches).slice(0, liveSearchLimit);
 
@@ -457,7 +438,7 @@
             html += '<p class="search-result" style="color:#999;font-size:12px;"><i class="fa fa-keyboard-o"></i> 回车可使用完整搜索页查看更多结果</p>';
             resultContent.innerHTML = html;
         }
-        
+
         // PJAX 内存泄漏修复：返回清理函数
         return function cleanup() {
             // 清理所有事件监听器
@@ -469,23 +450,23 @@
                 }
             });
             cleanupFunctions = [];
-            
+
             // 清理 debounce timer
             if (searchDebounceTimer) {
                 window.clearTimeout(searchDebounceTimer);
                 searchDebounceTimer = null;
             }
-            
+
             // 清除 DOM 引用，帮助垃圾回收
             searchOverlay = null;
             searchPopup = null;
             searchForm = null;
             searchInput = null;
             resultContent = null;
-            
-            // 清除索引缓存（可选，如果希望在页面切换时保留索引可以注释掉）
-            // searchIndexCache = null;
-            // searchIndexReady = false;
+
+            // 清除搜索索引缓存，确保 PJAX 跳转后使用新页面的 searchIndex 数据
+            searchIndexCache = null;
+            searchIndexReady = false;
         };
     }
 
@@ -571,7 +552,7 @@
             anchors.forEach(function (anchor) {
                 tocObserver.observe(anchor.el);
             });
-            
+
             // PJAX 内存泄漏修复：返回清理函数
             return function cleanup() {
                 catalogContent.removeEventListener('click', onCatalogClick);
@@ -606,7 +587,7 @@
                 });
             }
             window.addEventListener('scroll', onScrollFallback, { passive: true });
-            
+
             // PJAX 内存泄漏修复：返回清理函数
             return function cleanup() {
                 catalogContent.removeEventListener('click', onCatalogClick);
@@ -644,7 +625,7 @@
                 img.dataset.lazyBound = '1';
                 window.__dygitaLazyObserver.observe(img);
             });
-            
+
             // PJAX 内存泄漏修复：返回清理函数
             return function cleanup() {
                 // 取消观察所有图片
@@ -660,82 +641,21 @@
             };
         }
 
-        // Fallback for browsers without IntersectionObserver
-        // 性能优化：缓存图片数组，避免每次滚动都查询 DOM
-        if (!window.__dygitaLazyImageCache) {
-            window.__dygitaLazyImageCache = [];
-        }
-
-        // 将新图片添加到缓存数组
+        // Fallback for browsers without IntersectionObserver (IE11 and below)
+        // 性能决策：为避免强制同步布局（Layout Thrashing），直接加载所有图片
+        // IntersectionObserver 支持度：Chrome 51+, Firefox 55+, Safari 12.1+, Edge 15+
+        // 老旧浏览器用户牺牲部分流量换取滚动流畅度
         images.forEach(function (img) {
             img.dataset.lazyBound = '1';
-            window.__dygitaLazyImageCache.push(img);
+            loadImage(img);
         });
 
-        if (!window.__dygitaLazyFallbackLoad) {
-            window.__dygitaLazyFallbackTicking = false;
-            window.__dygitaLazyFallbackLoad = function () {
-                if (window.__dygitaLazyFallbackTicking) return;
-                window.__dygitaLazyFallbackTicking = true;
-                window.requestAnimationFrame(function () {
-                    window.__dygitaLazyFallbackTicking = false;
-                    
-                    // 使用缓存的图片数组，避免 querySelectorAll
-                    var cache = window.__dygitaLazyImageCache;
-                    if (!cache || !cache.length) return;
-                    
-                    // 反向遍历，方便删除已加载的图片
-                    for (var i = cache.length - 1; i >= 0; i--) {
-                        var img = cache[i];
-                        
-                        // 检查图片是否已被移除或已加载
-                        if (!img.parentNode || !img.dataset.src) {
-                            cache.splice(i, 1);
-                            continue;
-                        }
-                        
-                        var rect = img.getBoundingClientRect();
-                        if (rect.top <= window.innerHeight && rect.bottom >= 0) {
-                            loadImage(img);
-                            // 从缓存中移除已加载的图片
-                            cache.splice(i, 1);
-                        }
-                    }
-                    
-                    // 如果所有图片都已加载，移除事件监听器
-                    if (cache.length === 0) {
-                        document.removeEventListener('scroll', window.__dygitaLazyFallbackLoad);
-                        window.removeEventListener('resize', window.__dygitaLazyFallbackLoad);
-                        window.removeEventListener('orientationchange', window.__dygitaLazyFallbackLoad);
-                        window.__dygitaLazyFallbackBound = false;
-                    }
-                });
-            };
-        }
-
-        if (!window.__dygitaLazyFallbackBound) {
-            document.addEventListener('scroll', window.__dygitaLazyFallbackLoad, { passive: true });
-            window.addEventListener('resize', window.__dygitaLazyFallbackLoad);
-            window.addEventListener('orientationchange', window.__dygitaLazyFallbackLoad);
-            window.__dygitaLazyFallbackBound = true;
-        }
-
-        // 立即检查一次，加载视口内的图片
-        window.__dygitaLazyFallbackLoad();
-        
         // PJAX 内存泄漏修复：返回清理函数
         return function cleanup() {
-            // 从缓存中移除这批图片
-            if (window.__dygitaLazyImageCache) {
-                images.forEach(function (img) {
-                    var idx = window.__dygitaLazyImageCache.indexOf(img);
-                    if (idx !== -1) {
-                        window.__dygitaLazyImageCache.splice(idx, 1);
-                    }
-                    delete img.dataset.lazyBound;
-                });
-            }
-            // 清除 DOM 引用
+            // 清除标记和 DOM 引用
+            images.forEach(function (img) {
+                delete img.dataset.lazyBound;
+            });
             images = null;
         };
     }
@@ -750,7 +670,7 @@
     function initPageFeatures() {
         // 先清理旧的事件监听器和 DOM 引用
         cleanupPageFeatures();
-        
+
         // 初始化各个功能，并存储清理函数
         globalCleanupFunctions.search = initSearch();
         globalCleanupFunctions.toc = initTocInteraction();
@@ -798,7 +718,7 @@
         }
         bindPageLifecycle();
         initPageFeatures();
-        
+
         // 暴露 showToast 到全局，供其他脚本使用
         window.DYGITA = window.DYGITA || {};
         window.DYGITA.showToast = showToast;

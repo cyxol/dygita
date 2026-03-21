@@ -26,7 +26,7 @@
                 leftCollapsed: sidebarLeft ? sidebarLeft.classList.contains('collapsed') : false,
                 rightCollapsed: sidebarRight ? sidebarRight.classList.contains('collapsed') : false
             };
-            try { localStorage.setItem('sidebarState', JSON.stringify(state)); } catch (e) {}
+            try { localStorage.setItem('sidebarState', JSON.stringify(state)); } catch (e) { /* ignore */ }
         }
 
         function moveToggle(toggle, sidebar, isCollapsed) {
@@ -51,7 +51,7 @@
 
         function loadSidebarState() {
             var state = {};
-            try { state = JSON.parse(localStorage.getItem('sidebarState') || '{}'); } catch (e) {}
+            try { state = JSON.parse(localStorage.getItem('sidebarState') || '{}'); } catch (e) { /* ignore */ }
 
             if (state.leftCollapsed && sidebarLeft) {
                 sidebarLeft.classList.add('collapsed');
