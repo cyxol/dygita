@@ -148,7 +148,7 @@ class ArticleCatalog {
             'sub' => array()
         );
         $current = array();
-        if( $parent ) {
+        if( !empty( $parent ) ) {
             $current = &$parent[ count( $parent ) - 1 ];
         }
         // 根
@@ -683,7 +683,7 @@ function dygita_escape_url($url) {
     if (empty($url) || $url === '#') {
         return $url;
     }
-    if (preg_match('/^https?:\/\//i', $url) || $url[0] === '/') {
+    if (preg_match('/^https?:\/\//i', $url) || (strlen($url) > 0 && $url[0] === '/')) {
         return htmlspecialchars($url, ENT_QUOTES, 'UTF-8');
     }
     return '';
