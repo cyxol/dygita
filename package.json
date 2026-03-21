@@ -1,0 +1,23 @@
+{
+  "name": "dygita-theme",
+  "version": "1.0.0",
+  "description": "Dygita Typecho Theme CSS Build Tools",
+  "main": "tools/build-css.js",
+  "scripts": {
+    "build-css": "node tools/build-css.js",
+    "build-css:prod": "node tools/build-css.js --production",
+    "build": "npm run build-css:prod"
+  },
+  "devDependencies": {
+    "postcss": "^8.4.31",
+    "postcss-cli": "^10.1.0",
+    "autoprefixer": "^10.4.16",
+    "cssnano": "^6.0.1"
+  },
+  "browserslist": [
+    "> 1%",
+    "last 2 versions",
+    "not dead",
+    "not ie <= 11"
+  ]
+}

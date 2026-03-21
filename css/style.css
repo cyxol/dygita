@@ -88,24 +88,6 @@ Description: Dygita Theme Ported to Typecho
 }
 
 /* 响应式布局 */
-@media (max-width: 1200px) {
-  .sidebar-left,
-  .sidebar-right {
-    width: 20%;
-    min-width: 20%;
-    max-width: 20%;
-  }
-}
-
-@media (max-width: 992px) {
-  .sidebar-left,
-  .sidebar-right {
-    width: 20%;
-    min-width: 20%;
-    max-width: 20%;
-  }
-}
-
 @media (max-width: 768px) {
   .main-container {
     flex-direction: column;

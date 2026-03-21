@@ -44,19 +44,29 @@ endif; ?>>
             transition: none !important;
         }
         /* 暗色主题关键元素背景——内联保证首屏无白闪 */
+        /* CSS变量定义（与variables.css中的[data-theme="dark"]保持一致） */
         html[data-theme="dark"] {
             color-scheme: dark;
+            --body-bg-color: #1e1e1e;
+            --content-bg-color: #252525;
+            --text-color: #c9d1d9;
+            --nav-bg-color: #000;
+            --sidebar-bg-color: #2d2d2d;
+            --border-color: #30363d;
+            --link-color: #c9d1d9;
+            --link-hover-color: #fff;
+            --link-active-color: #79b8ff;
         }
         html[data-theme="dark"],
         html[data-theme="dark"] body {
-            background-color: #1e1e1e;
-            color: #c9d1d9;
+            background-color: var(--body-bg-color);
+            color: var(--text-color);
         }
         html[data-theme="dark"] .content-wrap,
         html[data-theme="dark"] .sidebar,
         html[data-theme="dark"] .sidebar-left,
         html[data-theme="dark"] .sidebar-right {
-            background-color: #252525;
+            background-color: var(--content-bg-color);
         }
         html[data-theme="dark"] .m-nav,
         html[data-theme="dark"] .m-header,
@@ -65,12 +75,12 @@ endif; ?>>
         html[data-theme="dark"] .color-toggle .btn,
         html[data-theme="dark"] .theme-toggle .btn,
         html[data-theme="dark"] .lang-toggle .btn {
-            background-color: #000;
+            background-color: var(--nav-bg-color);
         }
         html[data-theme="dark"] .sidebar-toggle {
-            background-color: #252525;
-            border-color: #30363d;
-            color: #c9d1d9;
+            background-color: var(--sidebar-bg-color);
+            border-color: var(--border-color);
+            color: var(--text-color);
         }
         html[data-theme="dark"] .m-nav {
             --link-color: #c9d1d9;
@@ -79,15 +89,15 @@ endif; ?>>
         html[data-theme="dark"] .m-nav .nav li a,
         html[data-theme="dark"] .m-nav .nav li a:link,
         html[data-theme="dark"] .m-nav .nav li a:visited {
-            color: #c9d1d9 !important;
+            color: var(--link-color) !important;
         }
         html[data-theme="dark"] .m-nav .nav li a:hover {
-            color: #fff !important;
+            color: var(--link-hover-color) !important;
         }
         html[data-theme="dark"] .m-nav .nav li.active a,
         html[data-theme="dark"] .m-nav .nav li.active a:link,
         html[data-theme="dark"] .m-nav .nav li.active a:visited {
-            color: #79b8ff !important;
+            color: var(--link-active-color) !important;
         }
     </style>
 
