@@ -35,76 +35,80 @@ function dygita_register_routes() {
 dygita_register_routes();
 
 /**
- * 主题激活时初始化默认设置
+ * 点赞 Action — 通过 /action/dygita-like 路由处理 AJAX 点赞请求
  */
-function dygita_theme_activate() {
-    dygita_register_routes();
+class Dygita_Action_Like extends \Typecho\Widget implements \Widget\ActionInterface
+{
+    public function execute() {}
 
-    $options = Typecho\Widget::widget('Widget_Options');
-    $db = Typecho\Db::get();
-    $optionsTable = $db->getPrefix() . 'options';
-
-    // 设置默认主题色（新名优先，兼容旧名）
-    $skinVal = dygita_opt($options, 'dygita_skin_b', 'git_skin_b');
-    if ($skinVal === null || $skinVal === '') {
-        $db->query($db->insert($optionsTable)->rows(array(
-            'name' => 'dygita_skin_b',
-            'value' => 'git_red_b',
-            'user' => 0
-        )));
-    }
-
-    // 设置默认幻灯片配置
-    if (!isset($options->swiperEnabled) || empty($options->swiperEnabled)) {
-        $db->query($db->insert($optionsTable)->rows(array(
-            'name' => 'swiperEnabled',
-            'value' => '1',
-            'user' => 0
-        )));
-    }
-}
-
-/**
- * 主题禁用时清理临时数据
- */
-function dygita_theme_deactivate() {
-    // 清理主题相关的 Cookie
-    Typecho\Cookie::delete('extend_contents_views');
-    Typecho\Cookie::delete('extend_contents_likes');
-}
-
-/**
- * 主题设置重置函数 - 可以在主题设置页面调用
- */
-function dygita_reset_options() {
-    $optionsToReset = array(
-        'dygita_skin_b' => 'git_red_b',
-        'git_skin_b' => 'git_red_b',
-        'colorSchema' => NULL,
-        'swiperEnabled' => '1',
-        'swiperAutoplay' => '1',
-        'swiperSpeed' => '1000',
-        'swiperDelay' => '3000',
-        'navLinksEnabled' => '1',
-        'enableStatistics' => '0'
-    );
-
-    $db = Typecho\Db::get();
-    $optionsTable = $db->getPrefix() . 'options';
-
-    foreach ($optionsToReset as $name => $value) {
-        $existing = $db->fetchRow($db->select()->from($optionsTable)
-            ->where('name = ?', $name));
-
-        if (!$existing) {
-            $db->query($db->insert($optionsTable)->rows(array(
-                'name' => $name,
-                'value' => is_null($value) ? '' : $value,
-                'user' => 0
-            )));
+    public function action()
+    {
+        if (!$this->request->isPost()) {
+            $this->response->setStatus(405);
+            exit;
         }
+
+        $cid = intval($this->request->get('cid'));
+        if (!$cid) {
+            $this->response->setStatus(400);
+            echo 'invalid';
+            exit;
+        }
+
+        $db = \Typecho\Db::get();
+        $fieldsTable = dygita_get_table('fields');
+
+        $likes = \Typecho\Cookie::get('extend_contents_likes');
+        $likes = $likes ? explode(',', $likes) : array();
+        $cidStr = (string)$cid;
+
+        if (!in_array($cidStr, $likes)) {
+            $row = $db->fetchRow($db->select('str_value')->from($fieldsTable)
+                ->where('cid = ?', $cid)
+                ->where('name = ?', 'likes'));
+
+            if (!$row) {
+                $db->query($db->insert($fieldsTable)->rows(array(
+                    'cid'         => $cid,
+                    'name'        => 'likes',
+                    'type'        => 'str',
+                    'str_value'   => 1,
+                    'int_value'   => 1,
+                    'float_value' => 0
+                )));
+                $count = 1;
+            } else {
+                $count = intval($row['str_value']) + 1;
+                $db->query($db->update($fieldsTable)
+                    ->rows(array('str_value' => $count, 'int_value' => $count))
+                    ->where('cid = ?', $cid)
+                    ->where('name = ?', 'likes'));
+            }
+
+            $likes[] = $cidStr;
+            if (count($likes) > 100) {
+                $likes = array_slice($likes, -100);
+            }
+            \Typecho\Cookie::set('extend_contents_likes', implode(',', $likes));
+            echo $count;
+        } else {
+            echo 'already_liked';
+        }
+        exit;
     }
 }
+
+/**
+ * 注册点赞 Action（仅在未注册时写库，避免每次请求都写 DB）
+ */
+function dygita_register_actions() {
+    $actionTable = \Typecho\Widget::widget('Widget_Options')->actionTable;
+    if (empty($actionTable['dygita-like'])) {
+        \Utils\Helper::addAction('dygita-like', 'Dygita_Action_Like');
+    }
+}
+
+dygita_register_actions();
 
 /**
  * 文章目录功能
@@ -612,6 +616,7 @@ function dygita_get_config_array($options) {
     $hostname = $options->siteUrl;
     return array(
         'hostname' => $hostname,
+        'likeUrl' => \Typecho\Router::url('do', array('action' => 'dygita-like'), $options->index),
         'root' => '/',
         'exturl' => false,
         'sidebar' => array(
@@ -685,38 +690,48 @@ function dygita_escape_url($url) {
  * @return array ['posts' => array, 'use_hot' => bool]
  */
 function dygita_get_related_posts($cid, $limit = 6) {
-    $db = Typecho\Db::get();
+    $db = \Typecho\Db::get();
 
-    // 方法1: 基于标签
-    $tags = $db->fetchAll($db->select('mid')->from('table.relationships')->where('cid = ?', $cid));
-    if (!empty($tags)) {
-        $tagMids = array_column($tags, 'mid');
-        $relCids = $db->fetchAll($db->select('DISTINCT cid')->from('table.relationships')
-            ->where('mid IN ?', $tagMids)->where('cid != ?', $cid)->limit($limit));
-        if (!empty($relCids)) {
-            $posts = $db->fetchAll($db->select()->from('table.contents')
-                ->where('cid IN ?', array_column($relCids, 'cid'))
-                ->where('status = ?', 'publish')->where('type = ?', 'post')
-                ->order('created', Typecho\Db::SORT_DESC)->limit($limit));
-            if (!empty($posts)) return array('posts' => $posts, 'use_hot' => false);
-        }
+    // 帮助函数：给定 mid 列表，JOIN 一步查出相关文章，避免中间 ID 数组查询
+    $fetchByMids = function (array $mids) use ($db, $cid, $limit) {
+        return $db->fetchAll(
+            $db->select(
+                'table.contents.cid',
+                'table.contents.title',
+                'table.contents.slug',
+                'table.contents.created',
+                'table.contents.text'
+            )
+            ->from('table.contents')
+            ->join('table.relationships', 'table.contents.cid = table.relationships.cid')
+            ->where('table.relationships.mid IN ?', $mids)
+            ->where('table.contents.cid != ?', $cid)
+            ->where('table.contents.status = ?', 'publish')
+            ->where('table.contents.type = ?', 'post')
+            ->group('table.contents.cid')
+            ->order('table.contents.created', \Typecho\Db::SORT_DESC)
+            ->limit($limit)
+        );
+    };
+
+    // 方法1: 基于所有共享 meta（标签 + 分类）— 单次关联查询
+    $mids = $db->fetchAll($db->select('mid')->from('table.relationships')->where('cid = ?', $cid));
+    if (!empty($mids)) {
+        $posts = $fetchByMids(array_column($mids, 'mid'));
+        if (!empty($posts)) return array('posts' => $posts, 'use_hot' => false);
     }
 
-    // 方法2: 基于分类
-    $cats = $db->fetchAll($db->select('table.metas.mid')->from('table.metas')
+    // 方法2: 仅基于分类（回退）— 单次关联查询
+    $catRows = $db->fetchAll(
+        $db->select('table.metas.mid')
+        ->from('table.metas')
         ->join('table.relationships', 'table.metas.mid = table.relationships.mid')
-        ->where('table.relationships.cid = ?', $cid)->where('table.metas.type = ?', 'category'));
-    if (!empty($cats)) {
-        $catMids = array_column($cats, 'mid');
-        $relCids = $db->fetchAll($db->select('DISTINCT cid')->from('table.relationships')
-            ->where('mid IN ?', $catMids)->where('cid != ?', $cid)->limit($limit));
-        if (!empty($relCids)) {
-            $posts = $db->fetchAll($db->select()->from('table.contents')
-                ->where('cid IN ?', array_column($relCids, 'cid'))
-                ->where('status = ?', 'publish')->where('type = ?', 'post')
-                ->order('created', Typecho\Db::SORT_DESC)->limit($limit));
-            if (!empty($posts)) return array('posts' => $posts, 'use_hot' => false);
-        }
+        ->where('table.relationships.cid = ?', $cid)
+        ->where('table.metas.type = ?', 'category')
+    );
+    if (!empty($catRows)) {
+        $posts = $fetchByMids(array_column($catRows, 'mid'));
+        if (!empty($posts)) return array('posts' => $posts, 'use_hot' => false);
     }
 
     // 方法3: 回退到热门文章
@@ -857,34 +872,12 @@ function dygita_get_random_posts($limit = 5) {
 
 /* 增加: 站点统计 */
 function dygita_get_stat() {
-    $db = Typecho\Db::get();
-    $contentsTable = dygita_get_table('contents');
-    $commentsTable = dygita_get_table('comments');
-    $metasTable = dygita_get_table('metas');
-
-    // 文章总数
-    $count_posts = $db->fetchObject($db->select(array('COUNT(cid)' => 'num'))
-        ->from($contentsTable)
-        ->where('type = ?', 'post')
-        ->where('status = ?', 'publish'))->num;
-    // 评论总数
-    $count_comments = $db->fetchObject($db->select(array('COUNT(coid)' => 'num'))
-        ->from($commentsTable)
-        ->where('status = ?', 'approved'))->num;
-    // 分类总数
-    $count_categories = $db->fetchObject($db->select(array('COUNT(mid)' => 'num'))
-        ->from($metasTable)
-        ->where('type = ?', 'category'))->num;
-    // 标签总数
-    $count_tags = $db->fetchObject($db->select(array('COUNT(mid)' => 'num'))
-        ->from($metasTable)
-        ->where('type = ?', 'tag'))->num;
-
+    $stat = \Typecho\Widget::widget('Widget\Stat');
     return array(
-        'posts' => $count_posts,
-        'comments' => $count_comments,
-        'categories' => $count_categories,
-        'tags' => $count_tags
+        'posts'      => $stat->publishedPostsNum,
+        'comments'   => $stat->publishedCommentsNum,
+        'categories' => $stat->categoriesNum,
+        'tags'       => $stat->tagsNum,
     );
 }
 
@@ -1059,50 +1052,6 @@ function themeInit($archive) {
         }
         $url = rtrim($url, '?');
         $archive->response->redirect($url);
-        exit;
-    }
-
-    // 处理点赞请求（仅依赖 Cookie 防刷，不要求 CSRF token 以兼容无表单页面）
-    if ($archive->request->isPost() && $archive->request->get('action') == 'like') {
-        $cid = $archive->request->get('cid');
-        $db = Typecho\Db::get();
-        $fieldsTable = dygita_get_table('fields');
-
-        $likes = Typecho\Cookie::get('extend_contents_likes');
-        $likes = $likes ? explode(',', $likes) : array();
-
-        if (!in_array($cid, $likes)) {
-            $row = $db->fetchRow($db->select('str_value')->from($fieldsTable)
-                ->where('cid = ?', $cid)
-                ->where('name = ?', 'likes'));
-
-            if (!$row) {
-                 $db->query($db->insert($fieldsTable)->rows(array(
-                    'cid' => $cid,
-                    'name' => 'likes',
-                    'type' => 'str',
-                    'str_value' => 1,
-                    'int_value' => 1,
-                    'float_value' => 0
-                )));
-                $count = 1;
-            } else {
-                $count = intval($row['str_value']) + 1;
-                $db->query($db->update($fieldsTable)
-                    ->rows(array('str_value' => $count, 'int_value' => $count))
-                    ->where('cid = ?', $cid)
-                    ->where('name = ?', 'likes'));
-            }
-
-            $likes[] = $cid;
-            if (count($likes) > 100) {
-                $likes = array_slice($likes, -100);
-            }
-            Typecho\Cookie::set('extend_contents_likes', implode(',', $likes));
-            echo $count;
-        } else {
-            echo 'already_liked';
-        }
         exit;
     }
 

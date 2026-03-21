@@ -29,10 +29,13 @@
             btn.dataset.loading = '1';
 
             var payload = new URLSearchParams();
-            payload.append('action', 'like');
             payload.append('cid', cid);
 
-            fetch(window.location.href, {
+            var likeUrl = window.DYGITA && window.DYGITA.config && window.DYGITA.config.likeUrl
+                ? window.DYGITA.config.likeUrl
+                : '/action/dygita-like';
+
+            fetch(likeUrl, {
                 method: 'POST',
                 credentials: 'same-origin',
                 headers: {
