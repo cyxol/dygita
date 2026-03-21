@@ -1,71 +1,113 @@
-# Dygita 主题构建工具
+# Dygita 主题构建指南
 
-## 快速开始
+本主题使用现代化的构建工具链来确保代码质量和性能优化。
 
-### 安装依赖
+## 安装依赖
+
 ```bash
 npm install
 ```
 
-### 构建样式
+## 可用命令
+
+### 代码检查
+
 ```bash
-# 开发构建（仅合并文件）
+# 检查 JavaScript 代码
+npm run lint:js
+
+# 检查 CSS 代码
+npm run lint:css
+
+# 检查所有代码
+npm run lint
+
+# 自动修复代码问题
+npm run lint:fix
+```
+
+### 构建
+
+```bash
+# 构建 CSS（开发模式）
 npm run build-css
 
-# 生产构建（Autoprefixer + 压缩）
+# 构建 CSS（生产模式，压缩）
 npm run build-css:prod
 
-# 简化命令
+# 构建 JavaScript（开发模式）
+npm run build-js
+
+# 构建 JavaScript（生产模式，压缩）
+npm run build-js:prod
+
+# 完整构建（检查 + 压缩 CSS + 压缩 JS）
 npm run build
 ```
 
-## 构建脚本说明
+## 构建工具说明
 
-### 开发模式
-- 合并所有 CSS 源文件到 `css/build.css`
-- 保留注释和格式，便于调试
-- 不进行任何优化处理
+### ESLint
+- 用于 JavaScript 代码静态检查
+- 配置文件：`.eslintrc.json`
+- 检查代码风格、潜在错误和最佳实践
 
-### 生产模式
-- 合并所有 CSS 源文件
-- **Autoprefixer**: 自动添加浏览器前缀，提高兼容性
-- **cssnano 压缩**: 移除注释、空白，优化文件大小
-- 显示压缩统计信息
+### Stylelint
+- 用于 CSS 代码静态检查
+- 配置文件：`.stylelintrc.json`
+- 确保 CSS 代码符合规范
 
-### 浏览器支持
-配置的浏览器支持范围：
-- `> 1%`: 全球使用率大于 1% 的浏览器
-- `last 2 versions`: 每个浏览器的最近两个版本
-- `not dead`: 排除已停止维护的浏览器
-- `not ie <= 11`: 排除 IE 11 及以下版本
+### Terser
+- 用于 JavaScript 代码压缩
+- 生产环境自动移除 console.log
+- 变量名混淆（保留 DYGITA 全局变量）
+- 平均压缩率：50-60%
 
-## 文件结构
+### PostCSS
+- 用于 CSS 处理和压缩
+- 自动添加浏览器前缀（Autoprefixer）
+- 生产环境使用 cssnano 压缩
 
-```
-tools/
-├── build-css.js          # 主构建脚本
-├── postcss.config.js     # PostCSS 配置
-package.json              # 依赖和脚本配置
-```
+## 压缩效果
 
-## 故障排除
+### JavaScript 压缩率
+- main.js: 31.50 KB → 11.46 KB (63.64% 更小)
+- post-share.js: 5.19 KB → 2.98 KB (42.55% 更小)
+- reading-progress.js: 2.96 KB → 1.22 KB (58.87% 更小)
+- sidebar.js: 5.25 KB → 2.29 KB (56.45% 更小)
+- swiper-init.js: 1.40 KB → 661 B (54.03% 更小)
+- theme-switcher.js: 4.65 KB → 2.42 KB (47.92% 更小)
+- archives-page.js: 706 B → 464 B (34.28% 更小)
+- headerCanvas.js: 7.04 KB → 2.56 KB (63.61% 更小)
 
-### PostCSS 依赖缺失
-如果看到 "PostCSS dependencies not found" 错误：
+## 生产环境部署
+
+在生产环境部署前，请运行：
+
 ```bash
-npm install
+npm run build
 ```
 
-### 构建失败
-构建脚本包含错误处理，如果 PostCSS 处理失败会自动回退到基础合并模式。
+这将：
+1. 检查所有代码质量
+2. 压缩 CSS 文件到 `css/build.css`
+3. 压缩 JavaScript 文件到 `js/dist/` 目录
 
-## 手动构建
+然后在 HTML 中引用压缩后的文件：
+- CSS: `css/build.css`
+- JS: `js/dist/*.js`
 
-如果不使用 npm，也可以直接运行：
-```bash
-# 开发构建
-node tools/build-css.js
+## 开发建议
 
-# 生产构建
-node tools/build-css.js --production
-```
+1. **提交代码前**：运行 `npm run lint` 检查代码质量
+2. **修复问题**：运行 `npm run lint:fix` 自动修复大部分问题
+3. **构建测试**：运行 `npm run build` 确保构建成功
+4. **性能优化**：始终使用压缩后的文件部署到生产环境
+
+## 浏览器支持
+
+根据 `browserslist` 配置，支持：
+- 市场份额 > 1% 的浏览器
+- 最近 2 个版本
+- 不包括已停止维护的浏览器
+- 不支持 IE 11 及以下版本

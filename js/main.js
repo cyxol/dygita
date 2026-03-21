@@ -10,6 +10,92 @@
         }
     }
 
+    // Toast 提示框 - 替代原生 alert，提供更好的用户体验
+    function showToast(message, type) {
+        type = type || 'info'; // 'success', 'error', 'info', 'warning'
+        
+        // 创建 toast 容器（如果不存在）
+        var container = document.getElementById('dygita-toast-container');
+        if (!container) {
+            container = document.createElement('div');
+            container.id = 'dygita-toast-container';
+            container.style.cssText = 'position:fixed;top:20px;right:20px;z-index:99999;pointer-events:none;';
+            document.body.appendChild(container);
+        }
+        
+        // 创建 toast 元素
+        var toast = document.createElement('div');
+        toast.className = 'dygita-toast dygita-toast-' + type;
+        
+        // 图标映射
+        var icons = {
+            'success': 'fa-check-circle',
+            'error': 'fa-times-circle',
+            'info': 'fa-info-circle',
+            'warning': 'fa-exclamation-triangle'
+        };
+        var iconClass = icons[type] || icons.info;
+        
+        toast.innerHTML = '<i class="fa ' + iconClass + '"></i><span>' + escapeHtml(message) + '</span>';
+        
+        // 样式
+        toast.style.cssText = 'display:flex;align-items:center;gap:8px;padding:12px 20px;margin-bottom:10px;'
+            + 'background:#fff;border-radius:4px;box-shadow:0 2px 12px rgba(0,0,0,0.15);'
+            + 'font-size:14px;line-height:1.5;pointer-events:auto;'
+            + 'transform:translateX(400px);transition:transform 0.3s ease,opacity 0.3s ease;opacity:0;'
+            + 'max-width:350px;word-break:break-word;';
+        
+        // 类型颜色
+        var colors = {
+            'success': '#52c41a',
+            'error': '#f5222d',
+            'info': '#1890ff',
+            'warning': '#faad14'
+        };
+        var color = colors[type] || colors.info;
+        toast.querySelector('i').style.color = color;
+        
+        container.appendChild(toast);
+        
+        // 触发动画
+        setTimeout(function() {
+            toast.style.transform = 'translateX(0)';
+            toast.style.opacity = '1';
+        }, 10);
+        
+        // 自动关闭
+        setTimeout(function() {
+            toast.style.transform = 'translateX(400px)';
+            toast.style.opacity = '0';
+            setTimeout(function() {
+                if (toast.parentNode) {
+                    toast.parentNode.removeChild(toast);
+                }
+                // 如果容器为空，移除容器
+                if (container.children.length === 0 && container.parentNode) {
+                    container.parentNode.removeChild(container);
+                }
+            }, 300);
+        }, 3000);
+        
+        // 点击关闭
+        toast.addEventListener('click', function() {
+            toast.style.transform = 'translateX(400px)';
+            toast.style.opacity = '0';
+            setTimeout(function() {
+                if (toast.parentNode) {
+                    toast.parentNode.removeChild(toast);
+                }
+            }, 300);
+        });
+    }
+    
+    function escapeHtml(str) {
+        var div = document.createElement('div');
+        div.textContent = str;
+        return div.innerHTML;
+    }
+
     function initLikeAction() {
         document.addEventListener('click', function (e) {
             var btn = e.target.closest('.action[data-action="ding"]');
@@ -20,7 +106,7 @@
             if (btn.dataset.loading === '1') return;
             var cid = btn.getAttribute('data-id');
             if (!cid) {
-                alert('点赞失败，请刷新后重试');
+                showToast('点赞失败，请刷新后重试', 'error');
                 return;
             }
 
@@ -51,7 +137,7 @@
                 .then(function (raw) {
                     var data = (raw || '').trim();
                     if (data === 'already_liked') {
-                        alert('你已经赞过了！');
+                        showToast('你已经赞过了！', 'info');
                         return;
                     }
 
@@ -63,10 +149,10 @@
                         icon.classList.remove('fa-heart-o');
                         icon.classList.add('fa-heart');
                     }
-                    alert('点赞成功！');
+                    showToast('点赞成功！', 'success');
                 })
                 .catch(function () {
-                    alert('点赞失败，请稍后重试');
+                    showToast('点赞失败，请稍后重试', 'error');
                 })
                 .finally(function () {
                     delete btn.dataset.loading;
@@ -82,8 +168,55 @@
         var resultContent = null;
         var liveSearchLimit = 8;
         var searchDebounceTimer = null;
+        
+        // 性能优化：预建立搜索索引，避免每次搜索都遍历全部数据
+        var searchIndexCache = null;
+        var searchIndexReady = false;
+        
+        // PJAX 内存泄漏修复：存储清理函数
+        var cleanupFunctions = [];
+
+        function buildSearchIndex() {
+            if (searchIndexReady) return;
+            
+            var rawIndex = getSearchIndex();
+            if (!rawIndex || !rawIndex.length) {
+                searchIndexCache = [];
+                searchIndexReady = true;
+                return;
+            }
+            
+            // 预处理：将标题和摘要转为小写，建立倒排索引
+            searchIndexCache = rawIndex.map(function(item) {
+                var title = String(item.title || '');
+                var excerpt = String(item.excerpt || '');
+                return {
+                    title: title,
+                    excerpt: excerpt,
+                    url: item.url || '#',
+                    date: item.date || '',
+                    // 预先转换为小写，避免搜索时重复转换
+                    searchText: (title + ' ' + excerpt).toLowerCase(),
+                    // 计算权重：标题匹配权重更高
+                    titleLower: title.toLowerCase()
+                };
+            });
+            
+            searchIndexReady = true;
+        }
 
         function ensureSearchPopup() {
+            if (searchOverlay && searchPopup) {
+                // 检查 DOM 是否仍然存在（防止 PJAX 导致的 detached DOM）
+                if (!document.body.contains(searchOverlay)) {
+                    searchOverlay = null;
+                    searchPopup = null;
+                    searchForm = null;
+                    searchInput = null;
+                    resultContent = null;
+                }
+            }
+            
             if (searchOverlay && searchPopup) return;
 
             var existedOverlay = document.querySelector('.search-pop-overlay');
@@ -115,39 +248,62 @@
 
             var closeBtn = searchPopup.querySelector('.popup-btn-close');
             if (closeBtn && !closeBtn.dataset.bound) {
-                closeBtn.addEventListener('click', function (e) {
+                var closeBtnHandler = function(e) {
                     e.stopPropagation();
                     searchOverlay.classList.remove('search-active');
-                });
+                };
+                closeBtn.addEventListener('click', closeBtnHandler);
                 closeBtn.dataset.bound = '1';
+                
+                // 注册清理函数
+                cleanupFunctions.push(function() {
+                    closeBtn.removeEventListener('click', closeBtnHandler);
+                    delete closeBtn.dataset.bound;
+                });
             }
 
             if (!searchOverlay.dataset.bound) {
-                searchOverlay.addEventListener('click', function (e) {
+                var overlayHandler = function(e) {
                     if (e.target === searchOverlay) searchOverlay.classList.remove('search-active');
-                });
+                };
+                searchOverlay.addEventListener('click', overlayHandler);
                 searchOverlay.dataset.bound = '1';
+                
+                // 注册清理函数
+                cleanupFunctions.push(function() {
+                    searchOverlay.removeEventListener('click', overlayHandler);
+                    delete searchOverlay.dataset.bound;
+                });
             }
 
             searchInput = searchPopup.querySelector('.search-input');
             resultContent = document.getElementById('search-result');
 
             if (searchInput && resultContent && !searchInput.dataset.bound) {
-                searchInput.addEventListener('input', function () {
+                var inputHandler = function() {
                     if (searchDebounceTimer) window.clearTimeout(searchDebounceTimer);
                     searchDebounceTimer = window.setTimeout(function () {
                         renderLiveSearch(searchInput.value.trim());
                     }, 120);
-                });
-
-                searchInput.addEventListener('keypress', function (e) {
+                };
+                
+                var keypressHandler = function(e) {
                     if (e.key !== 'Enter') return;
                     var keyword = searchInput.value.trim();
                     if (!keyword) return;
                     if (searchForm) searchForm.submit();
-                });
-
+                };
+                
+                searchInput.addEventListener('input', inputHandler);
+                searchInput.addEventListener('keypress', keypressHandler);
                 searchInput.dataset.bound = '1';
+                
+                // 注册清理函数
+                cleanupFunctions.push(function() {
+                    searchInput.removeEventListener('input', inputHandler);
+                    searchInput.removeEventListener('keypress', keypressHandler);
+                    delete searchInput.dataset.bound;
+                });
             }
         }
 
@@ -156,6 +312,12 @@
                 e.stopPropagation();
                 e.preventDefault();
             }
+            
+            // 延迟构建索引，只在首次打开搜索时构建
+            if (!searchIndexReady) {
+                buildSearchIndex();
+            }
+            
             ensureSearchPopup();
             searchOverlay.classList.add('search-active');
             var input = searchPopup ? searchPopup.querySelector('.search-input') : null;
@@ -174,13 +336,26 @@
             if (!node || node.dataset.searchBound === '1') return;
             node.addEventListener('click', openSearch);
             node.dataset.searchBound = '1';
+            
+            // 注册清理函数
+            cleanupFunctions.push(function() {
+                node.removeEventListener('click', openSearch);
+                delete node.dataset.searchBound;
+            });
         });
 
         if (!window.__dygitaSearchEscBound) {
-            document.addEventListener('keydown', function (e) {
+            var escHandler = function(e) {
                 if (e.key === 'Escape' && searchOverlay) searchOverlay.classList.remove('search-active');
-            });
+            };
+            document.addEventListener('keydown', escHandler);
             window.__dygitaSearchEscBound = true;
+            
+            // 注册清理函数
+            cleanupFunctions.push(function() {
+                document.removeEventListener('keydown', escHandler);
+                window.__dygitaSearchEscBound = false;
+            });
         }
 
         function escapeHtml(str) {
@@ -208,19 +383,56 @@
                 return;
             }
 
-            var normalizedKeyword = keyword.toLowerCase();
-            var searchIndex = getSearchIndex();
-            var matched = [];
-
-            for (var i = 0; i < searchIndex.length; i++) {
-                var item = searchIndex[i] || {};
-                var title = String(item.title || '');
-                var excerpt = String(item.excerpt || '');
-                var haystack = (title + ' ' + excerpt).toLowerCase();
-                if (haystack.indexOf(normalizedKeyword) === -1) continue;
-                matched.push(item);
-                if (matched.length >= liveSearchLimit) break;
+            // 确保索引已构建
+            if (!searchIndexReady) {
+                buildSearchIndex();
             }
+
+            var normalizedKeyword = keyword.toLowerCase();
+            var matched = [];
+            
+            // 性能优化：使用预处理的索引，避免重复转换小写
+            // 同时实现优先级排序：标题匹配 > 内容匹配
+            var titleMatches = [];
+            var contentMatches = [];
+            
+            for (var i = 0; i < searchIndexCache.length; i++) {
+                var item = searchIndexCache[i];
+                
+                // 检查是否匹配
+                var matchIndex = item.searchText.indexOf(normalizedKeyword);
+                if (matchIndex === -1) continue;
+                
+                // 区分标题匹配和内容匹配，标题匹配优先级更高
+                var titleMatchIndex = item.titleLower.indexOf(normalizedKeyword);
+                if (titleMatchIndex !== -1) {
+                    titleMatches.push({
+                        item: item,
+                        matchIndex: titleMatchIndex
+                    });
+                } else {
+                    contentMatches.push({
+                        item: item,
+                        matchIndex: matchIndex
+                    });
+                }
+                
+                // 早期退出：如果已经找到足够的结果
+                if (titleMatches.length + contentMatches.length >= liveSearchLimit * 2) {
+                    break;
+                }
+            }
+            
+            // 排序：标题匹配靠前，同类型按匹配位置排序（越靠前越相关）
+            titleMatches.sort(function(a, b) {
+                return a.matchIndex - b.matchIndex;
+            });
+            contentMatches.sort(function(a, b) {
+                return a.matchIndex - b.matchIndex;
+            });
+            
+            // 合并结果，标题匹配优先
+            matched = titleMatches.concat(contentMatches).slice(0, liveSearchLimit);
 
             if (!matched.length) {
                 resultContent.innerHTML = '<div id="no-result"><p style="color:#999;font-size:14px;"><i class="fa fa-frown-o"></i> 未找到与 "<strong>' + escapeHtml(keyword) + '</strong>" 相关的内容，按回车尝试全站搜索</p></div>';
@@ -229,11 +441,11 @@
 
             var html = '';
             for (var j = 0; j < matched.length; j++) {
-                var row = matched[j] || {};
-                var rowTitle = escapeHtml(String(row.title || '无标题'));
-                var rowUrl = escapeHtml(String(row.url || '#'));
-                var rowExcerpt = escapeHtml(String(row.excerpt || ''));
-                var rowDate = escapeHtml(String(row.date || ''));
+                var row = matched[j].item;
+                var rowTitle = escapeHtml(row.title || '无标题');
+                var rowUrl = escapeHtml(row.url);
+                var rowExcerpt = escapeHtml(row.excerpt);
+                var rowDate = escapeHtml(row.date);
                 html += '<p class="search-result">'
                     + '<a href="' + rowUrl + '" style="display:block;color:inherit;text-decoration:none;">'
                     + '<strong style="display:block;margin-bottom:4px;">' + rowTitle + '</strong>'
@@ -245,20 +457,44 @@
             html += '<p class="search-result" style="color:#999;font-size:12px;"><i class="fa fa-keyboard-o"></i> 回车可使用完整搜索页查看更多结果</p>';
             resultContent.innerHTML = html;
         }
-
+        
+        // PJAX 内存泄漏修复：返回清理函数
+        return function cleanup() {
+            // 清理所有事件监听器
+            cleanupFunctions.forEach(function(fn) {
+                try {
+                    fn();
+                } catch (e) {
+                    // 忽略清理错误
+                }
+            });
+            cleanupFunctions = [];
+            
+            // 清理 debounce timer
+            if (searchDebounceTimer) {
+                window.clearTimeout(searchDebounceTimer);
+                searchDebounceTimer = null;
+            }
+            
+            // 清除 DOM 引用，帮助垃圾回收
+            searchOverlay = null;
+            searchPopup = null;
+            searchForm = null;
+            searchInput = null;
+            resultContent = null;
+            
+            // 清除索引缓存（可选，如果希望在页面切换时保留索引可以注释掉）
+            // searchIndexCache = null;
+            // searchIndexReady = false;
+        };
     }
 
     function initTocInteraction() {
-        if (typeof window.__dygitaTocCleanup === 'function') {
-            window.__dygitaTocCleanup();
-            window.__dygitaTocCleanup = null;
-        }
-
         var catalogContent = document.querySelector('.catalog-content');
-        if (!catalogContent) return;
+        if (!catalogContent) return null;
 
         var links = catalogContent.querySelectorAll('a[href^="#"]');
-        if (!links.length) return;
+        if (!links.length) return null;
 
         // Build anchor-to-link map from PHP-generated TOC
         var anchors = [];
@@ -268,7 +504,7 @@
             if (el) anchors.push({ el: el, link: link });
         });
 
-        if (!anchors.length) return;
+        if (!anchors.length) return null;
 
         // Smooth scroll on TOC link click
         function onCatalogClick(e) {
@@ -335,6 +571,20 @@
             anchors.forEach(function (anchor) {
                 tocObserver.observe(anchor.el);
             });
+            
+            // PJAX 内存泄漏修复：返回清理函数
+            return function cleanup() {
+                catalogContent.removeEventListener('click', onCatalogClick);
+                if (tocObserver) {
+                    tocObserver.disconnect();
+                    tocObserver = null;
+                }
+                visibleEntries.clear();
+                // 清除 DOM 引用
+                catalogContent = null;
+                links = null;
+                anchors = null;
+            };
         } else {
             // Fallback for very old browsers without IntersectionObserver.
             var ticking = false;
@@ -356,23 +606,22 @@
                 });
             }
             window.addEventListener('scroll', onScrollFallback, { passive: true });
-            window.__dygitaTocCleanup = function () {
+            
+            // PJAX 内存泄漏修复：返回清理函数
+            return function cleanup() {
                 catalogContent.removeEventListener('click', onCatalogClick);
                 window.removeEventListener('scroll', onScrollFallback);
+                // 清除 DOM 引用
+                catalogContent = null;
+                links = null;
+                anchors = null;
             };
-            return;
         }
-
-        window.__dygitaTocCleanup = function () {
-            catalogContent.removeEventListener('click', onCatalogClick);
-            if (tocObserver) tocObserver.disconnect();
-            visibleEntries.clear();
-        };
     }
 
     function initLazyLoad() {
         var images = document.querySelectorAll('img[data-src]:not([data-lazy-bound="1"])');
-        if (!images.length) return;
+        if (!images.length) return null;
 
         function loadImage(img) {
             img.src = img.dataset.src;
@@ -395,8 +644,33 @@
                 img.dataset.lazyBound = '1';
                 window.__dygitaLazyObserver.observe(img);
             });
-            return;
+            
+            // PJAX 内存泄漏修复：返回清理函数
+            return function cleanup() {
+                // 取消观察所有图片
+                images.forEach(function (img) {
+                    if (window.__dygitaLazyObserver) {
+                        window.__dygitaLazyObserver.unobserve(img);
+                    }
+                    delete img.dataset.lazyBound;
+                });
+                // 注意：不断开全局 observer，因为它可能被其他页面使用
+                // 清除 DOM 引用
+                images = null;
+            };
         }
+
+        // Fallback for browsers without IntersectionObserver
+        // 性能优化：缓存图片数组，避免每次滚动都查询 DOM
+        if (!window.__dygitaLazyImageCache) {
+            window.__dygitaLazyImageCache = [];
+        }
+
+        // 将新图片添加到缓存数组
+        images.forEach(function (img) {
+            img.dataset.lazyBound = '1';
+            window.__dygitaLazyImageCache.push(img);
+        });
 
         if (!window.__dygitaLazyFallbackLoad) {
             window.__dygitaLazyFallbackTicking = false;
@@ -405,12 +679,36 @@
                 window.__dygitaLazyFallbackTicking = true;
                 window.requestAnimationFrame(function () {
                     window.__dygitaLazyFallbackTicking = false;
-                    var lazyImages = document.querySelectorAll('img[data-src]');
-                    if (!lazyImages.length) return;
-                    lazyImages.forEach(function (img) {
+                    
+                    // 使用缓存的图片数组，避免 querySelectorAll
+                    var cache = window.__dygitaLazyImageCache;
+                    if (!cache || !cache.length) return;
+                    
+                    // 反向遍历，方便删除已加载的图片
+                    for (var i = cache.length - 1; i >= 0; i--) {
+                        var img = cache[i];
+                        
+                        // 检查图片是否已被移除或已加载
+                        if (!img.parentNode || !img.dataset.src) {
+                            cache.splice(i, 1);
+                            continue;
+                        }
+                        
                         var rect = img.getBoundingClientRect();
-                        if (rect.top <= window.innerHeight && rect.bottom >= 0) loadImage(img);
-                    });
+                        if (rect.top <= window.innerHeight && rect.bottom >= 0) {
+                            loadImage(img);
+                            // 从缓存中移除已加载的图片
+                            cache.splice(i, 1);
+                        }
+                    }
+                    
+                    // 如果所有图片都已加载，移除事件监听器
+                    if (cache.length === 0) {
+                        document.removeEventListener('scroll', window.__dygitaLazyFallbackLoad);
+                        window.removeEventListener('resize', window.__dygitaLazyFallbackLoad);
+                        window.removeEventListener('orientationchange', window.__dygitaLazyFallbackLoad);
+                        window.__dygitaLazyFallbackBound = false;
+                    }
                 });
             };
         }
@@ -422,17 +720,56 @@
             window.__dygitaLazyFallbackBound = true;
         }
 
-        images.forEach(function (img) {
-            img.dataset.lazyBound = '1';
-        });
-
+        // 立即检查一次，加载视口内的图片
         window.__dygitaLazyFallbackLoad();
+        
+        // PJAX 内存泄漏修复：返回清理函数
+        return function cleanup() {
+            // 从缓存中移除这批图片
+            if (window.__dygitaLazyImageCache) {
+                images.forEach(function (img) {
+                    var idx = window.__dygitaLazyImageCache.indexOf(img);
+                    if (idx !== -1) {
+                        window.__dygitaLazyImageCache.splice(idx, 1);
+                    }
+                    delete img.dataset.lazyBound;
+                });
+            }
+            // 清除 DOM 引用
+            images = null;
+        };
     }
 
+    // PJAX 内存泄漏修复：全局清理函数存储
+    var globalCleanupFunctions = {
+        search: null,
+        toc: null,
+        lazyLoad: null
+    };
+
     function initPageFeatures() {
-        initSearch();
-        initTocInteraction();
-        initLazyLoad();
+        // 先清理旧的事件监听器和 DOM 引用
+        cleanupPageFeatures();
+        
+        // 初始化各个功能，并存储清理函数
+        globalCleanupFunctions.search = initSearch();
+        globalCleanupFunctions.toc = initTocInteraction();
+        globalCleanupFunctions.lazyLoad = initLazyLoad();
+    }
+
+    function cleanupPageFeatures() {
+        // 调用所有清理函数
+        Object.keys(globalCleanupFunctions).forEach(function(key) {
+            var cleanup = globalCleanupFunctions[key];
+            if (typeof cleanup === 'function') {
+                try {
+                    cleanup();
+                } catch (e) {
+                    // 忽略清理错误
+                }
+            }
+            globalCleanupFunctions[key] = null;
+        });
     }
 
     function bindPageLifecycle() {
@@ -461,5 +798,9 @@
         }
         bindPageLifecycle();
         initPageFeatures();
+        
+        // 暴露 showToast 到全局，供其他脚本使用
+        window.DYGITA = window.DYGITA || {};
+        window.DYGITA.showToast = showToast;
     });
 })();

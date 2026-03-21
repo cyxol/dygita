@@ -905,27 +905,49 @@ function dygita_get_hot_posts($limit = 5) {
     }
 }
 
-/* 增加: 随机文章 */
+/* 增加: 随机文章 - 优化版本，避免 ORDER BY RAND() 全表扫描 */
 function dygita_get_random_posts($limit = 5) {
     $db = Typecho\Db::get();
     $contentsTable = dygita_get_table('contents');
-    $adapterName = $db->getAdapterName();
-
-    // 兼容 SQLite
-    if ($adapterName == 'sqlite' || $adapterName == 'Pdo_SQLite' || $adapterName == 'SQLite') {
-        $order_by = 'RANDOM()';
-    } elseif ($adapterName == 'pgsql' || $adapterName == 'Pdo_Pgsql' || $adapterName == 'Pgsql') {
-        $order_by = 'RANDOM()';
-    } else {
-        $order_by = 'RAND()';
+    
+    // 性能优化：先获取所有已发布文章的 cid，在 PHP 层面随机选择
+    // 避免使用 ORDER BY RAND() 导致的全表扫描和临时表创建
+    $allCids = $db->fetchAll($db->select('cid')->from($contentsTable)
+        ->where('status = ?', 'publish')
+        ->where('type = ?', 'post'));
+    
+    if (empty($allCids)) {
+        return;
     }
-
+    
+    // 提取 cid 数组
+    $cidArray = array_column($allCids, 'cid');
+    $totalCount = count($cidArray);
+    
+    // 如果文章总数少于需要的数量，直接使用全部
+    if ($totalCount <= $limit) {
+        $selectedCids = $cidArray;
+    } else {
+        // 在 PHP 层面随机选择指定数量的 cid
+        $randomKeys = array_rand($cidArray, $limit);
+        $selectedCids = array();
+        if (is_array($randomKeys)) {
+            foreach ($randomKeys as $key) {
+                $selectedCids[] = $cidArray[$key];
+            }
+        } else {
+            // array_rand 在只选择1个时返回单个值而非数组
+            $selectedCids[] = $cidArray[$randomKeys];
+        }
+    }
+    
+    // 使用 IN 查询获取选中文章的详细信息
     $result = $db->fetchAll($db->select()->from($contentsTable)
+        ->where('cid IN ?', $selectedCids)
         ->where('status = ?', 'publish')
         ->where('type = ?', 'post')
-        ->order($order_by)
-        ->limit($limit));
-
+        ->order('created', Typecho\Db::SORT_DESC));
+    
     if ($result) {
         foreach ($result as $val) {
             $permalink = Typecho\Router::url('post', $val, Typecho\Widget::widget('Widget_Options')->index);
