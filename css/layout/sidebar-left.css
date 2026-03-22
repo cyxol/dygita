@@ -5,7 +5,11 @@
     flex: 0 0 540px;
     order: 1;
     box-sizing: border-box;
+    position: sticky;
+    top: 58px;
+    align-self: flex-start;
 }
+
 
 @media (width <= 2160px) {
     .sidebar-left {
@@ -30,40 +34,41 @@
     .sidebar-left {
         flex: 0 0 100%;
         order: 1;
+        position: static;
     }
 }
 
-/* 左侧栏关于博主内容 */
-.sidebar-left .widget-profile{
+/* 右侧栏关于博主内容 */
+.sidebar-right .widget-profile{
     display: flex ;
     flex-direction: column ;
     align-items: center ;
     text-align: center ;
 }
 
-.sidebar-left .profile-avatar{
+.sidebar-right .profile-avatar{
     margin-bottom: 12px ;
 }
 
-.sidebar-left .profile-avatar img{
+.sidebar-right .profile-avatar img{
     width: 96px ;
     height: 96px ;
     border-radius: 50% ;
     object-fit: cover ;
 }
 
-.sidebar-left .profile-info{
+.sidebar-right .profile-info{
     width: 100% ;
     text-align: center ;
 }
 
-.sidebar-left .profile-info p{
+.sidebar-right .profile-info p{
     margin: 8px 0 ;
     text-align: center ;
     line-height: 1.4 ;
 }
 
-.sidebar-left .profile-stats{
+.sidebar-right .profile-stats{
     display: flex ;
     justify-content: center ;
     align-items: stretch ;
@@ -73,7 +78,7 @@
     border: 0 ;
 }
 
-.sidebar-left .profile-stats-item{
+.sidebar-right .profile-stats-item{
     flex: 1 1 33.33% ;
     display: flex ;
     flex-direction: column ;
@@ -82,11 +87,11 @@
     padding: 10px 8px 8px ;
 }
 
-.sidebar-left .profile-stats-item + .profile-stats-item{
+.sidebar-right .profile-stats-item + .profile-stats-item{
     border-left: 1px solid #ddd ;
 }
 
-.sidebar-left .profile-stats-num{
+.sidebar-right .profile-stats-num{
     font-size: 39px ;
     line-height: 1 ;
     font-weight: 700 ;
@@ -94,9 +99,10 @@
     font-variant-numeric: tabular-nums ;
 }
 
-.sidebar-left .profile-stats-label{
+.sidebar-right .profile-stats-label{
     margin-top: 7px ;
     font-size: 15px ;
     line-height: 1.2 ;
     color: #8b8b8b ;
 }
+

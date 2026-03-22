@@ -566,6 +566,36 @@
             updateCurrentSection(activeAnchor);
         }
 
+        // 侧栏 sticky 控制：文章内容结束后取消 sticky，让侧栏随页面滚走
+        var sidebarLeft = document.querySelector('.sidebar-left');
+        var articleFooter = document.querySelector('.article-footer');
+        var stickyObserver = null;
+
+        if (sidebarLeft && articleFooter && 'IntersectionObserver' in window) {
+            var mainContainer = sidebarLeft.parentElement;
+            stickyObserver = new IntersectionObserver(function (entries) {
+                entries.forEach(function (entry) {
+                    if (entry.isIntersecting) {
+                        // 文章读完：计算侧栏当前位置，切换为 absolute 保持原位然后随页面滚走
+                        var containerRect = mainContainer.getBoundingClientRect();
+                        var sidebarRect = sidebarLeft.getBoundingClientRect();
+                        var absoluteTop = sidebarRect.top - containerRect.top;
+                        sidebarLeft.style.position = 'absolute';
+                        sidebarLeft.style.top = absoluteTop + 'px';
+                    } else {
+                        // 回到文章区域：恢复 sticky
+                        sidebarLeft.style.position = '';
+                        sidebarLeft.style.top = '';
+                    }
+                });
+            }, {
+                root: null,
+                rootMargin: '0px 0px 0px 0px',
+                threshold: 0
+            });
+            stickyObserver.observe(articleFooter);
+        }
+
         if ('IntersectionObserver' in window) {
             tocObserver = new IntersectionObserver(function (entries) {
                 entries.forEach(function (entry) {
@@ -592,6 +622,14 @@
                     tocObserver.disconnect();
                     tocObserver = null;
                 }
+                if (stickyObserver) {
+                    stickyObserver.disconnect();
+                    stickyObserver = null;
+                }
+                if (sidebarLeft) {
+                    sidebarLeft.style.position = '';
+                    sidebarLeft.style.top = '';
+                }
                 visibleEntries.clear();
                 // 清除 DOM 引用
                 catalogContent = null;
@@ -615,6 +653,20 @@
                         activeAnchor = current;
                         updateCurrentSection(activeAnchor);
                     }
+                    // Fallback sticky 控制
+                    if (sidebarLeft && articleFooter) {
+                        var footerTop = articleFooter.getBoundingClientRect().top;
+                        var mainCont = sidebarLeft.parentElement;
+                        if (footerTop <= window.innerHeight) {
+                            var cRect = mainCont.getBoundingClientRect();
+                            var sRect = sidebarLeft.getBoundingClientRect();
+                            sidebarLeft.style.position = 'absolute';
+                            sidebarLeft.style.top = (sRect.top - cRect.top) + 'px';
+                        } else {
+                            sidebarLeft.style.position = '';
+                            sidebarLeft.style.top = '';
+                        }
+                    }
                     ticking = false;
                 });
             }
@@ -624,6 +676,10 @@
             return function cleanup() {
                 catalogContent.removeEventListener('click', onCatalogClick);
                 window.removeEventListener('scroll', onScrollFallback);
+                if (sidebarLeft) {
+                    sidebarLeft.style.position = '';
+                    sidebarLeft.style.top = '';
+                }
                 // 清除 DOM 引用
                 catalogContent = null;
                 links = null;

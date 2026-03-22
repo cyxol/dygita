@@ -5,8 +5,18 @@
 <footer class="footer">
     <div class="footer-inner">
         <div class="footer-copyright">
-            <?php $currentYear = date('Y'); ?>
-            <span>&copy; <?php echo date('Y'); ?> | <?php echo htmlspecialchars((string) ($this->options->copyright ?: $this->options->title), ENT_QUOTES, 'UTF-8'); ?></span>
+            <span class="footer-copy">©</span>
+            <span class="footer-years">2014&ndash;<?php echo date('Y'); ?></span>
+            <span class="footer-sep">|</span>
+            <a href="https://caiya.xin/" target="_blank" rel="noopener" class="footer-site-link">菜牙点心</a>
+            <span class="footer-sep">|</span>
+            <span class="footer-brand">
+                <span class="footer-icon footer-icon-cabbage" data-tip="菜" aria-label="白菜"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 26" aria-hidden="true"><defs><!-- 从下到上：白→绿 渐变 --><linearGradient id="cg" x1="0" y1="1" x2="0" y2="0"><stop offset="0%" stop-color="#f0f9f0"/><stop offset="40%" stop-color="#a3d9a3"/><stop offset="100%" stop-color="#237a23"/></linearGradient><!-- 中心茎：从下到上 白→半透明 --><linearGradient id="cs" x1="0" y1="1" x2="0" y2="0"><stop offset="0%" stop-color="white"/><stop offset="70%" stop-color="rgba(255,255,255,0.85)"/><stop offset="100%" stop-color="rgba(255,255,255,0.15)"/></linearGradient><!-- 侧茎渐变 --><linearGradient id="ss" x1="0" y1="1" x2="0" y2="0"><stop offset="0%" stop-color="rgba(255,255,255,0.8)"/><stop offset="100%" stop-color="rgba(255,255,255,0.05)"/></linearGradient></defs><!-- 主体：渐变填充（根部白、叶端绿） --><path d="M6 24C2 20 1 13 3 8 5 3 9 1 12 1 15 1 19 3 21 8 23 13 22 20 18 24 15 26 9 26 6 24Z" fill="url(#cg)"/><!-- 中心白茎（根部醒目白，往上渐隐） --><path d="M9 24C9 16 10 8 12 3 14 8 15 16 15 24Z" fill="url(#cs)"/><!-- 左侧白茎 --><path d="M7 23C7 16 8 9 10 5 9 9 8.5 16 8.5 23Z" fill="url(#ss)"/><!-- 右侧白茎 --><path d="M17 23C17 16 16 9 14 5 15 9 15.5 16 15.5 23Z" fill="url(#ss)"/><!-- 顶部深绿叶尖 --><path d="M5 10C3 5 7 1.5 12 1.5 17 1.5 21 5 19 10 17 6 14 4 12 4 10 4 7 6 5 10Z" fill="#1a5e1a"/><!-- 叶脉 --><path d="M8 6Q7 4 9 2.5" stroke="#5ec45e" stroke-width="0.5" fill="none" stroke-linecap="round"/><path d="M16 6Q17 4 15 2.5" stroke="#5ec45e" stroke-width="0.5" fill="none" stroke-linecap="round"/></svg></span><span class="footer-icon footer-icon-tooth" data-tip="牙" aria-label="牙齿">🦷</span><span class="footer-icon footer-icon-dot" data-tip="点" aria-hidden="true"></span><span class="footer-icon footer-icon-heart" data-tip="心" aria-hidden="true">❤</span>
+            </span>
+            <span class="footer-sep">|</span>
+            <span class="footer-theme">Theme by Dygita</span>
+            <span class="footer-sep">|</span>
+            <span class="footer-powered">Ported to <a href="https://typecho.org/" target="_blank" rel="noopener">Typecho</a></span>
         </div>
     </div>
 </footer>

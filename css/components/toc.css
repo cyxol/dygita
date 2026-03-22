@@ -1,6 +1,5 @@
 /* TOC component styles */
 .widget-catalog{
-    background: #f9f9f9;
     background: var(--card-bg-color, #f9f9f9);
     border-radius: 8px;
     padding: 15px;
@@ -11,7 +10,6 @@
     margin-top: 0;
     margin-bottom: 15px;
     font-size: 16px;
-    color: #333;
     color: var(--text-color, #333);
     border-bottom: 2px solid var(--accent-color, #e74c3c);
     padding-bottom: 8px;
@@ -24,58 +22,44 @@
 }
 
 .catalog-content li{
-    margin: 8px 0;
-    padding-left: 15px;
-    position: relative;
-}
-
-.catalog-content li::before{
-    content: '\f0da';
-    font-family: FontAwesome;
-    position: absolute;
-    left: 0;
-    color: var(--accent-color, #e74c3c);
-    font-size: 12px;
+    margin: 4px 0;
+    padding-left: 0;
+    border-radius: 4px;
 }
 
 .catalog-content li ul{
-    margin-left: 15px;
-    margin-top: 5px;
+    margin-left: 12px;
+    margin-top: 2px;
 }
 
 .catalog-content a{
-    color: #333;
     color: var(--text-color, #333);
     text-decoration: none;
-    transition: color 0.3s ease;
-    font-size: 14px;
+    transition: color 0.2s ease, padding-left 0.2s ease;
+    font-size: 13px;
     display: block;
     padding: 3px 0;
+    line-height: 1.5;
 }
 
 .catalog-content a:hover{
     color: var(--accent-color, #e74c3c);
-    padding-left: 5px;
 }
 
+/* 当前阅读位置高亮 */
 .catalog-content a.active{
     color: var(--accent-color, #e74c3c);
-    font-weight: bold;
-    padding-left: 10px;
+    font-weight: 600;
+    padding-left: 6px;
     border-left: 3px solid var(--accent-color, #e74c3c);
+    margin-left: -3px;
 }
 
 .no-catalog{
     text-align: center;
-    color: #999;
     color: var(--muted-text-color, #999);
     font-size: 14px;
     padding: 20px 0;
 }
 
-.widget-catalog.fixed{
-    position: sticky;
-    top: 20px;
-    z-index: var(--z-catalog-sticky, 1100);
-    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-}
+

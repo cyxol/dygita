@@ -40,7 +40,7 @@ Description: Dygita Theme Ported to Typecho
     justify-content: center;
     gap: 20px;
     box-sizing: border-box;
-    align-items: flex-start;
+    align-items: stretch;
 }
 
 /* 左侧边栏 */

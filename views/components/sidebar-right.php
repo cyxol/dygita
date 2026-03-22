@@ -6,6 +6,39 @@
     <button class="sidebar-toggle right" aria-label="折叠右侧栏" title="折叠右侧栏">
         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 6 15 12 9 18"></polyline></svg>
     </button>
+
+    <!-- 博主简介 -->
+    <div class="widget">
+        <div class="title"><h2><?php dygita_e('关于博主'); ?></h2></div>
+        <div class="widget-content">
+            <div class="widget-profile">
+                <div class="profile-avatar">
+                    <img src="<?php $this->options->themeUrl('img/caiya.xin.jpg'); ?>" alt="Yacine Tsai">
+                </div>
+                <div class="profile-info">
+                    <p>Yacine Tsai</p>
+                    <p>大数据产品经理</p>
+                    <p>Vibe Coding</p>
+                    <?php $profileStat = dygita_get_stat(); ?>
+                    <div class="profile-stats" aria-label="站点统计">
+                        <div class="profile-stats-item">
+                            <span class="profile-stats-num"><?php echo (int) $profileStat['posts']; ?></span>
+                            <span class="profile-stats-label"><?php dygita_e('日志'); ?></span>
+                        </div>
+                        <div class="profile-stats-item">
+                            <span class="profile-stats-num"><?php echo (int) $profileStat['categories']; ?></span>
+                            <span class="profile-stats-label"><?php dygita_e('分类'); ?></span>
+                        </div>
+                        <div class="profile-stats-item">
+                            <span class="profile-stats-num"><?php echo (int) $profileStat['tags']; ?></span>
+                            <span class="profile-stats-label"><?php dygita_e('标签'); ?></span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <!-- 分类 -->
     <?php if (!empty($this->options->sidebarBlock) && in_array('ShowCategory', $this->options->sidebarBlock)): ?>
     <div class="widget">

@@ -9,7 +9,7 @@ if ($catalogCache !== null) {
     $parsedContent = $catalog->renderHtml($this->content);
 }
 ?>
-<?php $this->need('views/components/header.php'); dygita_record_post_view($this); ?>
+<?php $this->need('views/components/header.php'); ?>
 <?php $this->need('views/components/sidebar-left.php'); ?>
 
         <header class="article-header">

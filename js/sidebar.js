@@ -31,11 +31,7 @@
 
         function moveToggle(toggle, sidebar, isCollapsed) {
             if (!toggle || !sidebar) return;
-            if (isCollapsed) {
-                document.body.appendChild(toggle);
-            } else {
-                sidebar.insertBefore(toggle, sidebar.firstChild);
-            }
+            // 按钮始终留在侧栏内部
         }
 
         function updateIcon(toggle, side, isCollapsed) {
@@ -86,6 +82,7 @@
                 updateIcon(this, 'left', isCollapsed);
                 updateBothCollapsedClass();
                 saveSidebarState();
+                updateCollapsedTogglePositions();
             });
         }
 
@@ -105,10 +102,13 @@
                 updateIcon(this, 'right', isCollapsed);
                 updateBothCollapsedClass();
                 saveSidebarState();
+                updateCollapsedTogglePositions();
             });
         }
 
         loadSidebarState();
+        updateCollapsedTogglePositions();
+        window.addEventListener('resize', updateCollapsedTogglePositions);
     }
 
     if (document.readyState === 'loading') {

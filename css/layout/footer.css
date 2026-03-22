@@ -19,12 +19,144 @@
 
 .footer-copyright{
     text-align: center;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: center;
+    gap: 4px;
+    line-height: 1;
 }
 
-.footer-heart{
+.footer-brand{
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+}
+
+/* 四个图案统一尺寸容器 + tooltip */
+.footer-icon{
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 1.4em;
+    height: 1.4em;
+    flex-shrink: 0;
+    cursor: default;
+    position: relative;
+    transition: transform 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
+    will-change: transform;
+}
+
+.footer-icon:hover{
+    transform: scale(1.45);
+}
+
+/* tooltip 小标签 */
+.footer-icon[data-tip]::after{
+    content: attr(data-tip);
+    position: absolute;
+    bottom: calc(100% + 5px);
+    left: 50%;
+    transform: translateX(-50%) translateY(4px);
+    background: rgba(30, 30, 30, 0.82);
+    color: #fff;
+    font-size: 11px;
+    line-height: 1;
+    padding: 3px 6px;
+    border-radius: 4px;
+    white-space: nowrap;
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 0.18s ease, transform 0.18s ease;
+}
+
+.footer-icon[data-tip]:hover::after{
+    opacity: 1;
+    transform: translateX(-50%) translateY(0);
+}
+
+/* 白菜 SVG */
+.footer-icon-cabbage svg{
+    width: 100%;
+    height: 100%;
+}
+
+/* 牙齿 emoji */
+.footer-icon-tooth{
+    font-size: 1em;
+    line-height: 1;
+}
+
+/* 绿点 */
+.footer-icon-dot{
+    position: relative;
+}
+
+.footer-icon-dot::before{
+    content: '';
+    display: block;
+    width: 7px;
+    height: 7px;
+    background: #22c55e;
+    border-radius: 50%;
+}
+
+/* 红心 */
+.footer-icon-heart{
     color: #e53935;
+    font-size: 1em;
+    line-height: 1;
+    animation: footer-heartbeat 1.4s ease-in-out infinite;
+    transform-origin: center;
+}
+
+.footer-icon-heart.footer-icon:hover{
+    animation-play-state: paused;
+    color: #f44336;
+}
+
+/* 站点链接 */
+.footer-site-link{
+    color: var(--text-color, #555);
+    text-decoration: none;
+    transition: color 0.2s ease;
+}
+
+.footer-site-link:hover{
+    color: var(--link-hover-color, #e74c3c);
+}
+
+.footer-copy{
+    color: #8b5cf6;
     font-style: normal;
-    font-weight: 700;
+}
+
+.footer-years{
+    color: inherit;
+}
+
+.footer-sep{
+    color: var(--blockquote-color, #999);
+    margin: 0 2px;
+}
+
+
+@keyframes footer-heartbeat{
+    0%, 100%{ transform: scale(1); }
+    14%{ transform: scale(1.25); }
+    28%{ transform: scale(1); }
+    42%{ transform: scale(1.2); }
+    56%{ transform: scale(1); }
+}
+
+.footer-powered a, .footer-theme a{
+    color: var(--link-color, #555);
+    text-decoration: none;
+}
+
+.footer-powered a:hover, .footer-theme a:hover{
+    color: var(--link-hover-color, #e74c3c);
+    text-decoration: underline;
 }
 
 .back-to-top{

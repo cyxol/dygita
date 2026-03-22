@@ -1,4 +1,4 @@
-/* Dygita Theme - Build: 2026-03-22T14:29:54.513Z */
+/* Dygita Theme - Build: 2026-03-22T16:58:45.100Z */
 
 /* === css/base/variables.css === */
 /* Dygita CSS 层次：变量层（设计令牌，仅定义 CSS 变量） */
@@ -330,7 +330,7 @@ template{
     --tw-scale-y: 1;
 }/* Body Styles */
 html, body{
-    height: 100%;
+    min-height: 100%;
     width: 100%;
     margin: 0;
     padding: 0;
@@ -1001,7 +1001,11 @@ body > *:first-child, body > header:first-of-type{
     flex: 0 0 540px;
     order: 1;
     box-sizing: border-box;
+    position: sticky;
+    top: 58px;
+    align-self: flex-start;
 }
+
 
 @media (width <= 2160px) {
     .sidebar-left {
@@ -1026,40 +1030,41 @@ body > *:first-child, body > header:first-of-type{
     .sidebar-left {
         flex: 0 0 100%;
         order: 1;
+        position: static;
     }
 }
 
-/* 左侧栏关于博主内容 */
-.sidebar-left .widget-profile{
+/* 右侧栏关于博主内容 */
+.sidebar-right .widget-profile{
     display: flex ;
     flex-direction: column ;
     align-items: center ;
     text-align: center ;
 }
 
-.sidebar-left .profile-avatar{
+.sidebar-right .profile-avatar{
     margin-bottom: 12px ;
 }
 
-.sidebar-left .profile-avatar img{
+.sidebar-right .profile-avatar img{
     width: 96px ;
     height: 96px ;
     border-radius: 50% ;
     object-fit: cover ;
 }
 
-.sidebar-left .profile-info{
+.sidebar-right .profile-info{
     width: 100% ;
     text-align: center ;
 }
 
-.sidebar-left .profile-info p{
+.sidebar-right .profile-info p{
     margin: 8px 0 ;
     text-align: center ;
     line-height: 1.4 ;
 }
 
-.sidebar-left .profile-stats{
+.sidebar-right .profile-stats{
     display: flex ;
     justify-content: center ;
     align-items: stretch ;
@@ -1069,7 +1074,7 @@ body > *:first-child, body > header:first-of-type{
     border: 0 ;
 }
 
-.sidebar-left .profile-stats-item{
+.sidebar-right .profile-stats-item{
     flex: 1 1 33.33% ;
     display: flex ;
     flex-direction: column ;
@@ -1078,11 +1083,11 @@ body > *:first-child, body > header:first-of-type{
     padding: 10px 8px 8px ;
 }
 
-.sidebar-left .profile-stats-item + .profile-stats-item{
+.sidebar-right .profile-stats-item + .profile-stats-item{
     border-left: 1px solid #ddd ;
 }
 
-.sidebar-left .profile-stats-num{
+.sidebar-right .profile-stats-num{
     font-size: 39px ;
     line-height: 1 ;
     font-weight: 700 ;
@@ -1090,12 +1095,13 @@ body > *:first-child, body > header:first-of-type{
     font-variant-numeric: tabular-nums ;
 }
 
-.sidebar-left .profile-stats-label{
+.sidebar-right .profile-stats-label{
     margin-top: 7px ;
     font-size: 15px ;
     line-height: 1.2 ;
     color: #8b8b8b ;
 }
+
 
 
 /* === css/layout/main-content.css === */
@@ -1224,58 +1230,30 @@ body > div.fixed{
     position: relative ;
 }
 
-/* --- Sidebar toggle: inside sidebar (expanded state) --- */
-aside.sidebar-left{
-    position: relative !important ;
-}
-
-aside.sidebar-right{
-    position: relative !important ;
-}
-
-aside.sidebar-left > .sidebar-toggle.left{
-    position: absolute !important ;
-    top: 8px !important ;
-    left: 4px !important ;
-    right: auto !important ;
-}
-
-aside.sidebar-right > .sidebar-toggle.right{
-    position: absolute !important ;
-    top: 8px !important ;
-    right: 4px !important ;
-    left: auto !important ;
-}
-
-/* --- Sidebar toggle: on body (collapsed state — must be visible!) --- */
+/* --- Sidebar toggle: pinned to viewport edges --- */
+aside.sidebar-left > .sidebar-toggle.left,
+aside.sidebar-right > .sidebar-toggle.right,
 body > .sidebar-toggle{
     position: fixed !important ;
-    top: 50% !important ;
+    top: 50vh !important ;
     transform: translateY(-50%) ;
-    width: 20px !important ;
-    height: 44px !important ;
-    background: rgba(51, 51, 51, 0.65) !important ;
-    color: #fff !important ;
-    border: none !important ;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.15) ;
-    backdrop-filter: blur(4px) ;
+    z-index: var(--z-sidebar-toggle, 1200) ;
 }
 
-body > .sidebar-toggle:hover{
-    background: rgba(231, 76, 60, 0.85) !important ;
-    box-shadow: 0 2px 10px rgba(231,76,60,0.35) ;
-}
-
+aside.sidebar-left > .sidebar-toggle.left,
 body > .sidebar-toggle.left{
     left: 0 !important ;
     right: auto !important ;
-    border-radius: 0 6px 6px 0 ;
+    border-top-left-radius: 0 ;
+    border-bottom-left-radius: 0 ;
 }
 
+aside.sidebar-right > .sidebar-toggle.right,
 body > .sidebar-toggle.right{
     right: 0 !important ;
     left: auto !important ;
-    border-radius: 6px 0 0 6px ;
+    border-top-right-radius: 0 ;
+    border-bottom-right-radius: 0 ;
 }
 
 /* --- 手机端隐藏侧栏折叠按钮 --- */
@@ -1285,9 +1263,8 @@ body > .sidebar-toggle.right{
     }
 }
 
-/* 确保没有意外的高度计算问�? */
+/* 确保没有意外的高度计算问题 */
 html, body{
-    height: 100% ;
     min-height: 100vh ;
 }
 
@@ -1712,7 +1689,8 @@ html, body{
     justify-content: center;
     gap: 20px;
     box-sizing: border-box;
-    align-items: flex-start;
+    align-items: stretch;
+    position: relative;
 }/* Reset existing floats and widths */
 .content-wrap, .sidebar{
     float: none;
@@ -1754,7 +1732,7 @@ html, body{
  * ================================================================ */
 
 .sidebar-left {
-    position: relative;
+    /* position 由 sidebar-left.css 控制（sticky） */
     flex: 0 0 220px;
     box-sizing: border-box;
     background: var(--content-bg-color);
@@ -2804,24 +2782,24 @@ td{
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    width: 26px;
-    height: 26px;
+    width: 28px;
+    height: 54px;
     padding: 0;
-    border: 1px solid var(--border-color, rgba(0,0,0,0.1));
+    border: 1px solid color-mix(in srgb, var(--header-bg-color, var(--nav-bg-color, #fff)) 82%, #000 18%);
     border-radius: 6px;
-    background: var(--content-bg-color, #fff);
-    color: var(--text-color-secondary, #999);
+    background: var(--header-bg-color, var(--nav-bg-color, #fff));
+    color: var(--header-color, var(--text-color, #333));
     cursor: pointer;
     z-index: var(--z-sidebar-toggle, 1200);
     transition: background 0.2s, color 0.2s, box-shadow 0.2s;
-    box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+    box-shadow: 0 3px 10px rgba(0,0,0,0.14);
     line-height: 1;
     font-size: 0;
     outline: none;
 }
 
 .sidebar-toggle:hover{
-    background: var(--link-hover-color, #e74c3c);
+    background: color-mix(in srgb, var(--header-bg-color, var(--nav-bg-color, #fff)) 88%, #000 12%);
     color: #fff;
     border-color: transparent;
     box-shadow: 0 2px 6px rgba(231,76,60,0.3);
@@ -3472,12 +3450,144 @@ td{
 
 .footer-copyright{
     text-align: center;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: center;
+    gap: 4px;
+    line-height: 1;
 }
 
-.footer-heart{
+.footer-brand{
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+}
+
+/* 四个图案统一尺寸容器 + tooltip */
+.footer-icon{
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 1.4em;
+    height: 1.4em;
+    flex-shrink: 0;
+    cursor: default;
+    position: relative;
+    transition: transform 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
+    will-change: transform;
+}
+
+.footer-icon:hover{
+    transform: scale(1.45);
+}
+
+/* tooltip 小标签 */
+.footer-icon[data-tip]::after{
+    content: attr(data-tip);
+    position: absolute;
+    bottom: calc(100% + 5px);
+    left: 50%;
+    transform: translateX(-50%) translateY(4px);
+    background: rgba(30, 30, 30, 0.82);
+    color: #fff;
+    font-size: 11px;
+    line-height: 1;
+    padding: 3px 6px;
+    border-radius: 4px;
+    white-space: nowrap;
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 0.18s ease, transform 0.18s ease;
+}
+
+.footer-icon[data-tip]:hover::after{
+    opacity: 1;
+    transform: translateX(-50%) translateY(0);
+}
+
+/* 白菜 SVG */
+.footer-icon-cabbage svg{
+    width: 100%;
+    height: 100%;
+}
+
+/* 牙齿 emoji */
+.footer-icon-tooth{
+    font-size: 1em;
+    line-height: 1;
+}
+
+/* 绿点 */
+.footer-icon-dot{
+    position: relative;
+}
+
+.footer-icon-dot::before{
+    content: '';
+    display: block;
+    width: 7px;
+    height: 7px;
+    background: #22c55e;
+    border-radius: 50%;
+}
+
+/* 红心 */
+.footer-icon-heart{
     color: #e53935;
+    font-size: 1em;
+    line-height: 1;
+    animation: footer-heartbeat 1.4s ease-in-out infinite;
+    transform-origin: center;
+}
+
+.footer-icon-heart.footer-icon:hover{
+    animation-play-state: paused;
+    color: #f44336;
+}
+
+/* 站点链接 */
+.footer-site-link{
+    color: var(--text-color, #555);
+    text-decoration: none;
+    transition: color 0.2s ease;
+}
+
+.footer-site-link:hover{
+    color: var(--link-hover-color, #e74c3c);
+}
+
+.footer-copy{
+    color: #8b5cf6;
     font-style: normal;
-    font-weight: 700;
+}
+
+.footer-years{
+    color: inherit;
+}
+
+.footer-sep{
+    color: var(--blockquote-color, #999);
+    margin: 0 2px;
+}
+
+
+@keyframes footer-heartbeat{
+    0%, 100%{ transform: scale(1); }
+    14%{ transform: scale(1.25); }
+    28%{ transform: scale(1); }
+    42%{ transform: scale(1.2); }
+    56%{ transform: scale(1); }
+}
+
+.footer-powered a, .footer-theme a{
+    color: var(--link-color, #555);
+    text-decoration: none;
+}
+
+.footer-powered a:hover, .footer-theme a:hover{
+    color: var(--link-hover-color, #e74c3c);
+    text-decoration: underline;
 }
 
 .back-to-top{
@@ -4669,7 +4779,6 @@ button.collapseButton:focus-visible{
 /* === css/components/toc.css === */
 /* TOC component styles */
 .widget-catalog{
-    background: #f9f9f9;
     background: var(--card-bg-color, #f9f9f9);
     border-radius: 8px;
     padding: 15px;
@@ -4680,7 +4789,6 @@ button.collapseButton:focus-visible{
     margin-top: 0;
     margin-bottom: 15px;
     font-size: 16px;
-    color: #333;
     color: var(--text-color, #333);
     border-bottom: 2px solid var(--accent-color, #e74c3c);
     padding-bottom: 8px;
@@ -4693,61 +4801,47 @@ button.collapseButton:focus-visible{
 }
 
 .catalog-content li{
-    margin: 8px 0;
-    padding-left: 15px;
-    position: relative;
-}
-
-.catalog-content li::before{
-    content: '\f0da';
-    font-family: FontAwesome;
-    position: absolute;
-    left: 0;
-    color: var(--accent-color, #e74c3c);
-    font-size: 12px;
+    margin: 4px 0;
+    padding-left: 0;
+    border-radius: 4px;
 }
 
 .catalog-content li ul{
-    margin-left: 15px;
-    margin-top: 5px;
+    margin-left: 12px;
+    margin-top: 2px;
 }
 
 .catalog-content a{
-    color: #333;
     color: var(--text-color, #333);
     text-decoration: none;
-    transition: color 0.3s ease;
-    font-size: 14px;
+    transition: color 0.2s ease, padding-left 0.2s ease;
+    font-size: 13px;
     display: block;
     padding: 3px 0;
+    line-height: 1.5;
 }
 
 .catalog-content a:hover{
     color: var(--accent-color, #e74c3c);
-    padding-left: 5px;
 }
 
+/* 当前阅读位置高亮 */
 .catalog-content a.active{
     color: var(--accent-color, #e74c3c);
-    font-weight: bold;
-    padding-left: 10px;
+    font-weight: 600;
+    padding-left: 6px;
     border-left: 3px solid var(--accent-color, #e74c3c);
+    margin-left: -3px;
 }
 
 .no-catalog{
     text-align: center;
-    color: #999;
     color: var(--muted-text-color, #999);
     font-size: 14px;
     padding: 20px 0;
 }
 
-.widget-catalog.fixed{
-    position: sticky;
-    top: 20px;
-    z-index: var(--z-catalog-sticky, 1100);
-    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-}
+
 
 
 /* === css/components/pagination.css === */
@@ -5578,21 +5672,19 @@ button.collapseButton:focus-visible{
     color: var(--text-color, #c9d1d9);
 }
 
-/* 左侧边栏博主统计区块暗色模式背景 */
-[data-theme='dark'] .sidebar-left .profile-stats{
+/* 右侧边栏博主统计区块暗色模式背景 */
+[data-theme='dark'] .sidebar-right .profile-stats{
     background: var(--content-bg-color, #1e1e2e);
 }
 
-[data-theme='dark'] .sidebar-left .profile-stats-item + .profile-stats-item{
+[data-theme='dark'] .sidebar-right .profile-stats-item + .profile-stats-item{
     border-left-color: var(--border-color, #333);
 }
 
-[data-theme='dark'] .sidebar-left .profile-stats-num{
+[data-theme='dark'] .sidebar-right .profile-stats-num{
     color: var(--text-color, #c9d1d9);
 }
 
-[data-theme='dark'] .sidebar-left .profile-stats-label{
+[data-theme='dark'] .sidebar-right .profile-stats-label{
     color: var(--text-secondary, #8b949e);
 }
-
-
