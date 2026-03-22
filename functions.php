@@ -1332,26 +1332,7 @@ function dygita_current_lang() {
     return ($optionsLang === 'en_US') ? 'en_US' : 'zh_CN';
 }
 
-/**
- * 主题内翻译：使用 themes/dygita/views/languages/*.php，一键中英文切换
- * @param string $key 原文（中文或英文均可，与语言包键一致即可）
- * @return string
- */
-function _t($key) {
-    static $map = null;
-    if ($map === null) {
-        $lang = dygita_current_lang();
-        $options = \Typecho\Widget::widget('Widget_Options');
-        $path = $options->themeFile($options->theme, 'views/languages/' . $lang . '.php');
-        $map = file_exists($path) ? (array) include $path : array();
-    }
-    return isset($map[$key]) ? $map[$key] : $key;
-}
 
-/** 输出主题翻译，便于模板中 echo 使用 */
-function _e($key) {
-    echo _t($key);
-}
 
 // 主题初始化函数
 function themeInit($archive) {
