@@ -51,8 +51,8 @@
         <div class="title"><h2><?php _e('联系方式'); ?></h2></div>
         <div class="widget-content">
             <div class="contact-info">
-                <?php $contactEmail = $this->options->contactEmail ? dygita_escape($this->options->contactEmail) : ''; ?>
-                <?php $contactQQ = $this->options->contactQQ ? dygita_escape($this->options->contactQQ) : ''; ?>
+                <?php $contactEmail = $this->options->contactEmail ? htmlspecialchars((string)$this->options->contactEmail, ENT_QUOTES, 'UTF-8') : ''; ?>
+                <?php $contactQQ = $this->options->contactQQ ? htmlspecialchars((string)$this->options->contactQQ, ENT_QUOTES, 'UTF-8') : ''; ?>
                 <p><i class="fa fa-envelope"></i> <a href="mailto:<?php echo $contactEmail; ?>"><?php echo $contactEmail; ?></a></p>
                 <p><i class="fa fa-qq"></i> <?php echo $contactQQ; ?></p>
             </div>
@@ -77,9 +77,9 @@
         <div class="widget-content">
             <div class="ad-box">
                 <?php
-                $adLinkUrl = $this->options->adLinkUrl ? dygita_escape_url($this->options->adLinkUrl) : '';
+                $adLinkUrl = $this->options->adLinkUrl ? htmlspecialchars((string)$this->options->adLinkUrl, ENT_QUOTES, 'UTF-8') : '';
                 if ($this->options->adImageUrl) {
-                    $adImageUrl = dygita_escape_url($this->options->adImageUrl);
+                    $adImageUrl = htmlspecialchars((string)$this->options->adImageUrl, ENT_QUOTES, 'UTF-8');
                 } else {
                     $adImageUrl = htmlspecialchars($this->options->themeUrl . '/img/default.png', ENT_QUOTES, 'UTF-8');
                 }
