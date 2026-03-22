@@ -14,7 +14,6 @@ if ($catalogCache !== null) {
         <header class="article-header">
             <h1 class="article-title"><a href="<?php $this->permalink() ?>"><?php $this->title() ?></a></h1>
             <div class="meta">
-                <span class="muted"><i class="fa fa-user"></i> <a href="<?php $this->author->permalink(); ?>"><?php $this->author(); ?></a></span>
                 <span class="muted"><i class="fa fa-clock-o"></i> <?php $this->date('Y-m-d G:i:s'); ?></span>
                 <span class="muted"><i class="fa fa-eye"></i> <?php dygita_e('浏览'); ?>(<?php dygita_get_post_view($this); ?>)</span>
                 <span class="muted"><i class="fa fa-comments-o"></i> <a href="<?php $this->permalink() ?>#comments"><?php $this->commentsNum('0个评论', '1个评论', '%d个评论'); ?></a></span>

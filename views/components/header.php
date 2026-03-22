@@ -175,7 +175,7 @@ endif; ?>
         ob_start(); $this->excerpt(150); $ldExcerpt = ob_get_clean();
         $ldPermalink = $this->permalink;
         $ldPublisherName = $this->options->title;
-        $ldPublisherLogo = $this->options->themeUrl('img/caiya.xin.jpg');
+        ob_start(); $this->options->themeUrl('img/caiya.xin.jpg'); $ldPublisherLogo = ob_get_clean();
         $ldArticle = array(
             "@context" => "https://schema.org",
             "@type" => "Article",
@@ -240,24 +240,7 @@ endif; ?>
 
     <!-- Swiper.js 轮播图样式 -->
     <?php if ($this->options->swiperEnabled == '1'):
-        $cdnProvider = dygita_opt($this->options, 'dygita_cdn_provider', 'git_cdn_provider') ?: 'jsdelivr';
-        $swiperCssUrl = '';
-        switch ($cdnProvider) {
-            case 'staticfile':
-                $swiperCssUrl = 'https://cdn.staticfile.org/Swiper/8.4.5/swiper-bundle.min.css';
-                break;
-            case 'bootcdn':
-                $swiperCssUrl = 'https://cdn.bootcdn.net/ajax/libs/Swiper/8.4.5/swiper-bundle.min.css';
-                break;
-            case 'cdnjs':
-                $swiperCssUrl = 'https://cdnjs.cloudflare.com/ajax/libs/Swiper/8.4.5/swiper-bundle.min.css';
-                break;
-            case 'local':
-                $swiperCssUrl = $this->options->themeUrl('vendor/swiper/swiper-bundle.min.css');
-                break;
-            default:
-                $swiperCssUrl = 'https://cdn.jsdelivr.net/npm/swiper@8/swiper-bundle.min.css';
-        }
+        $swiperCssUrl = dygita_cdn_url('Swiper', '8.4.5', 'swiper-bundle.min.css');
     ?>
         <link rel="stylesheet" href="<?php echo $swiperCssUrl; ?>" onerror="this.onerror=null;this.href='https://unpkg.com/swiper@8/swiper-bundle.min.css'">
     <?php
@@ -265,55 +248,12 @@ endif; ?>
 
     <!-- 代码语法高亮 - 仅在文章/页面中加载 -->
     <?php if ($this->is('post') || $this->is('page')):
-        $prismCdnProvider = dygita_opt($this->options, 'dygita_cdn_provider', 'git_cdn_provider') ?: 'jsdelivr';
-        $prismThemeUrl = '';
-        $prismToolbarUrl = '';
-        $prismCoreUrl = '';
-        $prismToolbarJsUrl = '';
-        $prismAutoloaderUrl = '';
-        $prismCopyUrl = '';
-        
-        switch ($prismCdnProvider) {
-            case 'staticfile':
-                $prismThemeUrl = 'https://cdn.staticfile.org/prism/1.29.0/themes/prism-tomorrow.min.css';
-                $prismToolbarUrl = 'https://cdn.staticfile.org/prism/1.29.0/plugins/toolbar/prism-toolbar.min.css';
-                $prismCoreUrl = 'https://cdn.staticfile.org/prism/1.29.0/prism.min.js';
-                $prismToolbarJsUrl = 'https://cdn.staticfile.org/prism/1.29.0/plugins/toolbar/prism-toolbar.min.js';
-                $prismAutoloaderUrl = 'https://cdn.staticfile.org/prism/1.29.0/plugins/autoloader/prism-autoloader.min.js';
-                $prismCopyUrl = 'https://cdn.staticfile.org/prism/1.29.0/plugins/copy-to-clipboard/prism-copy-to-clipboard.min.js';
-                break;
-            case 'bootcdn':
-                $prismThemeUrl = 'https://cdn.bootcdn.net/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css';
-                $prismToolbarUrl = 'https://cdn.bootcdn.net/ajax/libs/prism/1.29.0/plugins/toolbar/prism-toolbar.min.css';
-                $prismCoreUrl = 'https://cdn.bootcdn.net/ajax/libs/prism/1.29.0/prism.min.js';
-                $prismToolbarJsUrl = 'https://cdn.bootcdn.net/ajax/libs/prism/1.29.0/plugins/toolbar/prism-toolbar.min.js';
-                $prismAutoloaderUrl = 'https://cdn.bootcdn.net/ajax/libs/prism/1.29.0/plugins/autoloader/prism-autoloader.min.js';
-                $prismCopyUrl = 'https://cdn.bootcdn.net/ajax/libs/prism/1.29.0/plugins/copy-to-clipboard/prism-copy-to-clipboard.min.js';
-                break;
-            case 'cdnjs':
-                $prismThemeUrl = 'https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css';
-                $prismToolbarUrl = 'https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/toolbar/prism-toolbar.min.css';
-                $prismCoreUrl = 'https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js';
-                $prismToolbarJsUrl = 'https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/toolbar/prism-toolbar.min.js';
-                $prismAutoloaderUrl = 'https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/autoloader/prism-autoloader.min.js';
-                $prismCopyUrl = 'https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/copy-to-clipboard/prism-copy-to-clipboard.min.js';
-                break;
-            case 'local':
-                $prismThemeUrl = $this->options->themeUrl('vendor/prism/themes/prism-tomorrow.min.css');
-                $prismToolbarUrl = $this->options->themeUrl('vendor/prism/plugins/toolbar/prism-toolbar.min.css');
-                $prismCoreUrl = $this->options->themeUrl('vendor/prism/prism.min.js');
-                $prismToolbarJsUrl = $this->options->themeUrl('vendor/prism/plugins/toolbar/prism-toolbar.min.js');
-                $prismAutoloaderUrl = $this->options->themeUrl('vendor/prism/plugins/autoloader/prism-autoloader.min.js');
-                $prismCopyUrl = $this->options->themeUrl('vendor/prism/plugins/copy-to-clipboard/prism-copy-to-clipboard.min.js');
-                break;
-            default:
-                $prismThemeUrl = 'https://cdn.jsdelivr.net/npm/prismjs@1/themes/prism-tomorrow.min.css';
-                $prismToolbarUrl = 'https://cdn.jsdelivr.net/npm/prismjs@1/plugins/toolbar/prism-toolbar.min.css';
-                $prismCoreUrl = 'https://cdn.jsdelivr.net/npm/prismjs@1/prism.min.js';
-                $prismToolbarJsUrl = 'https://cdn.jsdelivr.net/npm/prismjs@1/plugins/toolbar/prism-toolbar.min.js';
-                $prismAutoloaderUrl = 'https://cdn.jsdelivr.net/npm/prismjs@1/plugins/autoloader/prism-autoloader.min.js';
-                $prismCopyUrl = 'https://cdn.jsdelivr.net/npm/prismjs@1/plugins/copy-to-clipboard/prism-copy-to-clipboard.min.js';
-        }
+        $prismThemeUrl = dygita_cdn_url('prism', '1.29.0', 'themes/prism-tomorrow.min.css');
+        $prismToolbarUrl = dygita_cdn_url('prism', '1.29.0', 'plugins/toolbar/prism-toolbar.min.css');
+        $prismCoreUrl = dygita_cdn_url('prism', '1.29.0', 'prism.min.js');
+        $prismToolbarJsUrl = dygita_cdn_url('prism', '1.29.0', 'plugins/toolbar/prism-toolbar.min.js');
+        $prismAutoloaderUrl = dygita_cdn_url('prism', '1.29.0', 'plugins/autoloader/prism-autoloader.min.js');
+        $prismCopyUrl = dygita_cdn_url('prism', '1.29.0', 'plugins/copy-to-clipboard/prism-copy-to-clipboard.min.js');
     ?>
     <link rel="stylesheet" href="<?php echo $prismThemeUrl; ?>" onerror="this.onerror=null;this.href='https://unpkg.com/prismjs@1/themes/prism-tomorrow.min.css'">
     <link rel="stylesheet" href="<?php echo $prismToolbarUrl; ?>" onerror="this.onerror=null;this.href='https://unpkg.com/prismjs@1/plugins/toolbar/prism-toolbar.min.css'">
@@ -365,7 +305,15 @@ endif; ?>
             $navTagCloudSlug = null;
 
             $navAuthorUrl = null;
-            $navAllPages = dygita_get_all_pages_cached();
+            $navAllPages = [];
+            \Typecho\Widget::widget('Widget_Contents_Page_List')->to($pages);
+            while ($pages->next()) {
+                $navAllPages[] = [
+                    'slug' => $pages->slug,
+                    'title' => $pages->title,
+                    'permalink' => $pages->permalink
+                ];
+            }
             foreach ($navAllPages as $page) {
                 $s = $page['slug'];
                 if ($navAuthorUrl === null && in_array($s, ['about', 'author', 'author_page'], true)) {
