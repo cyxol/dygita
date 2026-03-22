@@ -6,7 +6,7 @@
     </button>
     <!-- 博主简介 -->
     <div class="widget">
-        <div class="title"><h2><?php _e('关于博主'); ?></h2></div>
+        <div class="title"><h2><?php dygita_e('关于博主'); ?></h2></div>
         <div class="widget-content">
             <div class="widget-profile">
                 <div class="profile-avatar">
@@ -20,15 +20,15 @@
                     <div class="profile-stats" aria-label="站点统计">
                         <div class="profile-stats-item">
                             <span class="profile-stats-num"><?php echo (int) $profileStat['posts']; ?></span>
-                            <span class="profile-stats-label">日志</span>
+                            <span class="profile-stats-label"><?php dygita_e('日志'); ?></span>
                         </div>
                         <div class="profile-stats-item">
                             <span class="profile-stats-num"><?php echo (int) $profileStat['categories']; ?></span>
-                            <span class="profile-stats-label">分类</span>
+                            <span class="profile-stats-label"><?php dygita_e('分类'); ?></span>
                         </div>
                         <div class="profile-stats-item">
                             <span class="profile-stats-num"><?php echo (int) $profileStat['tags']; ?></span>
-                            <span class="profile-stats-label">标签</span>
+                            <span class="profile-stats-label"><?php dygita_e('标签'); ?></span>
                         </div>
                     </div>
                 </div>
@@ -36,53 +36,21 @@
         </div>
     </div>
 
-    <!-- 热门文章 -->
-    <?php if (!empty($this->options->sidebarBlock) && in_array('ShowRecentPosts', $this->options->sidebarBlock)): ?>
+    <!-- 链接分享 -->
     <div class="widget">
-        <div class="title"><h2><?php _e('热门文章'); ?></h2></div>
+        <div class="title"><h2><?php dygita_e('链接分享'); ?></h2></div>
         <div class="widget-content">
-            <ul>
-                <?php dygita_get_hot_posts(); ?>
-            </ul>
-        </div>
-    </div>
-    <?php endif; ?>
-
-    <!-- 猜你喜欢 -->
-    <div class="widget">
-        <div class="title"><h2><?php _e('猜你喜欢'); ?></h2></div>
-        <div class="widget-content">
-            <ul>
-                <?php dygita_get_random_posts(); ?>
-            </ul>
-        </div>
-    </div>
-
-    <!-- 最新评论 -->
-    <?php if (!empty($this->options->sidebarBlock) && in_array('ShowRecentComments', $this->options->sidebarBlock)): ?>
-    <div class="widget">
-        <div class="title"><h2><?php _e('最新评论'); ?></h2></div>
-        <div class="widget-content">
-            <ul>
-                <?php $this->widget('Widget_Comments_Recent')->to($comments); ?>
-                <?php while($comments->next()): ?>
-                    <li><a href="<?php $comments->permalink(); ?>" title="Comment by <?php echo htmlspecialchars($comments->author, ENT_QUOTES, 'UTF-8'); ?>"><?php echo htmlspecialchars($comments->author, ENT_QUOTES, 'UTF-8'); ?></a>: <?php $comments->excerpt(35, '...'); ?></li>
-                <?php endwhile; ?>
-            </ul>
-        </div>
-    </div>
-    <?php endif; ?>
-
-    <!-- 网站统计 -->
-    <div class="widget">
-        <div class="title"><h2><?php _e('网站统计'); ?></h2></div>
-        <div class="widget-content">
-            <ul>
-                <?php $stat = dygita_get_stat(); ?>
-                <li><?php _e('文章总数'); ?>: <?php echo $stat['posts']; ?></li>
-                <li><?php _e('评论总数'); ?>: <?php echo $stat['comments']; ?></li>
-                <li><?php _e('分类总数'); ?>: <?php echo $stat['categories']; ?></li>
-                <li><?php _e('标签总数'); ?>: <?php echo $stat['tags']; ?></li>
+            <ul class="link-list">
+                <li><a href="https://huggingface.co/" target="_blank" rel="noopener" title="Hugging Face — AI 模型/数据集平台">🤗 Hugging Face</a></li>
+                <li><a href="https://www.kaggle.com/" target="_blank" rel="noopener" title="Kaggle — 数据科学竞赛与数据集">📊 Kaggle</a></li>
+                <li><a href="https://paperswithcode.com/" target="_blank" rel="noopener" title="Papers With Code — AI 论文与代码">📄 Papers With Code</a></li>
+                <li><a href="https://towardsdatascience.com/" target="_blank" rel="noopener" title="Towards Data Science — 数据科学博客">✍️ Towards Data Science</a></li>
+                <li><a href="https://www.fast.ai/" target="_blank" rel="noopener" title="fast.ai — 深度学习课程">🎓 fast.ai</a></li>
+                <li><a href="https://openai.com/" target="_blank" rel="noopener" title="OpenAI — ChatGPT / GPT-4">🧠 OpenAI</a></li>
+                <li><a href="https://www.anthropic.com/" target="_blank" rel="noopener" title="Anthropic — Claude AI">✦ Anthropic</a></li>
+                <li><a href="https://ai.google/" target="_blank" rel="noopener" title="Google AI — Gemini / DeepMind">🔍 Google AI</a></li>
+                <li><a href="https://www.datacamp.com/" target="_blank" rel="noopener" title="DataCamp — 数据科学在线学习">🏕️ DataCamp</a></li>
+                <li><a href="https://www.analyticsvidhya.com/" target="_blank" rel="noopener" title="Analytics Vidhya — 数据分析社区">📈 Analytics Vidhya</a></li>
             </ul>
         </div>
     </div>
@@ -91,7 +59,7 @@
     <?php if ($this->is('post') || $this->is('page')): ?>
     <div class="widget widget-catalog">
         <div class="title">
-            <h2><i class="fa fa-list"></i> <?php _e('文章目录'); ?></h2>
+            <h2><i class="fa fa-list"></i> <?php dygita_e('文章目录'); ?></h2>
         </div>
         <div class="widget-content">
             <?php
@@ -105,7 +73,7 @@
                 if (!empty($catalogHtml)) {
                     echo '<div class="catalog-content">' . $catalogHtml . '</div>';
                 } else {
-                    echo '<p class="no-catalog">' . _t('本文没有目录') . '</p>';
+                    echo '<p class="no-catalog">' . dygita_t('本文没有目录') . '</p>';
                 }
             ?>
         </div>
@@ -115,3 +83,4 @@
 
 <div class="content-wrap" role="main">
     <div class="content<?php echo isset($GLOBALS['dygita_content_class']) ? ' ' . htmlspecialchars($GLOBALS['dygita_content_class'], ENT_QUOTES, 'UTF-8') : ''; ?>">
+

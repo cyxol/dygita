@@ -277,7 +277,7 @@ endif; ?>
         <div class="m-about">
             <div class="widget-profile">
                 <div class="profile-avatar">
-                    <img src="<?php $this->options->siteUrl(); echo 'favicon.ico'; ?>" alt="Yacine Tsai">
+                    <img src="<?php $this->options->themeUrl('img/caiya.xin.jpg'); ?>" alt="Yacine Tsai">
                 </div>
                 <div class="profile-info">
                     <h1 class="tit" itemprop="headline"><a href="<?php $this->options->siteUrl(); ?>" aria-label="返回首页"><?php $this->options->title(); ?></a></h1>
@@ -371,7 +371,7 @@ endif; ?>
             if ($isAuthorLink) {
                 if ($navDeferredAuthorItem === '') {
                     $navDeferredAuthorItem = '<li ' . ($isActive ? 'class="active"' : '') . ' role="none">'
-                        . '<a href="' . $linkUrl . '" target="' . $target . '" role="menuitem" ' . ($isActive ? 'aria-current="page"' : '') . '>关于博主</a>'
+                        . '<a href="' . $linkUrl . '" target="' . $target . '" role="menuitem" ' . ($isActive ? 'aria-current="page"' : '') . '>' . htmlspecialchars(dygita_t('关于博主'), ENT_QUOTES, 'UTF-8') . '</a>'
                         . '</li>';
                 }
                 continue;
@@ -412,40 +412,40 @@ endif; ?>
     }
 
     echo '<li ' . ($navArchivesActive ? 'class="active"' : '') . ' role="none">';
-    echo '<a href="' . ($navHasArchivesLink ? $navRenderArchivesUrl : $navArchivesUrl) . '" target="' . $navArchivesTarget . '" role="menuitem" ' . ($navArchivesActive ? 'aria-current="page"' : '') . '>文章列表</a>';
+    echo '<a href="' . ($navHasArchivesLink ? $navRenderArchivesUrl : $navArchivesUrl) . '" target="' . $navArchivesTarget . '" role="menuitem" ' . ($navArchivesActive ? 'aria-current="page"' : '') . '>' . htmlspecialchars(dygita_t('文章列表'), ENT_QUOTES, 'UTF-8') . '</a>';
     echo '</li>';
 
     echo '<li ' . ($navTagCloudActive ? 'class="active"' : '') . ' role="none">';
-    echo '<a href="' . ($navHasTagCloudLink ? $navRenderTagCloudUrl : $navTagCloudUrl) . '" target="' . $navTagCloudTarget . '" role="menuitem" ' . ($navTagCloudActive ? 'aria-current="page"' : '') . '>文章标签</a>';
+    echo '<a href="' . ($navHasTagCloudLink ? $navRenderTagCloudUrl : $navTagCloudUrl) . '" target="' . $navTagCloudTarget . '" role="menuitem" ' . ($navTagCloudActive ? 'aria-current="page"' : '') . '>' . htmlspecialchars(dygita_t('文章标签'), ENT_QUOTES, 'UTF-8') . '</a>';
     echo '</li>';
 
     echo '<li ' . ($navCategoriesActive ? 'class="active"' : '') . ' role="none">';
-    echo '<a href="' . ($navHasCategoriesLink ? $navRenderCategoriesUrl : $navCategoriesUrl) . '" target="' . $navCategoriesTarget . '" role="menuitem" ' . ($navCategoriesActive ? 'aria-current="page"' : '') . '>文章分类</a>';
+    echo '<a href="' . ($navHasCategoriesLink ? $navRenderCategoriesUrl : $navCategoriesUrl) . '" target="' . $navCategoriesTarget . '" role="menuitem" ' . ($navCategoriesActive ? 'aria-current="page"' : '') . '>' . htmlspecialchars(dygita_t('文章分类'), ENT_QUOTES, 'UTF-8') . '</a>';
     echo '</li>';
 
     if ($navDeferredAuthorItem !== '') {
         echo $navDeferredAuthorItem;
     } else {
         echo '<li ' . ($navAuthorActive ? 'class="active"' : '') . ' role="none">';
-        echo '<a href="' . $navAuthorUrl . '" role="menuitem" ' . ($navAuthorActive ? 'aria-current="page"' : '') . '>关于博主</a>';
+        echo '<a href="' . $navAuthorUrl . '" role="menuitem" ' . ($navAuthorActive ? 'aria-current="page"' : '') . '>' . htmlspecialchars(dygita_t('关于博主'), ENT_QUOTES, 'UTF-8') . '</a>';
         echo '</li>';
     }
 ?>
                     <?php else: ?>
                         <li <?php if ($navPathInfo === ''): ?> class="active" <?php endif; ?> role="none">
-                            <a href="<?php $this->options->siteUrl(); ?>" role="menuitem" <?php if ($navPathInfo === ''): ?> aria-current="page" <?php endif; ?>><?php _e('首页'); ?></a>
+                            <a href="<?php $this->options->siteUrl(); ?>" role="menuitem" <?php if ($navPathInfo === ''): ?> aria-current="page" <?php endif; ?>><?php dygita_e('首页'); ?></a>
                         </li>
                         <li <?php if ($navArchivesActive): ?> class="active" <?php endif; ?> role="none">
-                            <a href="<?php echo $navArchivesUrl; ?>" role="menuitem" <?php if ($navArchivesActive): ?> aria-current="page" <?php endif; ?>>文章列表</a>
+                            <a href="<?php echo $navArchivesUrl; ?>" role="menuitem" <?php if ($navArchivesActive): ?> aria-current="page" <?php endif; ?>><?php dygita_e('文章列表'); ?></a>
                         </li>
                         <li <?php if ($navTagCloudActive): ?> class="active" <?php endif; ?> role="none">
-                            <a href="<?php echo $navTagCloudUrl; ?>" role="menuitem" <?php if ($navTagCloudActive): ?> aria-current="page" <?php endif; ?>>文章标签</a>
+                            <a href="<?php echo $navTagCloudUrl; ?>" role="menuitem" <?php if ($navTagCloudActive): ?> aria-current="page" <?php endif; ?>><?php dygita_e('文章标签'); ?></a>
                         </li>
                         <li <?php if ($navCategoriesActive): ?> class="active" <?php endif; ?> role="none">
-                            <a href="<?php echo $navCategoriesUrl; ?>" role="menuitem" <?php if ($navCategoriesActive): ?> aria-current="page" <?php endif; ?>>文章分类</a>
+                            <a href="<?php echo $navCategoriesUrl; ?>" role="menuitem" <?php if ($navCategoriesActive): ?> aria-current="page" <?php endif; ?>><?php dygita_e('文章分类'); ?></a>
                         </li>
                         <li <?php if ($navAuthorActive): ?> class="active" <?php endif; ?> role="none">
-                            <a href="<?php echo $navAuthorUrl; ?>" role="menuitem" <?php if ($navAuthorActive): ?> aria-current="page" <?php endif; ?>>关于博主</a>
+                            <a href="<?php echo $navAuthorUrl; ?>" role="menuitem" <?php if ($navAuthorActive): ?> aria-current="page" <?php endif; ?>><?php dygita_e('关于博主'); ?></a>
                         </li>
 
                         <?php foreach ($navAllPages as $navPage):

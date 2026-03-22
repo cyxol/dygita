@@ -9,7 +9,7 @@
     <!-- 分类 -->
     <?php if (!empty($this->options->sidebarBlock) && in_array('ShowCategory', $this->options->sidebarBlock)): ?>
     <div class="widget">
-        <div class="title"><h2><?php _e('分类'); ?></h2></div>
+        <div class="title"><h2><?php dygita_e('分类'); ?></h2></div>
         <div class="widget-content">
             <div class="category-list">
                 <?php $this->widget('Widget_Metas_Category_List')->to($categories); ?>
@@ -22,7 +22,7 @@
                         </div>
                     <?php endwhile; ?>
                 <?php else: ?>
-                    <?php _e('没有任何分类'); ?>
+                    <?php dygita_e('没有任何分类'); ?>
                 <?php endif; ?>
             </div>
         </div>
@@ -31,7 +31,7 @@
 
     <!-- 标签云 -->
     <div class="widget">
-        <div class="title"><h2><?php _e('标签云'); ?></h2></div>
+        <div class="title"><h2><?php dygita_e('标签云'); ?></h2></div>
         <div class="widget-content">
             <div class="tag-cloud">
                 <?php $this->widget('Widget_Metas_Tag_Cloud', 'sort=mid&ignoreZeroCount=1&desc=0&limit=30')->to($tags); ?>
@@ -40,56 +40,7 @@
                         <a href="<?php $tags->permalink(); ?>" title="<?php $tags->count(); ?> 个话题"><?php $tags->name(); ?></a>
                     <?php endwhile; ?>
                 <?php else: ?>
-                    <?php _e('没有任何标签'); ?>
-                <?php endif; ?>
-            </div>
-        </div>
-    </div>
-
-    <!-- 联系方式 -->
-    <div class="widget">
-        <div class="title"><h2><?php _e('联系方式'); ?></h2></div>
-        <div class="widget-content">
-            <div class="contact-info">
-                <?php $contactEmail = $this->options->contactEmail ? htmlspecialchars((string)$this->options->contactEmail, ENT_QUOTES, 'UTF-8') : ''; ?>
-                <?php $contactQQ = $this->options->contactQQ ? htmlspecialchars((string)$this->options->contactQQ, ENT_QUOTES, 'UTF-8') : ''; ?>
-                <p><i class="fa fa-envelope"></i> <a href="mailto:<?php echo $contactEmail; ?>"><?php echo $contactEmail; ?></a></p>
-                <p><i class="fa fa-qq"></i> <?php echo $contactQQ; ?></p>
-            </div>
-        </div>
-    </div>
-
-    <!-- 友情链接 -->
-    <?php if (!empty($this->options->sidebarBlock) && in_array('ShowLinks', $this->options->sidebarBlock)): ?>
-    <div class="widget">
-        <div class="title"><h2><?php _e('友情链接'); ?></h2></div>
-        <div class="widget-content">
-            <ul>
-                <?php dygita_get_links(); ?>
-            </ul>
-        </div>
-    </div>
-    <?php endif; ?>
-
-    <!-- 广告位 -->
-    <div class="widget">
-        <div class="title"><h2><?php _e('赞助商'); ?></h2></div>
-        <div class="widget-content">
-            <div class="ad-box">
-                <?php
-                $adLinkUrl = $this->options->adLinkUrl ? htmlspecialchars((string)$this->options->adLinkUrl, ENT_QUOTES, 'UTF-8') : '';
-                if ($this->options->adImageUrl) {
-                    $adImageUrl = htmlspecialchars((string)$this->options->adImageUrl, ENT_QUOTES, 'UTF-8');
-                } else {
-                    $adImageUrl = htmlspecialchars($this->options->themeUrl . '/img/default.png', ENT_QUOTES, 'UTF-8');
-                }
-                ?>
-                <?php if ($adLinkUrl): ?>
-                    <a href="<?php echo $adLinkUrl; ?>" target="_blank" rel="noopener nofollow">
-                <?php endif; ?>
-                    <img src="<?php echo $adImageUrl; ?>" alt="AD" loading="lazy" width="250" height="150">
-                <?php if ($adLinkUrl): ?>
-                    </a>
+                    <?php dygita_e('没有任何标签'); ?>
                 <?php endif; ?>
             </div>
         </div>

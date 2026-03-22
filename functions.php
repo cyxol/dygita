@@ -1332,6 +1332,34 @@ function dygita_current_lang() {
     return ($optionsLang === 'en_US') ? 'en_US' : 'zh_CN';
 }
 
+/**
+ * 主题前端翻译：根据当前语言（cookie/选项）返回翻译字符串
+ * @param string $key 原始字符串（中文键）
+ * @return string 翻译结果，找不到时返回原键
+ */
+function dygita_t($key) {
+    static $langData = null;
+    if ($langData === null) {
+        $lang = dygita_current_lang();
+        $langFile = dirname(__FILE__) . '/views/languages/' . $lang . '.php';
+        if (file_exists($langFile)) {
+            $langData = include $langFile;
+        }
+        if (!is_array($langData)) {
+            $langData = [];
+        }
+    }
+    return isset($langData[$key]) ? (string) $langData[$key] : $key;
+}
+
+/**
+ * 主题前端翻译并输出（已转义）
+ * @param string $key 原始字符串
+ */
+function dygita_e($key) {
+    echo htmlspecialchars(dygita_t($key), ENT_QUOTES, 'UTF-8');
+}
+
 
 
 // 主题初始化函数

@@ -33,7 +33,7 @@ return array(
     'Links' => 'Links',
     '标签云' => 'Tags',
     'Meta' => 'Meta',
-    '关于博主' => 'About',
+    '关于博主' => 'Author',
     '热门文章' => 'Popular Posts',
     '猜你喜欢' => 'You May Like',
     '最新评论' => 'Recent Comments',
@@ -73,6 +73,13 @@ return array(
     '链接已复制到剪贴板' => 'Link copied to clipboard',
 
     // Navigation
+    '首页' => 'Home',
+    '文章列表' => 'Archives',
+    '文章标签' => 'Tags',
+    '文章分类' => 'Categories',
+    '关于博主' => 'Author',
+    '链接分享' => 'Links',
+    '日志' => 'Posts',
     '前一页' => 'Previous',
     '后一页' => 'Next',
     '没有了' => 'None',

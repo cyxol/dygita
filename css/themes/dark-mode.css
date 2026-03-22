@@ -181,3 +181,29 @@
         color: #c9d1d9;
     }
 }
+
+/* 关于博主页面暗色模式文字颜色 */
+[data-theme='dark'] .content-wrap .content > .author-about-flat .author-name{
+    color: var(--text-color, #c9d1d9);
+}
+
+[data-theme='dark'] .content-wrap .content > .author-about-flat .author-lines p{
+    color: var(--text-color, #c9d1d9);
+}
+
+/* 左侧边栏博主统计区块暗色模式背景 */
+[data-theme='dark'] .sidebar-left .profile-stats{
+    background: var(--content-bg-color, #1e1e2e);
+}
+
+[data-theme='dark'] .sidebar-left .profile-stats-item + .profile-stats-item{
+    border-left-color: var(--border-color, #333);
+}
+
+[data-theme='dark'] .sidebar-left .profile-stats-num{
+    color: var(--text-color, #c9d1d9);
+}
+
+[data-theme='dark'] .sidebar-left .profile-stats-label{
+    color: var(--text-secondary, #8b949e);
+}
