@@ -1,9 +1,10 @@
-<?php if (!defined('__TYPECHO_ROOT_DIR__')) exit; ?>
+<?php if (!defined('__TYPECHO_ROOT_DIR__')) exit;
+$GLOBALS['dygita_content_class'] = 'posts-expand'; ?>
 <?php $this->need('views/components/header.php'); ?>
 <?php $this->need('views/components/sidebar-left.php'); ?>
 
                 <header class="article-header">
-                        <h1 class="article-title"><?php echo htmlspecialchars((string) dygita_t('文章列表'), ENT_QUOTES, 'UTF-8'); ?></h1>
+                        <h1 class="article-title"><?php echo htmlspecialchars((string) _t('文章列表'), ENT_QUOTES, 'UTF-8'); ?></h1>
                 </header>
 
                 <article class="archives-timeline">
@@ -36,7 +37,7 @@
 
                                 echo '</ul>';
                         } else {
-                                echo '<p>' . htmlspecialchars((string) dygita_t('暂无文章'), ENT_QUOTES, 'UTF-8') . '</p>';
+                                echo '<p>' . htmlspecialchars((string) _t('暂无文章'), ENT_QUOTES, 'UTF-8') . '</p>';
                         }
                         ?>
                 </article>

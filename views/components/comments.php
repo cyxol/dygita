@@ -126,38 +126,38 @@
             <?php $comments->cancelReply(); ?>
             </div>
         
-            <h3 id="response"><?php dygita_e('添加新评论'); ?></h3>
+            <h3 id="response"><?php _e('添加新评论'); ?></h3>
             <form method="post" action="<?php $this->commentUrl() ?>" id="comment-form" role="form">
                 <?php if($this->user->hasLogin()): ?>
-                <p><?php dygita_e('登录身份: '); ?><a href="<?php $this->options->profileUrl(); ?>"><?php $this->user->screenName(); ?></a>. <a href="<?php $this->options->logoutUrl(); ?>" title="Logout"><?php dygita_e('退出'); ?> &raquo;</a></p>
+                <p><?php _e('登录身份: '); ?><a href="<?php $this->options->profileUrl(); ?>"><?php $this->user->screenName(); ?></a>. <a href="<?php $this->options->logoutUrl(); ?>" title="Logout"><?php _e('退出'); ?> &raquo;</a></p>
                 <?php else: ?>
                 <p>
-                    <label for="author-<?php $this->respondId(); ?>" class="required"><?php dygita_e('称呼'); ?></label>
+                    <label for="author-<?php $this->respondId(); ?>" class="required"><?php _e('称呼'); ?></label>
                     <input type="text" name="author" id="author-<?php $this->respondId(); ?>" class="text" value="<?php $this->remember('author'); ?>" required />
                 </p>
                 <p>
-                    <label for="mail-<?php $this->respondId(); ?>" class="required"><?php dygita_e('Email'); ?></label>
+                    <label for="mail-<?php $this->respondId(); ?>" class="required"><?php _e('Email'); ?></label>
                     <input type="email" name="mail" id="mail-<?php $this->respondId(); ?>" class="text" value="<?php $this->remember('mail'); ?>" <?php if ($this->options->commentsRequireMail): ?> required<?php endif; ?> />
                 </p>
                 <p>
-                    <label for="url-<?php $this->respondId(); ?>"><?php dygita_e('网站'); ?></label>
-                    <input type="url" name="url" id="url-<?php $this->respondId(); ?>" class="text" placeholder="<?php dygita_e('http://'); ?>" value="<?php $this->remember('url'); ?>" <?php if ($this->options->commentsRequireURL): ?> required<?php endif; ?> />
+                    <label for="url-<?php $this->respondId(); ?>"><?php _e('网站'); ?></label>
+                    <input type="url" name="url" id="url-<?php $this->respondId(); ?>" class="text" placeholder="<?php _e('http://'); ?>" value="<?php $this->remember('url'); ?>" <?php if ($this->options->commentsRequireURL): ?> required<?php endif; ?> />
                 </p>
                 <?php endif; ?>
                 <p>
                     <textarea rows="8" cols="50" name="text" id="textarea-<?php $this->respondId(); ?>" class="textarea input-block-level comt-area" required><?php $this->remember('text'); ?></textarea>
                 </p>
                 <p>
-                    <button type="submit" class="submit btn btn-primary"><?php dygita_e('提交评论'); ?></button>
+                    <button type="submit" class="submit btn btn-primary"><?php _e('提交评论'); ?></button>
                 </p>
             </form>
         </div>
         <?php else: ?>
-        <h3><?php dygita_e('评论已关闭'); ?></h3>
+        <h3><?php _e('评论已关闭'); ?></h3>
         <?php endif; ?>
 
         <?php if ($comments->have()): ?>
-        <h3 class="comments-count-title"><?php $this->commentsNum(dygita_t('暂无评论'), dygita_t('仅有一条评论'), dygita_t('已有 %d 条评论')); ?></h3>
+        <h3 class="comments-count-title"><?php $this->commentsNum(_t('暂无评论'), _t('仅有一条评论'), _t('已有 %d 条评论')); ?></h3>
         
         <?php $comments->listComments(); ?>
 

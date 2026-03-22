@@ -28,7 +28,7 @@ $isTagCloudPage = in_array($tagRouteType, ['tags_cloud', 'tags_cloud_page'], tru
 ?>
 <?php if ($isTagCloudPage): ?>
             <header class="article-header">
-                <h1 class="article-title"><?php dygita_e('标签云'); ?></h1>
+                <h1 class="article-title"><?php _e('标签云'); ?></h1>
             </header>
 
             <article class="article-content">

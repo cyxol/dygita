@@ -12,7 +12,7 @@ if (!defined('__TYPECHO_ROOT_DIR__'))
  */
 
 // 主题版本
-define('DYGITA_THEME_VERSION', '1.1.0');
+define('DYGITA_THEME_VERSION', '1.0.0');
 
 /**
  * 注册主题自定义路由（统一入口，避免重复定义）
@@ -20,7 +20,7 @@ define('DYGITA_THEME_VERSION', '1.1.0');
 function dygita_register_routes() {
     $rt = \Widget\Options::alloc()->routingTable;
     \Utils\Helper::addRoute('tags_cloud', '/tags/', '\Widget\Archive', 'render');
-    \Utils\Helper::addRoute('tags_cloud_tag', '/tags/', '\Widget\Archive', 'render');
+    
     \Utils\Helper::addRoute('tags_cloud_tag_plain', '/tags', '\Widget\Archive', 'render');
     if (!isset($rt['tags_cloud_page']) && !(isset($rt[0]) && isset($rt[0]['tags_cloud_page']))) {
         \Utils\Helper::addRoute('tags_cloud_page', '/page-tag-cloud.html', '\Widget\Archive', 'render');
@@ -971,25 +971,14 @@ function dygita_get_config_array($options) {
  * @param string $string 要转义的字符串
  * @return string 转义后的字符串
  */
-function dygita_escape($string) {
-    return htmlspecialchars($string ?? '', ENT_QUOTES, 'UTF-8');
-}
+
 
 /**
  * 安全输出链接
  * @param string $url 链接地址
  * @return string 安全转义后的链接
  */
-function dygita_escape_url($url) {
-    $url = trim($url ?? '');
-    if (empty($url) || $url === '#') {
-        return $url;
-    }
-    if (preg_match('/^https?:\/\//i', $url) || (strlen($url) > 0 && $url[0] === '/')) {
-        return htmlspecialchars($url, ENT_QUOTES, 'UTF-8');
-    }
-    return '';
-}
+
 
 
 /**
@@ -1348,7 +1337,7 @@ function dygita_current_lang() {
  * @param string $key 原文（中文或英文均可，与语言包键一致即可）
  * @return string
  */
-function dygita_t($key) {
+function _t($key) {
     static $map = null;
     if ($map === null) {
         $lang = dygita_current_lang();
@@ -1360,8 +1349,8 @@ function dygita_t($key) {
 }
 
 /** 输出主题翻译，便于模板中 echo 使用 */
-function dygita_e($key) {
-    echo dygita_t($key);
+function _e($key) {
+    echo _t($key);
 }
 
 // 主题初始化函数
@@ -1468,9 +1457,6 @@ function themeInit($archive) {
 class Dygita_Search_Index {
     const OPTION_KEY = 'dygita_search_index';
 
-    /**
-     * 生成完整的搜索索引（所有文章）
-     */
     public static function generate() {
         $db = Typecho\Db::get();
         $contentsTable = dygita_get_table('contents');
@@ -1483,70 +1469,76 @@ class Dygita_Search_Index {
 
         $index = [];
         foreach ($posts as $post) {
-            $text = $post['text'];
-            if (strpos($text, '<!--markdown-->') === 0) {
-                $text = substr($text, 15);
-                $text = \Utils\Markdown::convert($text);
-            }
-            $excerpt = trim(strip_tags($text));
-            $excerpt = mb_substr($excerpt, 0, 120, 'UTF-8');
-            $permalink = Typecho\Router::url('post', $post, Typecho\Widget::widget('Widget_Options')->index);
-
-            $index[] = [
-                'title' => $post['title'],
-                'url' => $permalink,
-                'excerpt' => $excerpt,
-                'date' => date('Y-m-d', $post['created'])
-            ];
+            $index[] = self::buildItem($post);
         }
 
         $json = json_encode($index, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
         self::saveToOptions($json);
         return $json;
     }
+    
+    private static function buildItem($post) {
+        $text = $post['text'];
+        if (strpos($text, '<!--markdown-->') === 0) {
+            $text = substr($text, 15);
+            $text = \Utils\Markdown::convert($text);
+        }
+        $excerpt = trim(strip_tags($text));
+        $excerpt = mb_substr($excerpt, 0, 120, 'UTF-8');
+        $permalink = Typecho\Router::url('post', $post, Typecho\Widget::widget('Widget_Options')->index);
+        return [
+            'cid' => $post['cid'],
+            'title' => $post['title'],
+            'url' => $permalink,
+            'excerpt' => $excerpt,
+            'date' => date('Y-m-d', $post['created'])
+        ];
+    }
 
-    /**
-     * 保存索引到 options 表
-     */
+    public static function updateSingle($post) {
+        if ($post['type'] !== 'post' || $post['status'] !== 'publish') return;
+        $db = Typecho\Db::get();
+        $row = $db->fetchRow($db->select('value')->from(dygita_get_table('options'))->where('name = ?', self::OPTION_KEY));
+        $index = $row ? json_decode($row['value'], true) : [];
+        if (!is_array($index)) $index = [];
+        
+        $item = self::buildItem($post);
+        $found = false;
+        foreach ($index as &$idx) {
+            if (isset($idx['cid']) && $idx['cid'] == $post['cid']) {
+                $idx = $item;
+                $found = true;
+                break;
+            }
+        }
+        if (!$found) {
+            array_unshift($index, $item);
+        }
+        self::saveToOptions(json_encode($index, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES));
+    }
+
     private static function saveToOptions($json) {
         $db = Typecho\Db::get();
         $optionsTable = dygita_get_table('options');
 
         $existing = $db->fetchRow($db->select()->from($optionsTable)->where('name = ?', self::OPTION_KEY));
         if ($existing) {
-            $db->query($db->update($optionsTable)
-                ->rows(['value' => $json])
-                ->where('name = ?', self::OPTION_KEY));
+            $db->query($db->update($optionsTable)->rows(['value' => $json])->where('name = ?', self::OPTION_KEY));
         } else {
-            $db->query($db->insert($optionsTable)->rows([
-                'name' => self::OPTION_KEY,
-                'value' => $json,
-                'user' => 0
-            ]));
+            $db->query($db->insert($optionsTable)->rows(['name' => self::OPTION_KEY, 'value' => $json, 'user' => 0]));
         }
     }
 
-    /**
-     * 获取搜索索引
-     */
     public static function get() {
         $db = Typecho\Db::get();
         $optionsTable = dygita_get_table('options');
-
         $row = $db->fetchRow($db->select('value')->from($optionsTable)->where('name = ?', self::OPTION_KEY));
-        if ($row && !empty($row['value'])) {
-            return $row['value'];
-        }
-
-        return self::generate();
+        return $row ? $row['value'] : '[]';
     }
 
-    /**
-     * 文章发布/更新时重建索引
-     */
     public static function onArticleChange($contents, $widget) {
         try {
-            self::generate();
+            self::updateSingle($contents);
         } catch (\Throwable $e) {
             // 静默失败，绝不影响文章保存流程，但记录日志便于排查问题
             error_log('[Dygita_Search_Index] onArticleChange failed: ' . $e->getMessage());

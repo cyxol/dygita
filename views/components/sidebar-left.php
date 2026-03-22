@@ -6,7 +6,7 @@
     </button>
     <!-- 博主简介 -->
     <div class="widget">
-        <div class="title"><h2><?php dygita_e('关于博主'); ?></h2></div>
+        <div class="title"><h2><?php _e('关于博主'); ?></h2></div>
         <div class="widget-content">
             <div class="widget-profile">
                 <div class="profile-avatar">
@@ -39,7 +39,7 @@
     <!-- 热门文章 -->
     <?php if (!empty($this->options->sidebarBlock) && in_array('ShowRecentPosts', $this->options->sidebarBlock)): ?>
     <div class="widget">
-        <div class="title"><h2><?php dygita_e('热门文章'); ?></h2></div>
+        <div class="title"><h2><?php _e('热门文章'); ?></h2></div>
         <div class="widget-content">
             <ul>
                 <?php dygita_get_hot_posts(); ?>
@@ -50,7 +50,7 @@
 
     <!-- 猜你喜欢 -->
     <div class="widget">
-        <div class="title"><h2><?php dygita_e('猜你喜欢'); ?></h2></div>
+        <div class="title"><h2><?php _e('猜你喜欢'); ?></h2></div>
         <div class="widget-content">
             <ul>
                 <?php dygita_get_random_posts(); ?>
@@ -61,7 +61,7 @@
     <!-- 最新评论 -->
     <?php if (!empty($this->options->sidebarBlock) && in_array('ShowRecentComments', $this->options->sidebarBlock)): ?>
     <div class="widget">
-        <div class="title"><h2><?php dygita_e('最新评论'); ?></h2></div>
+        <div class="title"><h2><?php _e('最新评论'); ?></h2></div>
         <div class="widget-content">
             <ul>
                 <?php $this->widget('Widget_Comments_Recent')->to($comments); ?>
@@ -75,14 +75,14 @@
 
     <!-- 网站统计 -->
     <div class="widget">
-        <div class="title"><h2><?php dygita_e('网站统计'); ?></h2></div>
+        <div class="title"><h2><?php _e('网站统计'); ?></h2></div>
         <div class="widget-content">
             <ul>
                 <?php $stat = dygita_get_stat(); ?>
-                <li><?php dygita_e('文章总数'); ?>: <?php echo $stat['posts']; ?></li>
-                <li><?php dygita_e('评论总数'); ?>: <?php echo $stat['comments']; ?></li>
-                <li><?php dygita_e('分类总数'); ?>: <?php echo $stat['categories']; ?></li>
-                <li><?php dygita_e('标签总数'); ?>: <?php echo $stat['tags']; ?></li>
+                <li><?php _e('文章总数'); ?>: <?php echo $stat['posts']; ?></li>
+                <li><?php _e('评论总数'); ?>: <?php echo $stat['comments']; ?></li>
+                <li><?php _e('分类总数'); ?>: <?php echo $stat['categories']; ?></li>
+                <li><?php _e('标签总数'); ?>: <?php echo $stat['tags']; ?></li>
             </ul>
         </div>
     </div>
@@ -91,7 +91,7 @@
     <?php if ($this->is('post') || $this->is('page')): ?>
     <div class="widget widget-catalog">
         <div class="title">
-            <h2><i class="fa fa-list"></i> <?php dygita_e('文章目录'); ?></h2>
+            <h2><i class="fa fa-list"></i> <?php _e('文章目录'); ?></h2>
         </div>
         <div class="widget-content">
             <?php
@@ -105,7 +105,7 @@
                 if (!empty($catalogHtml)) {
                     echo '<div class="catalog-content">' . $catalogHtml . '</div>';
                 } else {
-                    echo '<p class="no-catalog">' . dygita_t('本文没有目录') . '</p>';
+                    echo '<p class="no-catalog">' . _t('本文没有目录') . '</p>';
                 }
             ?>
         </div>

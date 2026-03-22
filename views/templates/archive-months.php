@@ -43,7 +43,7 @@
             echo '</ul></div>';
         }
     } else {
-        echo '<p>' . dygita_t('暂无文章') . '</p>';
+        echo '<p>' . _t('暂无文章') . '</p>';
     }
     ?>
 </article>

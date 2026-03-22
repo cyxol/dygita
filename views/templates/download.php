@@ -24,16 +24,16 @@ $permalink    = $dlData['permalink'];
         <div class="article-content">
             <?php $ad1 = dygita_opt($this->options, 'dygita_downloadad1', 'git_downloadad1'); if ($ad1) echo $ad1; ?>
             
-            <h2><?php dygita_e('资源信息'); ?></h2>
+            <h2><?php _e('资源信息'); ?></h2>
             <div class="alert alert-success">
                 <ul class="infos clearfix">
-                    <li><?php dygita_e('资源名称'); ?>: <?php echo htmlspecialchars($theCode1, ENT_QUOTES, 'UTF-8'); ?></li>
-                    <li><?php dygita_e('文件大小'); ?>: <?php echo htmlspecialchars($theCode2, ENT_QUOTES, 'UTF-8'); ?></li>
-                    <li><?php dygita_e('更新日期'); ?>: <?php echo date('Y-m-d H:i:s', $postModified); ?></li>
+                    <li><?php _e('资源名称'); ?>: <?php echo htmlspecialchars($theCode1, ENT_QUOTES, 'UTF-8'); ?></li>
+                    <li><?php _e('文件大小'); ?>: <?php echo htmlspecialchars($theCode2, ENT_QUOTES, 'UTF-8'); ?></li>
+                    <li><?php _e('更新日期'); ?>: <?php echo date('Y-m-d H:i:s', $postModified); ?></li>
                 </ul>
             </div>
             
-            <h2><?php dygita_e('下载地址'); ?></h2>
+            <h2><?php _e('下载地址'); ?></h2>
             <div id="filelink">
                 <div class="filelink-inner">
                     <?php
@@ -55,12 +55,12 @@ $permalink    = $dlData['permalink'];
             
             <div class="clearfix"></div>
             
-            <h2><?php dygita_e('下载说明'); ?></h2>
+            <h2><?php _e('下载说明'); ?></h2>
             <div class="alert alert-info" role="alert">
                 <?php $dl = dygita_opt($this->options, 'dygita_dlpage_dl', 'git_dlpage_dl'); if ($dl) echo $dl; ?>
             </div>
             
-            <h2><?php dygita_e('免责声明'); ?></h2>
+            <h2><?php _e('免责声明'); ?></h2>
             <div class="alert alert-warning" role="alert">
                 <p><?php $mz = dygita_opt($this->options, 'dygita_dlpage_mz', 'git_dlpage_mz'); if ($mz) echo $mz; ?></p>
             </div>

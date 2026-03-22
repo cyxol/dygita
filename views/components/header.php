@@ -40,29 +40,29 @@ endif; ?>>
 
     <title><?php
 if ($this->is('author')) {
-    echo htmlspecialchars((string) dygita_t('关于博主'), ENT_QUOTES, 'UTF-8') . ' - ';
+    echo htmlspecialchars((string) _t('关于博主'), ENT_QUOTES, 'UTF-8') . ' - ';
 } else {
     $this->archiveTitle(array(
-    'category' => dygita_t('分类 %s 下的文章'),
-    'search' => dygita_t('包含关键字 %s 的文章'),
-    'tag' => dygita_t('标签 %s 下的文章'),
-    'author' => dygita_t('%s 发布的文章')
+    'category' => _t('分类 %s 下的文章'),
+    'search' => _t('包含关键字 %s 的文章'),
+    'tag' => _t('标签 %s 下的文章'),
+    'author' => _t('%s 发布的文章')
 ), '', ' - ');
 }
 ?><?php $this->options->title(); ?></title>
 
     <!-- 预加载关键资源 -->
-    <link rel="preload" href="<?php $this->options->themeUrl('css/style.css'); ?>" as="style" onload="this.onload=null;this.rel='stylesheet'">
-    <link rel="preload" href="<?php $this->options->themeUrl('css/vendor/font-awesome.min.css'); ?>" as="style" onload="this.onload=null;this.rel='stylesheet'">
+    <link rel="preload" href="<?php $this->options->themeUrl('css/style.css'); ?>" as="style" >
+    <link rel="preload" href="<?php $this->options->themeUrl('css/vendor/font-awesome.min.css'); ?>" as="style" >
     <noscript>
         <link rel="stylesheet" href="<?php $this->options->themeUrl('css/style.css'); ?>">
         <link rel="stylesheet" href="<?php $this->options->themeUrl('css/vendor/font-awesome.min.css'); ?>">
     </noscript>
 
     <!-- 网站图标 -->
-    <link rel="apple-touch-icon" sizes="180x180" href="<?php $this->options->themeUrl('img/caiya.xin.jpg'); ?>">
-    <link rel="icon" type="image/png" sizes="32x32" href="<?php $this->options->themeUrl('img/caiya.xin.jpg'); ?>">
-    <link rel="icon" type="image/png" sizes="16x16" href="<?php $this->options->themeUrl('img/caiya.xin.jpg'); ?>">
+    <link rel="apple-touch-icon" sizes="180x180" href="<?php $this->options->siteUrl . 'favicon.ico'; ?>">
+    <link rel="icon" type="image/png" sizes="32x32" href="<?php $this->options->siteUrl . 'favicon.ico'; ?>">
+    <link rel="icon" type="image/png" sizes="16x16" href="<?php $this->options->siteUrl . 'favicon.ico'; ?>">
 
     <!-- 懒加载与主题相关样式已拆分到分层 CSS 源文件（base/layout/components/themes） -->
 
@@ -79,11 +79,11 @@ if ($this->is('author')) {
         <meta property="og:site_name" content="<?php $this->options->title(); ?>">
         <meta property="og:description" content="<?php $this->options->description(); ?>">
         <meta property="og:locale" content="<?php $this->options->lang(); ?>">
-        <meta property="og:image" content="<?php $this->options->themeUrl('img/caiya.xin.jpg'); ?>">
+        <meta property="og:image" content="<?php $this->options->siteUrl . 'favicon.ico'; ?>">
         <meta name="twitter:card" content="summary">
         <meta name="twitter:title" content="<?php $this->options->title(); ?>">
         <meta name="twitter:description" content="<?php $this->options->description(); ?>">
-        <meta name="twitter:image" content="<?php $this->options->themeUrl('img/caiya.xin.jpg'); ?>">
+        <meta name="twitter:image" content="<?php $this->options->siteUrl . 'favicon.ico'; ?>">
     <?php
 elseif ($this->is('category')):
         $categoryName = '';
@@ -122,11 +122,11 @@ elseif ($this->is('category')):
         <meta property="og:site_name" content="<?php $this->options->title(); ?>">
         <meta property="og:description" content="<?php echo htmlspecialchars($categoryDescription, ENT_QUOTES, 'UTF-8'); ?>">
         <meta property="og:locale" content="<?php $this->options->lang(); ?>">
-        <meta property="og:image" content="<?php $this->options->themeUrl('img/caiya.xin.jpg'); ?>">
+        <meta property="og:image" content="<?php $this->options->siteUrl . 'favicon.ico'; ?>">
         <meta name="twitter:card" content="summary">
         <meta name="twitter:title" content="<?php echo htmlspecialchars($categoryName, ENT_QUOTES, 'UTF-8'); ?> - <?php $this->options->title(); ?>">
         <meta name="twitter:description" content="<?php echo htmlspecialchars($categoryDescription, ENT_QUOTES, 'UTF-8'); ?>">
-        <meta name="twitter:image" content="<?php $this->options->themeUrl('img/caiya.xin.jpg'); ?>">
+        <meta name="twitter:image" content="<?php $this->options->siteUrl . 'favicon.ico'; ?>">
     <?php
 endif; ?>
     <meta name="application-name" content="<?php $this->options->title(); ?>">
@@ -134,7 +134,7 @@ endif; ?>
     <meta name="apple-mobile-web-app-status-bar-style" content="black">
     <meta name="apple-mobile-web-app-title" content="<?php $this->options->title(); ?>">
     <meta name="format-detection" content="telephone=no, email=no">
-    <meta name="msapplication-TileImage" content="<?php $this->options->themeUrl('img/caiya.xin.jpg'); ?>">
+    <meta name="msapplication-TileImage" content="<?php $this->options->siteUrl . 'favicon.ico'; ?>">
     <meta name="msapplication-TileColor" content="#222">
 
     <!-- 站点验证 -->
@@ -175,7 +175,7 @@ endif; ?>
         ob_start(); $this->excerpt(150); $ldExcerpt = ob_get_clean();
         $ldPermalink = $this->permalink;
         $ldPublisherName = $this->options->title;
-        ob_start(); $this->options->themeUrl('img/caiya.xin.jpg'); $ldPublisherLogo = ob_get_clean();
+        ob_start(); $this->options->siteUrl . 'favicon.ico'; $ldPublisherLogo = ob_get_clean();
         $ldArticle = array(
             "@context" => "https://schema.org",
             "@type" => "Article",
@@ -271,13 +271,13 @@ endif; ?>
 </head>
 
 <body itemscope itemtype="http://schema.org/WebPage">
-    <a class="skip-nav" href="#main-content"><?php dygita_e('跳转到主内容'); ?></a>
+    <a class="skip-nav" href="#main-content"><?php _e('跳转到主内容'); ?></a>
     <header id="l-header" class="l-header">
         <div class="hdbg skin-bg"></div>
         <div class="m-about">
             <div class="widget-profile">
                 <div class="profile-avatar">
-                    <img src="<?php $this->options->themeUrl('img/caiya.xin.jpg'); ?>" alt="Yacine Tsai">
+                    <img src="<?php $this->options->siteUrl . 'favicon.ico'; ?>" alt="Yacine Tsai">
                 </div>
                 <div class="profile-info">
                     <h1 class="tit" itemprop="headline"><a href="<?php $this->options->siteUrl(); ?>" aria-label="返回首页"><?php $this->options->title(); ?></a></h1>
@@ -348,12 +348,12 @@ endif; ?>
         foreach ($navLinks['links'] as $link) {
             $nameRaw = isset($link['name']) ? trim($link['name']) : '';
             if ($nameRaw === '作者') {
-                $nameRaw = '关于博主';
+                $nameRaw = _t('关于博主');
             }
             if ($nameRaw === '标签云') {
-                $nameRaw = '文章标签';
+                $nameRaw = _t('文章标签');
             }
-            $name = htmlspecialchars((string) dygita_t($nameRaw), ENT_QUOTES, 'UTF-8');
+            $name = htmlspecialchars((string) _t($nameRaw), ENT_QUOTES, 'UTF-8');
             $url = isset($link['url']) ? $link['url'] : '';
             $urlPath = trim((string) parse_url((string) $url, PHP_URL_PATH), '/');
             $target = isset($link['target']) && in_array($link['target'], ['_self', '_blank']) ? $link['target'] : '_self';
@@ -433,7 +433,7 @@ endif; ?>
 ?>
                     <?php else: ?>
                         <li <?php if ($navPathInfo === ''): ?> class="active" <?php endif; ?> role="none">
-                            <a href="<?php $this->options->siteUrl(); ?>" role="menuitem" <?php if ($navPathInfo === ''): ?> aria-current="page" <?php endif; ?>><?php dygita_e('首页'); ?></a>
+                            <a href="<?php $this->options->siteUrl(); ?>" role="menuitem" <?php if ($navPathInfo === ''): ?> aria-current="page" <?php endif; ?>><?php _e('首页'); ?></a>
                         </li>
                         <li <?php if ($navArchivesActive): ?> class="active" <?php endif; ?> role="none">
                             <a href="<?php echo $navArchivesUrl; ?>" role="menuitem" <?php if ($navArchivesActive): ?> aria-current="page" <?php endif; ?>>文章列表</a>
@@ -454,7 +454,7 @@ endif; ?>
                             if (strpos($navPageTitle, 'http') === 0 || strpos($navPageTitle, '/') !== false) continue;
                         ?>
                             <li <?php if ($this->is('page', $navPage['slug'])): ?> class="active" <?php endif; ?> role="none">
-                                <a href="<?php echo htmlspecialchars((string) $navPage['permalink'], ENT_QUOTES, 'UTF-8'); ?>" title="<?php echo htmlspecialchars((string) dygita_t($navPageTitle), ENT_QUOTES, 'UTF-8'); ?>" role="menuitem" <?php if ($this->is('page', $navPage['slug'])): ?> aria-current="page" <?php endif; ?>><?php echo htmlspecialchars((string) dygita_t($navPageTitle), ENT_QUOTES, 'UTF-8'); ?></a>
+                                <a href="<?php echo htmlspecialchars((string) $navPage['permalink'], ENT_QUOTES, 'UTF-8'); ?>" title="<?php echo htmlspecialchars((string) _t($navPageTitle), ENT_QUOTES, 'UTF-8'); ?>" role="menuitem" <?php if ($this->is('page', $navPage['slug'])): ?> aria-current="page" <?php endif; ?>><?php echo htmlspecialchars((string) _t($navPageTitle), ENT_QUOTES, 'UTF-8'); ?></a>
                             </li>
                         <?php endforeach; ?>
 
@@ -492,7 +492,7 @@ endif; ?>
                     ?>
                     <li class="lang-toggle-li" role="none">
                         <div class="lang-toggle">
-                            <a href="<?php echo htmlspecialchars((string) $dygitaLangUrl, ENT_QUOTES, 'UTF-8'); ?>" class="btn btn-secondary" id="lang-toggle" role="menuitem" aria-label="<?php echo htmlspecialchars((string) dygita_t($dygitaLang === 'zh_CN' ? 'English' : '中文'), ENT_QUOTES, 'UTF-8'); ?>" title="<?php echo htmlspecialchars((string) dygita_t($dygitaLang === 'zh_CN' ? 'English' : '中文'), ENT_QUOTES, 'UTF-8'); ?>">
+                            <a href="<?php echo htmlspecialchars((string) $dygitaLangUrl, ENT_QUOTES, 'UTF-8'); ?>" class="btn btn-secondary" id="lang-toggle" role="menuitem" aria-label="<?php echo htmlspecialchars((string) _t($dygitaLang === 'zh_CN' ? 'English' : '中文'), ENT_QUOTES, 'UTF-8'); ?>" title="<?php echo htmlspecialchars((string) _t($dygitaLang === 'zh_CN' ? 'English' : '中文'), ENT_QUOTES, 'UTF-8'); ?>">
                                 <i class="fa fa-globe" aria-hidden="true"></i>
                             </a>
                         </div>

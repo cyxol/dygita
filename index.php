@@ -54,6 +54,6 @@ $this->need('views/components/sidebar-left.php'); ?>
             <?php while ($this->next()): ?>
                 <?php $this->need('views/components/post-card.php'); ?>
             <?php endwhile; ?>
-            <?php $this->pageNav('&laquo; ' . dygita_t('前一页'), dygita_t('后一页') . ' &raquo;'); ?>
+            <?php $this->pageNav('&laquo; ' . _t('前一页'), _t('后一页') . ' &raquo;'); ?>
 <?php $this->need('views/components/sidebar-right.php');
 $this->need('views/components/footer.php'); ?>

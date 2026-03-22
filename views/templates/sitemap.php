@@ -9,7 +9,7 @@
         <div class="article-content">
             <?php $this->content(); ?>
             
-            <h3><?php dygita_e('最新文章'); ?></h3>
+            <h3><?php _e('最新文章'); ?></h3>
             <ul>
                 <?php $this->widget('Widget_Contents_Post_Recent')->to($posts); ?>
                 <?php while ($posts->next()): ?>
@@ -17,7 +17,7 @@
                 <?php endwhile; ?>
             </ul>
             
-            <h3><?php dygita_e('分类浏览'); ?></h3>
+            <h3><?php _e('分类浏览'); ?></h3>
             <ul>
                 <?php $this->widget('Widget_Metas_Category_List')->to($categories); ?>
                 <?php while ($categories->next()): ?>
@@ -25,7 +25,7 @@
                 <?php endwhile; ?>
             </ul>
             
-            <h3><?php dygita_e('页面'); ?></h3>
+            <h3><?php _e('页面'); ?></h3>
             <ul>
                 <?php $this->widget('Widget_Contents_Page_List')->to($sitemapPages); ?>
                 <?php while ($sitemapPages->next()): ?>

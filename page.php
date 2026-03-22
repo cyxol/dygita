@@ -1,4 +1,5 @@
-<?php if (!defined('__TYPECHO_ROOT_DIR__')) exit; ?>
+<?php if (!defined('__TYPECHO_ROOT_DIR__')) exit;
+$GLOBALS['dygita_content_class'] = 'posts-expand'; ?>
 <?php $this->need('views/components/header.php'); ?>
 <?php $this->need('views/components/sidebar-left.php'); ?>
 

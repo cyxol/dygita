@@ -10,7 +10,7 @@ if (function_exists('dygita_content_class')) {
 <?php $this->need('views/components/sidebar-left.php'); ?>
 
         <header class="article-header">
-            <h1 class="article-title"><?php echo htmlspecialchars((string) dygita_t('关于我'), ENT_QUOTES, 'UTF-8'); ?></h1>
+            <h1 class="article-title"><?php echo htmlspecialchars((string) _t('关于我'), ENT_QUOTES, 'UTF-8'); ?></h1>
         </header>
 
         <article class="article-content author-about-flat">
