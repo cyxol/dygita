@@ -23,11 +23,10 @@
     var MODEL_KEY = 'dygita_ai_model_idx';
 
     function loadModelIdx() {
-        try { var v = parseInt(localStorage.getItem(MODEL_KEY), 10); return isNaN(v) ? 0 : v % MODELS.length; }
-        catch (e) { return 0; }
+        try { var v = parseInt(localStorage.getItem(MODEL_KEY), 10); return isNaN(v) ? 0 : v % MODELS.length; } catch (e) { return 0; }
     }
     function saveModelIdx(i) {
-        try { localStorage.setItem(MODEL_KEY, String(i)); } catch (e) {}
+        try { localStorage.setItem(MODEL_KEY, String(i)); } catch (e) { /* ignore */ }
     }
 
     // ── Mock replies ─────────────────────────────────────────────────────────
@@ -45,7 +44,7 @@
     function pick(arr) { return arr[Math.floor(Math.random() * arr.length)]; }
     function escHtml(s) {
         return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;')
-                        .replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+            .replace(/>/g,'&gt;').replace(/"/g,'&quot;');
     }
 
     function init() {
@@ -77,7 +76,7 @@
             try { return parseInt(localStorage.getItem(STORE_KEY) || '0', 10) || 0; } catch (e) { return 0; }
         }
         function bumpGuest() {
-            try { localStorage.setItem(STORE_KEY, String(guestCount() + 1)); } catch (e) {}
+            try { localStorage.setItem(STORE_KEY, String(guestCount() + 1)); } catch (e) { /* ignore */ }
         }
         function canAsk() { return isLoggedIn || guestCount() < guestMaxAsks; }
 

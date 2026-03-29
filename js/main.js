@@ -105,7 +105,9 @@
                     parsed.protocol = window.location.protocol;
                     parsed.host = window.location.host;
                     likeUrl = parsed.href;
-                } catch (e) {}
+                } catch (e) {
+                    // ignore
+                }
             }
 
             fetch(likeUrl, {
