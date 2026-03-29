@@ -1,0 +1,132 @@
+/* Dygita Theme - Search Components */
+
+.search-input{
+    width: 100%;
+    padding: 8px 12px;
+    border: 1px solid var(--border-color);
+    border-radius: 4px;
+    font-size: 14px;
+    box-sizing: border-box;
+    margin-bottom: 10px;
+    background-color: var(--content-bg-color);
+    color: var(--text-color);
+}
+
+.search-form-nav{
+    display: none;
+    flex-shrink: 0;
+}
+
+/* Search popup overlay */
+.search-pop-overlay{
+    background: rgba(0, 0, 0, 0);
+    height: 100%;
+    left: 0;
+    position: fixed;
+    top: 0;
+    transition: visibility 0s linear 0.2s, background 0.2s;
+    visibility: hidden;
+    width: 100%;
+    z-index: 1400;
+}
+
+.search-pop-overlay.search-active{
+    background: rgba(0, 0, 0, 0.3);
+    transition: background 0.2s;
+    visibility: visible;
+}
+
+.search-popup{
+    background: var(--card-bg-color);
+    border-radius: 5px;
+    height: 80%;
+    left: calc(50% - 350px);
+    position: fixed;
+    top: 10%;
+    transform: scale(0);
+    transition: transform 0.2s;
+    width: 700px;
+    z-index: 1500;
+}
+
+.search-active .search-popup{
+    transform: scale(1);
+}
+
+.search-popup .search-icon, .search-popup .popup-btn-close{
+    color: var(--blockquote-color);
+    font-size: 18px;
+    padding: 0 10px;
+}
+
+.search-popup .popup-btn-close{
+    cursor: pointer;
+}
+
+.search-popup .popup-btn-close:hover .fa{
+    color: var(--link-hover-color);
+}
+
+.search-popup .search-header{
+    background: var(--hover-bg-color);
+    border-top-left-radius: 5px;
+    border-top-right-radius: 5px;
+    display: flex;
+    padding: 5px;
+}
+
+.search-popup input.search-input{
+    background: transparent;
+    border: 0;
+    outline: 0;
+    width: 100%;
+}
+
+.search-popup input.search-input::-webkit-search-cancel-button{
+    display: none;
+}
+
+.search-popup .search-input-container{
+    flex-grow: 1;
+    padding: 2px;
+}
+
+.search-popup p.search-result{
+    border-bottom: 1px dashed var(--border-color);
+    padding: 5px 0;
+}
+
+.search-popup #search-result{
+    display: flex;
+    height: calc(100% - 55px);
+    overflow: auto;
+    padding: 5px 25px;
+}
+
+.search-popup #no-result{
+    color: var(--blockquote-color);
+    margin: auto;
+}
+
+/* Responsive search UI */
+@media (width <= 1023px) {
+    .search-form-nav{
+        margin-left: 0;
+        width: 100%;
+    }
+
+    .search-form-nav .form-control{
+        width: calc(100% - 80px);
+    }
+}
+
+@media (width <= 768px) {
+    .search-popup{
+        border-radius: 0;
+        height: 100%;
+        left: 0;
+        margin: 0;
+        top: 0;
+        width: 100%;
+    }
+}

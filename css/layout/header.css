@@ -1,4 +1,4 @@
-/* Header and navigation layout rules (Phase 2 split from article.css) */
+/* Header and navigation layout rules */
 
 /* 标题栏样式 */
 .l-header{
@@ -18,46 +18,6 @@
     padding-top: 24px;
     position: relative;
     z-index: var(--z-header-content, 1);
-}
-
-/* 文章页面头部头像样式（与左侧边栏一致） */
-.l-header .widget-profile{
-    display: flex ;
-    flex-direction: column ;
-    align-items: center ;
-    text-align: center ;
-}
-
-.l-header .profile-avatar{
-    margin-bottom: 12px ;
-}
-
-.l-header .profile-avatar img{
-    width: 96px ;
-    height: 96px ;
-    border-radius: 50% ;
-    object-fit: cover ;
-}
-
-.l-header .profile-info{
-    width: 100% ;
-    text-align: center ;
-}
-
-.l-header .profile-info p{
-    margin: 8px 0 ;
-    text-align: center ;
-    line-height: 1.4 ;
-}
-
-.l-header *{
-    margin-top: 0;
-    padding-top: 0;
-}
-
-body > *:first-child, body > header:first-of-type{
-    margin-top: 0;
-    padding-top: 0;
 }
 
 .l-header #logo{
@@ -88,7 +48,7 @@ body > *:first-child, body > header:first-of-type{
     margin-bottom: 10px;
 }
 
-.l-header #header-canvas{
+.l-header #header-canvas, .l-header .hdbg{
     height: 100%;
     max-height: 100%;
     position: absolute;
@@ -100,39 +60,76 @@ body > *:first-child, body > header:first-of-type{
     background-color: var(--header-bg-color, #e74c3c);
 }
 
-.l-header #header-canvas canvas{
-    background-color: var(--header-bg-color, #e74c3c);
-}
-
-.l-header .hdbg{
-    height: 100%;
-    max-height: 100%;
-    position: absolute;
+/* 导航栏基础样式 */
+.m-nav{
+    background-color: var(--nav-bg-color);
+    border-bottom: 1px solid var(--border-color);
+    position: sticky;
     top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background-color: var(--header-bg-color, #e74c3c);
-    z-index: var(--z-header-bg, 0);
+    z-index: 1000;
+    width: 100%;
+    min-width: 100%;
 }
 
-/* 导航栏按钮对齐样式 */
 .m-nav-all{
-    justify-content: center ;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-wrap: nowrap;
+    overflow: hidden;
+    width: 100%;
+    max-width: 2160px;
+    margin: 0 auto;
+    height: 50px;
+    box-sizing: border-box;
+    padding: 0 20px;
+    background-color: transparent;
 }
 
-.m-nav .nav-container{
-    justify-content: center ;
+.nav-container{
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: nowrap;
+    flex: 1;
+    min-width: 0;
+    overflow: hidden;
+    background-color: transparent;
+}
+
+/* 渐变进度条 */
+.reading-progress-bar{
+    background: var(--accent-color);
+    display: block;
+    height: 3px;
+    left: 0;
+    position: fixed;
+    width: 0;
+    z-index: var(--z-reading-progress, 1400);
+    top: 0;
+}
+
+[data-theme='dark'] .reading-progress-bar{
+    background-color: var(--link-color);
 }
 
 .m-nav .nav{
-    display: flex ;
-    justify-content: center ;
-    align-items: center ;
-    margin: 0 auto ;
+    display: flex;
+    list-style: none;
+    margin: 0 auto;
+    padding: 0;
+    white-space: nowrap;
+    overflow-x: visible;
+    flex: 1;
+    min-width: 0;
+    background-color: transparent;
+    justify-content: center;
+    align-items: center;
 }
 
 .m-nav .nav li{
+    position: relative;
+    background-color: transparent;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -140,86 +137,30 @@ body > *:first-child, body > header:first-of-type{
 }
 
 .m-nav .nav li a{
+    padding: 0 15px;
     display: flex;
     align-items: center;
     justify-content: center;
     height: 100%;
-    padding: 0 15px;
-    transition: none ;
+    transition: none;
+    background-color: transparent;
+    color: var(--nav-text-color);
 }
 
-.m-nav .nav .search-toggle-li{
-    margin-left: 0 ;
+.m-nav .nav li a:hover, .m-nav .nav li a:focus{
+    color: var(--nav-text-hover-color);
 }
 
-.m-nav .nav .color-toggle-li{
-    margin-left: 0 ;
+.m-nav .nav li.active a{
+    color: var(--nav-text-active-color);
 }
 
-.m-nav .nav .theme-toggle-li, .m-nav .nav .lang-toggle-li{
-    margin-left: 0 ;
-}
-
-.m-nav .nav li a:hover, .m-nav .nav li a:active, .m-nav .nav li a:focus{
-    transition: none ;
-}
-
-.navbar .nav li a, .navbar .nav li a:hover, .navbar .nav li a:active, .navbar .nav li a:focus, .navbar .nav li.current-menu-item a{
-    transform: none ;
-    box-shadow: none ;
-    outline: none ;
-    transition: background-color 0.3s ease, color 0.3s ease ;
-}
-
-.m-nav .nav li a, .m-nav .nav li a:hover, .m-nav .nav li a:active, .m-nav .nav li a:focus, .m-nav .nav li.active a{
-    outline: none ;
-    box-shadow: none ;
-}
-
-.search-toggle-li .btn, .color-toggle-li .btn, .theme-toggle-li .btn{
-    transition: none ;
-    outline: none ;
-    box-shadow: none ;
-}
-
-.search-toggle-li .btn:hover, .search-toggle-li .btn:active, .search-toggle-li .btn:focus, .color-toggle-li .btn:hover, .color-toggle-li .btn:active, .color-toggle-li .btn:focus, .theme-toggle-li .btn:hover, .theme-toggle-li .btn:active, .theme-toggle-li .btn:focus, .lang-toggle-li .btn:hover, .lang-toggle-li .btn:active, .lang-toggle-li .btn:focus{
-    transition: none ;
-    transform: none ;
-    outline: none ;
-    box-shadow: none ;
-}/* Keyboard focus: restore visible outline for :focus-visible */
-.navbar .nav li a:focus-visible,
-.m-nav .nav li a:focus-visible,
-.search-toggle-li .btn:focus-visible,
-.color-toggle-li .btn:focus-visible,
-.theme-toggle-li .btn:focus-visible,
-.lang-toggle-li .btn:focus-visible{
-    outline: 2px solid var(--accent-color) ;
-    outline-offset: 2px ;
-}
-
+/* 下拉菜单/图标按钮 */
 .search-toggle-li, .color-toggle-li, .theme-toggle-li, .lang-toggle-li{
     display: flex;
     align-items: center;
     height: 50px;
-}
-
-.search-toggle-li .search-toggle, .color-toggle-li .color-toggle, .theme-toggle-li .theme-toggle, .lang-toggle-li .lang-toggle{
-    display: flex;
-    align-items: center;
-    height: 100%;
-}
-
-.search-toggle-li .search-toggle .btn, .color-toggle-li .color-toggle .btn, .theme-toggle-li .theme-toggle .btn, .lang-toggle-li .lang-toggle .btn{
-    display: flex;
-    align-items: center;
-    height: 100%;
-    padding: 0 15px;
-    margin: 0;
-}
-
-.lang-toggle-li .lang-toggle .btn{
-    text-decoration: none;
+    margin-left: 0;
 }
 
 .btn i{
@@ -228,31 +169,75 @@ body > *:first-child, body > header:first-of-type{
     justify-content: center;
 }
 
-/* Header region visibility and nav pseudo cleanup */
-.l-header .metacat, #l-header .metacat{
-    display: none ;
-    visibility: hidden ;
-    opacity: 0 ;
-    position: absolute ;
-    top: -9999px ;
-    left: -9999px ;
+/* 移除导航栏按钮的默认背景和边框（由全局 reset 或默认按钮样式引入） */
+.search-toggle-li .btn,
+.color-toggle-li .btn,
+.theme-toggle-li .btn,
+.lang-toggle-li .btn {
+    border: none !important;
+    background: transparent !important;
+    box-shadow: none !important;
+    padding: 0 10px;
+    height: 100%;
+    cursor: pointer;
+    color: var(--nav-text-color);
 }
 
-.l-header > *:not(.m-about, .hdbg, #header-canvas), #l-header > *:not(.m-about, .hdbg, #header-canvas){
-    display: none ;
-    visibility: hidden ;
-    opacity: 0 ;
+.search-toggle-li .btn:hover i,
+.color-toggle-li .btn:hover i,
+.theme-toggle-li .btn:hover i,
+.lang-toggle-li .btn:hover i {
+    color: var(--nav-text-hover-color);
 }
 
-.m-nav .nav li::before, .m-nav .nav li::after, .nav li::before, .nav li::after, .nav li a::before, .nav li a::after, .navbar .nav li::before, .navbar .nav li::after, .navbar .nav li a::before, .navbar .nav li a::after{
-    display: none ;
-    content: none ;
+/* 键盘焦点样式 */
+.navbar .nav li a:focus-visible,
+.m-nav .nav li a:focus-visible,
+.btn:focus-visible{
+    outline: 2px solid var(--accent-color) ;
+    outline-offset: 2px ;
 }
 
-/* 移动端 Header 修复 (≤ 992px) */
+/* 移动端固定栏 (#m-header) */
+.m-header{
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    background-color: var(--nav-bg-color);
+    z-index: 1100;
+    padding: 10px 20px;
+    align-items: center;
+    justify-content: space-between;
+    border-bottom: 1px solid var(--border-color);
+    height: 50px;
+    box-sizing: border-box;
+}
+
+.m-header h1{
+    margin: 0;
+    font-size: 1.2rem;
+}
+
+.m-header h1 a{
+    color: var(--header-text-color);
+    text-decoration: none;
+}
+
+/* 移动端 Header 适配 (≤ 992px) */
 @media (width <= 992px) {
     .l-header{
         display: none !important;
+    }
+
+    .m-header{
+        display: flex;
+    }
+
+    .m-nav{
+        top: 50px !important;
+        margin-top: 0 !important;
     }
 
     .m-nav-all{
@@ -261,7 +246,6 @@ body > *:first-child, body > header:first-of-type{
         height: auto !important;
         min-height: 44px !important;
         padding: 4px 8px !important;
-        gap: 0 !important;
     }
 
     .nav-container{
@@ -271,44 +255,15 @@ body > *:first-child, body > header:first-of-type{
     }
 
     .m-nav .nav{
-        display: flex !important;
         flex-wrap: wrap !important;
         width: 100% !important;
         justify-content: center !important;
-        gap: 0 !important;
-    }
-
-    /* 文字链接：第一行，紧凑排列 */
-    .m-nav .nav > li{
-        order: 1 !important;
     }
 
     .m-nav .nav > li > a{
-        padding: 6px !important;
-        font-size: 0.8rem !important;
-        white-space: nowrap !important;
-    }
-
-    /* 用伪元素插入换行 */
-    .m-nav .nav::after{
-        content: '' !important;
-        display: block !important;
-        flex-basis: 100% !important;
-        height: 0 !important;
-        order: 1 !important;
-    }
-
-    /* 图标按钮：第二行居中 */
-    .m-nav .nav .search-toggle-li,
-    .m-nav .nav .color-toggle-li,
-    .m-nav .nav .theme-toggle-li,
-    .m-nav .nav .lang-toggle-li{
-        order: 2 !important;
-        margin-left: 0 !important;
-    }
-
-    .m-nav{
-        top: 50px !important;
+        padding: 6px 10px !important;
+        font-size: 0.85rem !important;
     }
 }
+
 

@@ -1,65 +1,33 @@
-/* Right sidebar layout rules (Phase 2 split from article.css) */
+/* Right sidebar layout rules */
 
-/* 右侧边栏 */
-.sidebar-right{
-    width: 540px ;
-    min-width: 540px ;
-    max-width: 540px ;
-    flex: 0 0 540px ;
-    flex-shrink: 0 ;
-    order: 3 ;
-    box-sizing: border-box ;
+/* sidebar-right.css handles internal container styling of the right sidebar.
+   Core grid width and flex are defined in grid.css */
+
+.sidebar-right {
+    order: 3;
+    box-sizing: border-box;
+    background: var(--content-bg-color);
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
 }
 
-/* 分类两列布局，居中对齐 */
-.sidebar-right .widget-content .category-list{
-    display: flex ;
-    flex-wrap: wrap ;
-    gap: 10px ;
-    padding: 5px ;
+/* Internal widgets should be transparent in this layout */
+.sidebar-right .widget {
+    background: transparent;
+    padding: 0;
+    margin-bottom: 30px;
+    border: none;
+    box-shadow: none;
 }
 
-.sidebar-right .category-list-item{
-    flex: 0 0 calc(50% - 5px) ;
-    max-width: calc(50% - 5px) ;
-    text-align: center ;
-    width: calc(50% - 5px) ;
-    float: none ;
-    margin: 0 ;
+.sidebar-right .widget:last-child {
+    margin-bottom: 0;
 }
 
-.sidebar-right .category-list-link{
-    display: block ;
-    text-align: center ;
-}
-
-@media (width <= 2160px) {.sidebar-right{
-        width: 25% ;
-        min-width: 0 ;
-        max-width: none ;
-        flex: 0 0 25% ;
-    }
-}
-
-/* 响应式调整 */
-@media (width <= 1200px) {.sidebar-right{
-        width: 20% ;
-        min-width: 20% ;
-        max-width: 20% ;
-    }
-}
-
-@media (width <= 992px) {.sidebar-right{
-        width: 20% ;
-        min-width: 20% ;
-        max-width: 20% ;
-    }
-}
-
-@media (width <= 768px) {.sidebar-right{
-        width: 100% ;
-        min-width: 100% ;
-        max-width: 100% ;
-        order: 3 ;
+@media (width <= 768px) {
+    .sidebar-right {
+        order: 3;
+        margin-top: 20px;
     }
 }

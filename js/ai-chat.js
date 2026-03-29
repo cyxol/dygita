@@ -136,7 +136,7 @@
 
             var lbl = document.createElement('span');
             lbl.className = 'ai-chat-model-label';
-            lbl.textContent = MODELS[currentModelIdx].label;
+            lbl.textContent = MODELS[currentModelIdx].full;
             btn.appendChild(lbl);
 
             var chev = document.createElement('span');
@@ -156,7 +156,7 @@
                     e.stopPropagation();
                     currentModelIdx = i;
                     saveModelIdx(i);
-                    lbl.textContent = m.label;
+                    lbl.textContent = m.full;
                     btn.title = m.full;
                     dropdown.querySelectorAll('.ai-chat-model-item').forEach(function (el, j) {
                         el.classList.toggle('active', j === i);
@@ -186,7 +186,7 @@
             // 点击外部关闭
             document.addEventListener('click', function () { closeDropdown(); });
 
-            // 插入到 sendBtn 之前
+            // 插入在其原来的位置（sendBtn 之前）
             inputWrap.insertBefore(wrap, sendBtn);
         }
 

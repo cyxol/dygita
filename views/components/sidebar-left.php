@@ -72,9 +72,9 @@
                  aria-live="polite" aria-label="<?php dygita_e('AI 对话'); ?>"></div>
             <div class="ai-chat-footer">
                 <div class="ai-chat-input-wrap" id="ai-chat-input-wrap">
-                    <input type="text" class="ai-chat-input" id="ai-chat-input"
+                    <textarea class="ai-chat-input" id="ai-chat-input"
                            placeholder="<?php dygita_e('问点什么...'); ?>"
-                           maxlength="200" autocomplete="off" />
+                           maxlength="200" autocomplete="off" rows="2"></textarea>
                     <button class="ai-chat-send" id="ai-chat-send" type="button"
                             aria-label="<?php dygita_e('发送'); ?>">
                         <i class="fa fa-paper-plane" aria-hidden="true"></i>

@@ -1,369 +1,75 @@
-/* Dygita CSS 层次：组件层（可复用 UI 组件样式） */
+/* Dygita Theme - UI Components & Interactive Elements */
 
-/* 作者页「关于我」区块 */
-.content-wrap .content > .author-about-flat{
+/* Author Profile Component (Flat version) */
+.author-about-flat {
     background: transparent;
-    box-shadow: none;
-    border: 0;
     text-align: center;
-    padding: 0;
+    padding: 20px 0;
     margin: 0 auto;
 }
 
-.content-wrap .content > .author-about-flat .author-about-inner{
+.author-about-inner {
     max-width: 760px;
     margin: 0 auto;
-    padding: 16px 8px 6px;
-    text-align: center;
+    padding: 16px 8px;
     display: flex;
     flex-direction: column;
     align-items: center;
 }
 
-.content-wrap .content > .author-about-flat .author-profile{
-    margin-bottom: 24px;
-}
-
-.content-wrap .content > .author-about-flat .author-avatar{
-    margin-bottom: 14px;
-}
-
-.content-wrap .content > .author-about-flat .author-avatar img{
+.author-avatar img {
     width: 150px;
     height: 150px;
     border-radius: 50%;
     object-fit: cover;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
 }
 
-.content-wrap .content > .author-about-flat .author-name{
-    margin: 0;
-    font-size: 34px;
-    line-height: 1.15;
+.author-name {
+    margin: 15px 0 5px;
+    font-size: 2rem;
     font-weight: 700;
-    color: #000;
+    color: var(--text-color);
 }
 
-.content-wrap .content > .author-about-flat .author-tagline{
-    margin: 14px 0 0;
-    font-size: 30px;
-    line-height: 1.5;
-    font-weight: 600;
-    color: #7f8b94;
-    white-space: nowrap;
-    word-break: keep-all;
-    overflow-wrap: normal;
-    width: 100%;
-    text-align: center;
-}
-
-.content-wrap .content > .author-about-flat .author-lines{
-    width: 100%;
-}
-
-.content-wrap .content > .author-about-flat .author-lines p{
-    margin: 18px 0;
-    font-size: 36px;
-    line-height: 1.5;
-    font-weight: 400;
-    color: #000;
-    width: 100%;
-    display: block;
-    text-align: center;
-    margin-left: auto;
-    margin-right: auto;
-    white-space: nowrap;
-    word-break: keep-all;
-    overflow-wrap: normal;
-}
-
-@media (width <= 768px) {
-    .content-wrap .content > .author-about-flat .author-about-inner{
-        max-width: 760px;
-        margin: 0 auto;
-        padding: 16px 8px 6px;
-        text-align: center;
-        align-items: center;
-    }
-
-    .content-wrap .content > .author-about-flat .author-avatar img{
-        width: 150px;
-        height: 150px;
-    }
-
-    .content-wrap .content > .author-about-flat .author-name{
-        font-size: 34px;
-        line-height: 1.15;
-        text-align: center;
-    }
-
-    .content-wrap .content > .author-about-flat .author-tagline{
-        font-size: 30px;
-        line-height: 1.5;
-        text-align: center;
-    }
-
-    .content-wrap .content > .author-about-flat .author-lines p{
-        margin: 18px 0;
-        font-size: 36px;
-        line-height: 1.5;
-        width: 100%;
-        display: block;
-        text-align: center;
-        margin-left: auto;
-        margin-right: auto;
-    }
-}
-
-.related-list{
-    list-style: none;
-    padding: 0;
-    margin: 0;
-    display: flex;
-    flex-wrap: wrap;
-    gap: 15px;
-}
-
-.related-item{
-    flex: 1 1 calc(33.333% - 10px);
-    min-width: 200px;
-    background: var(--content-bg-color, #fff);
-    border-radius: 6px;
-    overflow: hidden;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-    transition: transform 0.3s ease;
-}
-
-.related-item:hover{
-    transform: translateY(-5px);
-}
-
-.related-thumb{
-    width: 100%;
-    height: 120px;
-    object-fit: cover;
-}
-
-.related-item .related-item-title{
-    display: block;
-    padding: 10px;
-    font-size: 14px;
-    color: #333;
-    color: var(--text-color, #333);
-    text-decoration: none;
-    border: none;
-    margin: 0;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-}
-
-.no-related{
-    text-align: center;
-    padding: 20px;
-}/* 作者页「关于我」区块 */
-.author-about .author-about-inner{
-    padding: 20px 0;
-    max-width: 720px;
-    margin: 0 auto;
-}
-
-.author-about .author-profile{
-    text-align: center;
-    margin-bottom: 24px;
-}
-
-.author-about .author-avatar{
-    margin-bottom: 12px;
-}
-
-.author-about .author-avatar img{
-    width: 120px;
-    height: 120px;
-    border-radius: 50%;
-    object-fit: cover;
-}
-
-.author-about .author-name{
-    margin: 0;
+.author-tagline {
+    margin-top: 10px;
     font-size: 1.5rem;
     font-weight: 600;
-    color: #333;
-    color: var(--text-color, #333);
+    color: var(--muted-text-color);
 }
 
-.author-about .author-bio{
-    margin-bottom: 24px;
+.author-bio {
+    margin-top: 20px;
     line-height: 1.7;
-    color: #555;
-    color: var(--text-color, #555);
+    color: var(--text-color);
+    max-width: 600px;
 }
 
-.author-about .author-bio p{
-    margin: 0;
+/* Base Animations */
+@keyframes fadein {
+    from { opacity: 0; }
+    to { opacity: 1; }
 }
 
-.author-about .author-contact, .author-about .author-stats{
-    margin-bottom: 20px;
-    padding: 16px 0;
-    border-top: 1px solid var(--border-color, #eee);
+.animate-fade-in {
+    animation: fadein 0.5s ease forwards;
 }
 
-.author-about .author-contact h3, .author-about .author-stats h3{
-    margin: 0 0 12px;
-    font-size: 1.1rem;
-    color: #333;
-    color: var(--text-color, #333);
+@keyframes spin {
+    0%, 100% { transform: rotate(0deg) scale(1); }
+    50% { transform: rotate(720deg) scale(0.6); }
 }
 
-.author-about .contact-list p, .author-about .author-stats p{
-    margin: 0;
-    color: #555;
-    color: var(--text-color, #555);
+.animate-spin {
+    animation: spin 2s infinite linear;
 }
 
-.author-about .contact-list a{
-    color: var(--link-color, #1098f7);
-    text-decoration: none;
-}
-
-.author-about .contact-list a:hover{
-    text-decoration: underline;
-}
-
-.author-about .author-stats p span{
-    margin-right: 20px;
-}
-
-.author-about .author-stats p span i{
-    margin-right: 6px;
-}
-
-.hot-posts{
-    list-style: none;
-    padding: 0;
-    margin: 0;
-    text-align: left;
-}
-
-.hot-posts li{
-    margin: 10px 0;
-    padding-left: 20px;
-    position: relative;
-}
-
-.hot-posts li::before{
-    content: '\f0da';
-    font-family: FontAwesome;
-    position: absolute;
-    left: 0;
-    color: var(--accent-color, #e74c3c);
-}
-
-.hot-posts li a{
-    color: #333;
-    color: var(--text-color, #333);
-    text-decoration: none;
-    transition: color 0.3s ease;
-}
-
-.hot-posts li a:hover{
-    color: var(--accent-color, #e74c3c);
-}
-
-@media (width <= 768px) {.related-item{
-        flex: 1 1 calc(50% - 10px);
-    }
-}
-
-@media (width <= 576px) {.related-item{
-        flex: 1 1 100%;
-    }
-}/* 跳转页面样式 */
-body{
-    background: var(--body-bg-color, #f5f7f9);
-}
-
-.loading{
-    animation: fadein 2s
-}
-
-@keyframes fadein {from{
-        opacity: 0
-    }
-
-    to{
-        opacity: 1
-    }
-}
-
-@keyframes fadein {from{
-        opacity: 0
-    }
-
-    to{
-        opacity: 1
-    }
-}
-
-@keyframes fadein {from{
-        opacity: 0
-    }
-
-    to{
-        opacity: 1
-    }
-}
-
-@keyframes fadein {from{
-        opacity: 0
-    }
-
-    to{
-        opacity: 1
-    }
-}
-
-@keyframes spin {0%, 100%{
-        transform: rotate(0deg) scale(1)
-    }
-
-    50%{
-        transform: rotate(720deg) scale(0.6)
-    }
-}
-
-@keyframes spin {0%, 100%{
-        transform: rotate(0deg) scale(1)
-    }
-
-    50%{
-        transform: rotate(720deg) scale(0.6)
-    }
-}
-
-@keyframes spin {0%, 100%{
-        transform: rotate(0deg) scale(1)
-    }
-
-    50%{
-        transform: rotate(720deg) scale(0.6)
-    }
-}
-
-@keyframes spin {0%, 100%{
-        transform: rotate(0deg) scale(1)
-    }
-
-    50%{
-        transform: rotate(720deg) scale(0.6)
-    }
-}
-
-/* 代码块复制按钮 */
-.copy-to-clipboard-button{
+/* Copy to Clipboard Button */
+.copy-to-clipboard-button {
     position: absolute;
     top: 10px;
-    left: 10px;
+    right: 10px;
     background: rgba(255, 255, 255, 0.1);
     color: #fff;
     border: none;
@@ -375,10 +81,20 @@ body{
     z-index: var(--z-content-control, 10);
 }
 
-.copy-to-clipboard-button:hover{
+.copy-to-clipboard-button:hover {
     background: rgba(255, 255, 255, 0.2);
 }
 
-.copy-to-clipboard-button.copied{
+.copy-to-clipboard-button.copied {
     background: #4caf50;
+}
+
+/* Button styles should probably go here too if any */
+.btn-primary {
+    background-color: var(--accent-color);
+    color: #fff;
+    padding: 10px 20px;
+    border-radius: 5px;
+    text-decoration: none;
+    display: inline-block;
 }
