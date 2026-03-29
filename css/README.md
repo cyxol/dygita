@@ -1,69 +1,54 @@
-## Dygita CSS 目录结构（Phase 1）
+## Dygita CSS 目录结构（已完成重构）
 
-当前已按新分层目录落地，目标是在不改变浏览器视觉与交互的前提下逐步完成细化拆分。
+当前 CSS 已按分层架构落地，实现了高度模块化和可维护性。所有的构建逻辑由 `tools/build-css.js` 处理。
 
-### 目录
+### 1. 目录说明
 
-- vendor/
-  - font-awesome.min.css
-  - prism-tomorrow.min.css
-  - swiper-bundle.min.css
-- base/
-  - reset.css
-  - typography.css
-  - variables.css
-- layout/
-  - grid.css
-  - header.css
-  - sidebar-left.css
-  - main-content.css
-  - sidebar-right.css
-  - footer.css
-- components/
-  - buttons.css
-  - article.css
-  - tag-cloud.css
-  - toc.css
-  - pagination.css
-- themes/
-  - dark-mode.css
-- style.css (主题入口)
-- build.css (构建产物)
+- **`base/`** (基础层): 定义设计令牌和全局重置
+  - `variables.css`: 设计变量（颜色、间距、Z-index 等），支持暗色模式。
+  - `skin.css`: 动态皮肤颜色映射。
+  - `reset.css`: 基础 HTML 元素重置。
+  - `typography.css`: 字体与排版规范。
+- **`layout/`** (布局层): 核心 Grid 与页面框架
+  - `grid.css`: 主容器 Flex/Grid 响应式布局。
+  - `header.css`: 顶部导航与英雄头部。
+  - `sidebar-left.css`: 左侧 AI 聊天侧边栏。
+  - `sidebar-right.css`: 右侧工具栏。
+  - `footer.css`: 页脚样式。
+- **`components/`** (组件层): 独立的功能模块
+  - `article.css`: 文章详情页样式。
+  - `excerpts.css`: 首页文章列表卡片。
+  - `pagination.css`: 翻页控件（已修复居中对齐）。
+  - `search.css`: 搜索弹出层。
+  - `comments.css`: 评论系统。
+  - `code.css`: 代码块美化。
+  - `carousel.css`: 幻灯片（Swiper）。
+  - `sidebar-widgets.css`: 侧边栏小工具容器。
+  - `tag-cloud.css`: 标签云。
+  - `toc.css`: 文章目录。
+  - `links.css`: 友情链接与导航模板（独立加载）。
+  - `toast.css`: 提示消息。
+  - `buttons.css`, `table.css`: 通用 UI 元素。
+- **`themes/`** (主题层)
+  - `dark-mode.css`: 暗色模式的详细覆盖规则。
+- **`vendor/`** (第三方库)
+  - 系统依赖的外部 CSS 库。
 
-### 构建顺序
+### 2. 构建产物
 
-由 js/build-css.js 合并以下文件到 build.css：
+- **`style.css`**: 主题注册入口（仅含元数据，不含逻辑）。
+- **`build.css`**: 由 `tools/build-css.js` 自动生成的最终合并产物，前台实际调用的样式表。
 
-1. css/base/variables.css
-2. css/base/reset.css
-3. css/base/typography.css
-4. css/layout/grid.css
-5. css/layout/header.css
-6. css/layout/sidebar-left.css
-7. css/layout/main-content.css
-8. css/layout/sidebar-right.css
-9. css/layout/footer.css
-10. css/components/buttons.css
-11. css/components/article.css
-12. css/components/tag-cloud.css
-13. css/components/toc.css
-14. css/components/pagination.css
-15. css/themes/dark-mode.css
+### 3. 开发约定
 
-### Phase 1 说明（零差异迁移）
+- **禁止直接修改 `build.css`**：所有的样式修改必须在 `css/` 下对应的源文件中进行。
+- **构建命令**：
+  - 在主题根目录执行：`npm run build-css` (推荐) 或 `node tools/build-css.js`。
+- **防止闪白**：
+  - 核心暗色模式初始化样式已内联至 `header.php`，不再使用独立的 `dark-init.css` 以减少 HTTP 请求。
+- **独立文件**：
+  - `links.css` 仅在链接和导航页面按需加载，未合并进 `build.css`。
 
-- 本阶段重点是目录结构迁移与构建链路切换，不做视觉重设计。
-- 为保证零差异，部分规则暂时集中承载在少数文件中：
-  - buttons.css 承载原 components.css 内容
-  - article.css 承载原 custom.css 内容
-  - pagination.css 承载原 inline.css 内容
-- 其余新文件先作为职责占位，后续 Phase 2 再细化拆分。
+### 4. Git 规范
 
-### 开发约定
-
-- 修改样式优先改分层源文件，不直接手改 build.css。
-- 旧 style-legacy-* 文件已并入现有分层文件，不再保留 style-legacy 前缀文件。
-- 根目录旧文件 `variables.css` / `base.css` / `layout.css` / `components.css` / `custom.css` / `inline.css` 仅保留迁移占位说明，不再承载实际样式。
-- 每次改动后执行：node js/build-css.js（在主题目录执行）或 node usr/themes/dygita/js/build-css.js（在仓库根目录执行）。
-- style.css 继续作为主题入口文件加载，build.css 为主样式产物。
-
+- 每次提交样式修改前，请确保执行构建并同时提交源文件与更新后的 `build.css`。

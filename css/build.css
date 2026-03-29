@@ -1,4 +1,4 @@
-/* Dygita Theme - Build: 2026-03-29T14:52:03.710Z */
+/* Dygita Theme - Build: 2026-03-29T15:15:58.209Z */
 
 /* === css/base/variables.css === */
 /* Dygita CSS 层次：变量层（设计令牌，仅定义 CSS 变量） */
@@ -680,35 +680,27 @@ a:hover, span.exturl:hover{
 /* === css/layout/grid.css === */
 /* Dygita Theme - Grid & Core Layout Rules */
 
-/* 核心容器布局 (保持与 main-content.css 原始逻辑一致) */
-
+/* 1. Core Container Layout Base */
 .main-container, .content-wrap {
     position: relative;
     top: auto;
 }
 
-/* 布局底层壳逻辑 */
-.content-wrap > .content, .single .content, .page .content {
-    background: transparent;
-    border: 0;
-    border-radius: 0;
-    box-shadow: none;
-    padding: 0;
+/* 2. Global Layout Variables */
+:root {
+    --side-width: 540px;
+    --main-width: 1080px;
+    --container-max: 2160px;
+    --side-flex: 0 0 var(--side-width);
+    --main-flex: 0 0 var(--main-width);
 }
 
-.content-wrap > .content > .article-content, .content-wrap > .content > article.article-content {
-    background: transparent;
-    border: 0;
-    border-radius: 0;
-    box-shadow: none;
-}
-
-/* 桌面端 2160 高级布局 (540 + 1080 + 540) */
+/* 3. Base Grid Structure */
 .main-container {
     display: flex;
     flex-wrap: nowrap;
     width: 100%;
-    max-width: 2160px;
+    max-width: var(--container-max);
     margin: 0 auto;
     padding: 0 0 8px;
     gap: 0;
@@ -717,46 +709,33 @@ a:hover, span.exturl:hover{
 }
 
 .sidebar-left, .sidebar-right {
-    flex: 0 0 540px;
-    max-width: 540px;
+    flex: var(--side-flex);
+    max-width: var(--side-width);
     box-sizing: border-box;
+    transition: flex 0.4s cubic-bezier(0.25, 0.8, 0.25, 1), 
+                max-width 0.4s cubic-bezier(0.25, 0.8, 0.25, 1), 
+                opacity 0.3s ease;
 }
 
 .sidebar-left { order: 1; }
 .sidebar-right { order: 3; }
 
 .content-wrap {
-    width: 1080px;
-    min-width: 1080px;
-    max-width: 1080px;
-    flex: 0 0 1080px;
+    flex: var(--main-flex);
+    max-width: var(--main-width);
+    width: var(--main-width);
+    min-width: 0;
     order: 2;
     box-sizing: border-box;
     padding: 0;
     overflow: visible;
-}
-
-/* 侧边栏折叠状态逻辑 */
-.sidebar-left, .sidebar-right, .content-wrap {
     transition: flex 0.4s cubic-bezier(0.25, 0.8, 0.25, 1), 
-        max-width 0.4s cubic-bezier(0.25, 0.8, 0.25, 1), 
-        opacity 0.3s ease,
-        padding 0.4s ease,
-        margin 0.4s ease;
+                max-width 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
 }
 
-/* 左侧栏折叠 */
-.main-container.left-collapsed .sidebar-left {
-    flex: 0 0 0 !important;
-    max-width: 0 !important;
-    padding: 0 !important;
-    margin: 0 !important;
-    overflow: hidden;
-    opacity: 0;
-    pointer-events: none;
-}
-
-/* 右侧栏折叠 */
+/* 4. Column Fold (Collapsed) Logic */
+/* Use !important here for absolute state control, but prioritize structural variables */
+.main-container.left-collapsed .sidebar-left,
 .main-container.right-collapsed .sidebar-right {
     flex: 0 0 0 !important;
     max-width: 0 !important;
@@ -767,86 +746,54 @@ a:hover, span.exturl:hover{
     pointer-events: none;
 }
 
-/* 折叠时中间内容区域动态扩展 */
 .main-container.left-collapsed .content-wrap {
-    flex-grow: 1;
-    max-width: calc(1080px + 540px);
+    flex: 1;
+    max-width: calc(var(--main-width) + var(--side-width));
 }
 
 .main-container.right-collapsed .content-wrap {
-    flex-grow: 1;
-    max-width: calc(1080px + 540px);
+    flex: 1;
+    max-width: calc(var(--main-width) + var(--side-width));
 }
 
 .main-container.both-collapsed .content-wrap {
-    flex-grow: 1;
+    flex: 1;
     max-width: 100%;
     width: 100%;
 }
 
-/* 在百分比模式下也支持折叠 */
+/* 5. Responsive Transitions (Single Source of Truth) */
+
+/* Desktop/Large Screen (Max Width Scaling) */
 @media (width <= 2160px) {
-    .main-container.left-collapsed .content-wrap {
-        flex: 0 0 75%;
-        max-width: 75%;
-    }
-
-    .main-container.right-collapsed .content-wrap {
-        flex: 0 0 75%;
-        max-width: 75%;
-    }
-
-    .main-container.both-collapsed .content-wrap {
-        flex: 0 0 100%;
-        max-width: 100%;
+    :root {
+        --side-width: 25%;
+        --main-width: 50%;
+        --side-flex: 0 0 25%;
+        --main-flex: 0 0 50%;
     }
 }
 
+/* Tablet/Standard Laptop Surface */
 @media (width <= 1200px) {
-    .main-container.left-collapsed .content-wrap {
-        flex: 0 0 80%;
-        max-width: 80%;
+    :root {
+        --side-width: 20%;
+        --main-width: 60%;
+        --side-flex: 0 0 20%;
+        --main-flex: 0 0 60%;
     }
-
+    
+    .main-container.left-collapsed .content-wrap,
     .main-container.right-collapsed .content-wrap {
         flex: 0 0 80%;
         max-width: 80%;
-    }
-}
-
-/* 响应式断点：保持与原始 main-content.css 一致 */
-
-@media (width <= 2160px) {
-    .sidebar-left, .sidebar-right {
-        flex: 0 0 25%;
-        max-width: 25%;
-    }
-
-    .content-wrap {
-        flex: 0 0 50%;
-        max-width: 50%;
-        width: 50%;
-        min-width: 0;
-    }
-}
-
-@media (width <= 1200px) {
-    .sidebar-left, .sidebar-right {
-        flex: 0 0 20%;
-        max-width: 20%;
-    }
-
-    .content-wrap {
-        flex: 0 0 60%;
-        max-width: 60%;
-        width: 60%;
     }
 }
 
 @media (width <= 992px) {
-    .sidebar-left, .sidebar-right {
-        flex: 0 0 20%;
-        max-width: 20%;
+    :root {
+        --side-width: 20%;
+        --main-width: 60%;
     }
 }
 
@@ -1071,14 +1018,14 @@ a:hover, span.exturl:hover{
     justify-content: center;
 }
 
-/* 移除导航栏按钮的默认背景和边框（由全局 reset 或默认按钮样式引入） */
-.search-toggle-li .btn,
-.color-toggle-li .btn,
-.theme-toggle-li .btn,
-.lang-toggle-li .btn {
-    border: none !important;
-    background: transparent !important;
-    box-shadow: none !important;
+/* 移除导航栏按钮的默认背景和边框 */
+.m-nav-all .search-toggle-li .btn,
+.m-nav-all .color-toggle-li .btn,
+.m-nav-all .theme-toggle-li .btn,
+.m-nav-all .lang-toggle-li .btn {
+    border: none;
+    background: transparent;
+    box-shadow: none;
     padding: 0 10px;
     height: 100%;
     cursor: pointer;
@@ -1093,15 +1040,14 @@ a:hover, span.exturl:hover{
 }
 
 /* 键盘焦点样式 */
-.navbar .nav li a:focus-visible,
 .m-nav .nav li a:focus-visible,
-.btn:focus-visible{
-    outline: 2px solid var(--accent-color) ;
-    outline-offset: 2px ;
+.btn:focus-visible {
+    outline: 2px solid var(--accent-color);
+    outline-offset: 2px;
 }
 
 /* 移动端固定栏 (#m-header) */
-.m-header{
+.m-header {
     display: none;
     position: fixed;
     top: 0;
@@ -1117,54 +1063,54 @@ a:hover, span.exturl:hover{
     box-sizing: border-box;
 }
 
-.m-header h1{
+.m-header h1 {
     margin: 0;
     font-size: 1.2rem;
 }
 
-.m-header h1 a{
+.m-header h1 a {
     color: var(--header-text-color);
     text-decoration: none;
 }
 
 /* 移动端 Header 适配 (≤ 992px) */
 @media (width <= 992px) {
-    .l-header{
-        display: none !important;
+    body .l-header {
+        display: none;
     }
 
-    .m-header{
+    body .m-header {
         display: flex;
     }
 
-    .m-nav{
-        top: 50px !important;
-        margin-top: 0 !important;
+    body .m-nav {
+        top: 50px;
+        margin-top: 0;
     }
 
-    .m-nav-all{
-        flex-direction: row !important;
-        flex-wrap: wrap !important;
-        height: auto !important;
-        min-height: 44px !important;
-        padding: 4px 8px !important;
+    .m-nav-all {
+        flex-direction: row;
+        flex-wrap: wrap;
+        height: auto;
+        min-height: 44px;
+        padding: 4px 8px;
     }
 
-    .nav-container{
-        overflow: visible !important;
-        width: 100% !important;
-        flex-wrap: wrap !important;
+    .m-nav-all .nav-container {
+        overflow: visible;
+        width: 100%;
+        flex-wrap: wrap;
     }
 
-    .m-nav .nav{
-        flex-wrap: wrap !important;
-        width: 100% !important;
-        justify-content: center !important;
+    .m-nav-all .nav {
+        flex-wrap: wrap;
+        width: 100%;
+        justify-content: center;
     }
 
-    .m-nav .nav > li > a{
-        padding: 6px 10px !important;
-        font-size: 0.85rem !important;
+    .m-nav .nav > li > a {
+        padding: 6px 10px;
+        font-size: 0.85rem;
     }
 }
 
@@ -1378,20 +1324,20 @@ a:hover, span.exturl:hover{
 }
 
 .ai-chat-model-dropdown .ai-chat-model-item {
-    margin: 0 !important;
-    padding: 0 10px !important;
-    font-size: 11px !important;
-    line-height: 1.0 !important;
-    height: 22px !important; /* 极致压缩高度 */
-    min-height: 0 !important;
-    display: flex !important;
-    align-items: center !important;
+    margin: 0;
+    padding: 0 10px;
+    font-size: 11px;
+    line-height: 1.0;
+    height: 22px; /* 极致压缩高度 */
+    min-height: 0;
+    display: flex;
+    align-items: center;
     color: var(--text-color);
     cursor: pointer;
     white-space: nowrap;
     transition: background 0.1s;
-    border: none !important;
-    list-style: none !important;
+    border: none;
+    list-style: none;
 }
 
 .ai-chat-model-item:hover { 
@@ -1869,14 +1815,14 @@ a:hover, span.exturl:hover{
     overflow: hidden;
     border-radius: 6px;
     width: 100%;
-    height: 155px !important; /* 强制固定容器高度，防止被右侧文字拉长 */
+    height: 155px; /* 强制固定容器高度，防止被右侧文字拉长 */
     align-self: start; /* 顶部对齐，不随网格拉伸 */
 }
 
 .excerpt .focus img {
-    width: 100% !important;
-    height: 100% !important;
-    object-fit: cover !important; /* 确保比例正常，不产生拉伸 */
+    width: 100%;
+    height: 100%;
+    object-fit: cover; /* 确保比例正常，不产生拉伸 */
     display: block;
     transition: transform 0.6s cubic-bezier(0.165, 0.84, 0.44, 1);
 }
@@ -2740,9 +2686,9 @@ td{
 }
 
 /* Sidebar Toggle Buttons - Fixed at screen edges */
-.sidebar-toggle{
-    position: fixed !important;
-    top: 50% !important;
+.sidebar-toggle {
+    position: fixed;
+    top: 50%;
     transform: translateY(-50%);
     display: inline-flex;
     align-items: center;
@@ -2761,16 +2707,16 @@ td{
 }
 
 .sidebar-toggle.left {
-    left: 0 !important;
+    left: 0;
     border-radius: 0 6px 6px 0;
 }
 
 .sidebar-toggle.right {
-    right: 0 !important;
+    right: 0;
     border-radius: 6px 0 0 6px;
 }
 
-.sidebar-toggle:hover{
+.sidebar-toggle:hover {
     background: var(--accent-hover-color, #cf3f31);
     width: 32px;
 }
@@ -2781,8 +2727,8 @@ td{
 }
 
 @media (width <= 768px) {
-    .sidebar-toggle {
-        display: none !important;
+    body .sidebar-toggle {
+        display: none;
     }
 }
 
@@ -3039,38 +2985,73 @@ td{
 
 
 /* === css/components/pagination.css === */
+/* Dygita Theme - Pagination and Nav-links Styles */
+
+/* 1. Core Page Navigator (Typecho Default) */
+.page-navigator {
+    display: flex;
+    justify-content: center;
+    list-style: none;
+    margin: 40px auto;
+    padding: 0;
+    gap: 8px;
+    flex-wrap: wrap;
+}
+
+.page-navigator li {
+    margin: 0;
+}
+
+.page-navigator li a, 
+.page-navigator li span {
+    display: inline-block;
+    padding: 6px 14px;
+    background: var(--content-bg-color);
+    color: var(--text-color);
+    border: 1px solid var(--border-color);
+    border-radius: 4px;
+    text-decoration: none;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    min-width: 36px;
+    text-align: center;
+    font-size: 14px;
+    font-weight: 500;
+}
+
+/* Current active page */
+.page-navigator li.current a,
+.page-navigator li.current span {
+    background: var(--dygita-skin-color, var(--accent-color));
+    color: #fff;
+    border-color: var(--dygita-skin-color, var(--accent-color));
+    cursor: default;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+}
+
+/* Hover effects */
+.page-navigator li a:hover:not(.current) {
+    background: var(--hover-bg-color);
+    border-color: var(--dygita-skin-color, var(--accent-color));
+    color: var(--dygita-skin-color, var(--accent-color));
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.08);
+}
+
+/* Compatibility with .pagination class */
+.pagination {
+    display: flex;
+    justify-content: center;
+    margin: 30px 0;
+}
+
+.pagination ul {
+    display: flex;
+    list-style: none;
+    padding: 0;
+    gap: 5px;
+}
+
 /* Dygita CSS 层次：补丁层（小体量覆盖与兼容性修复） */
-
-#m-header .right {
-    font-size: 18px;
-}
-
-/* 修复文章标题可能出现的箭头 */
-.article-header::before, .article-header::after, .article-title::before, .article-title::after, .article-title a::before, .article-title a::after{
-    display: none ;
-    content: none ;
-}
-
-/* 确保搜索遮罩层默认完全隐藏 */
-.search-pop-overlay{
-    visibility: hidden ;
-    opacity: 0 ;
-    pointer-events: none ;
-    z-index: var(--z-overlay, 1500) ;
-}
-
-.search-pop-overlay.search-active{
-    visibility: visible ;
-    opacity: 1 ;
-    pointer-events: auto ;
-}
-
-/* 子组件透明化：确保 content-wrap 内的子区块无独立卡片外观 */
-.content-wrap .article-footer, .content-wrap .article-nav, .content-wrap .related_posts, .content-wrap .related-item, .content-wrap #respond, .content-wrap .respond, .content-wrap #comments{
-    background: transparent;
-    background-color: transparent;
-    box-shadow: none;
-}
 
 /* Archives page (archives.php) */
 .archives-list{
@@ -3646,7 +3627,41 @@ button.collapseButton:focus-visible {
 
 
 /* === css/themes/dark-mode.css === */
-/* Dygita CSS 层次：主题层（暗色模式覆盖） */
+/* Dygita Theme - Dark Mode Styles & Initialization */
+
+/* 1. Critical Initialization (Prevent Flash & Transitions) */
+html.no-transitions,
+html.no-transitions *,
+html.no-transitions *::before,
+html.no-transitions *::after {
+    transition: none !important;
+}
+
+/* Base Dark Theme Setup */
+[data-theme='dark'] {
+    color-scheme: dark;
+}
+
+[data-theme='dark'],
+[data-theme='dark'] body {
+    background-color: var(--body-bg-color);
+    color: var(--text-color);
+}
+
+/* Essential containers background (immediate override) */
+[data-theme='dark'] .content-wrap,
+[data-theme='dark'] .sidebar,
+[data-theme='dark'] .sidebar-left,
+[data-theme='dark'] .sidebar-right {
+    background-color: var(--content-bg-color);
+}
+
+[data-theme='dark'] .m-nav,
+[data-theme='dark'] .m-header {
+    background-color: var(--nav-bg-color);
+}
+
+/* 2. Detailed Theme Overrides */
 
 /* Merged from base/reset.css */
 [data-theme='dark'] *{

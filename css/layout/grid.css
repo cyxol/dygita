@@ -1,34 +1,26 @@
 /* Dygita Theme - Grid & Core Layout Rules */
 
-/* 核心容器布局 (保持与 main-content.css 原始逻辑一致) */
-
+/* 1. Core Container Layout Base */
 .main-container, .content-wrap {
     position: relative;
     top: auto;
 }
 
-/* 布局底层壳逻辑 */
-.content-wrap > .content, .single .content, .page .content {
-    background: transparent;
-    border: 0;
-    border-radius: 0;
-    box-shadow: none;
-    padding: 0;
+/* 2. Global Layout Variables */
+:root {
+    --side-width: 540px;
+    --main-width: 1080px;
+    --container-max: 2160px;
+    --side-flex: 0 0 var(--side-width);
+    --main-flex: 0 0 var(--main-width);
 }
 
-.content-wrap > .content > .article-content, .content-wrap > .content > article.article-content {
-    background: transparent;
-    border: 0;
-    border-radius: 0;
-    box-shadow: none;
-}
-
-/* 桌面端 2160 高级布局 (540 + 1080 + 540) */
+/* 3. Base Grid Structure */
 .main-container {
     display: flex;
     flex-wrap: nowrap;
     width: 100%;
-    max-width: 2160px;
+    max-width: var(--container-max);
     margin: 0 auto;
     padding: 0 0 8px;
     gap: 0;
@@ -37,46 +29,33 @@
 }
 
 .sidebar-left, .sidebar-right {
-    flex: 0 0 540px;
-    max-width: 540px;
+    flex: var(--side-flex);
+    max-width: var(--side-width);
     box-sizing: border-box;
+    transition: flex 0.4s cubic-bezier(0.25, 0.8, 0.25, 1), 
+                max-width 0.4s cubic-bezier(0.25, 0.8, 0.25, 1), 
+                opacity 0.3s ease;
 }
 
 .sidebar-left { order: 1; }
 .sidebar-right { order: 3; }
 
 .content-wrap {
-    width: 1080px;
-    min-width: 1080px;
-    max-width: 1080px;
-    flex: 0 0 1080px;
+    flex: var(--main-flex);
+    max-width: var(--main-width);
+    width: var(--main-width);
+    min-width: 0;
     order: 2;
     box-sizing: border-box;
     padding: 0;
     overflow: visible;
-}
-
-/* 侧边栏折叠状态逻辑 */
-.sidebar-left, .sidebar-right, .content-wrap {
     transition: flex 0.4s cubic-bezier(0.25, 0.8, 0.25, 1), 
-        max-width 0.4s cubic-bezier(0.25, 0.8, 0.25, 1), 
-        opacity 0.3s ease,
-        padding 0.4s ease,
-        margin 0.4s ease;
+                max-width 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
 }
 
-/* 左侧栏折叠 */
-.main-container.left-collapsed .sidebar-left {
-    flex: 0 0 0 !important;
-    max-width: 0 !important;
-    padding: 0 !important;
-    margin: 0 !important;
-    overflow: hidden;
-    opacity: 0;
-    pointer-events: none;
-}
-
-/* 右侧栏折叠 */
+/* 4. Column Fold (Collapsed) Logic */
+/* Use !important here for absolute state control, but prioritize structural variables */
+.main-container.left-collapsed .sidebar-left,
 .main-container.right-collapsed .sidebar-right {
     flex: 0 0 0 !important;
     max-width: 0 !important;
@@ -87,86 +66,54 @@
     pointer-events: none;
 }
 
-/* 折叠时中间内容区域动态扩展 */
 .main-container.left-collapsed .content-wrap {
-    flex-grow: 1;
-    max-width: calc(1080px + 540px);
+    flex: 1;
+    max-width: calc(var(--main-width) + var(--side-width));
 }
 
 .main-container.right-collapsed .content-wrap {
-    flex-grow: 1;
-    max-width: calc(1080px + 540px);
+    flex: 1;
+    max-width: calc(var(--main-width) + var(--side-width));
 }
 
 .main-container.both-collapsed .content-wrap {
-    flex-grow: 1;
+    flex: 1;
     max-width: 100%;
     width: 100%;
 }
 
-/* 在百分比模式下也支持折叠 */
+/* 5. Responsive Transitions (Single Source of Truth) */
+
+/* Desktop/Large Screen (Max Width Scaling) */
 @media (width <= 2160px) {
-    .main-container.left-collapsed .content-wrap {
-        flex: 0 0 75%;
-        max-width: 75%;
-    }
-
-    .main-container.right-collapsed .content-wrap {
-        flex: 0 0 75%;
-        max-width: 75%;
-    }
-
-    .main-container.both-collapsed .content-wrap {
-        flex: 0 0 100%;
-        max-width: 100%;
+    :root {
+        --side-width: 25%;
+        --main-width: 50%;
+        --side-flex: 0 0 25%;
+        --main-flex: 0 0 50%;
     }
 }
 
+/* Tablet/Standard Laptop Surface */
 @media (width <= 1200px) {
-    .main-container.left-collapsed .content-wrap {
-        flex: 0 0 80%;
-        max-width: 80%;
+    :root {
+        --side-width: 20%;
+        --main-width: 60%;
+        --side-flex: 0 0 20%;
+        --main-flex: 0 0 60%;
     }
-
+    
+    .main-container.left-collapsed .content-wrap,
     .main-container.right-collapsed .content-wrap {
         flex: 0 0 80%;
         max-width: 80%;
-    }
-}
-
-/* 响应式断点：保持与原始 main-content.css 一致 */
-
-@media (width <= 2160px) {
-    .sidebar-left, .sidebar-right {
-        flex: 0 0 25%;
-        max-width: 25%;
-    }
-
-    .content-wrap {
-        flex: 0 0 50%;
-        max-width: 50%;
-        width: 50%;
-        min-width: 0;
-    }
-}
-
-@media (width <= 1200px) {
-    .sidebar-left, .sidebar-right {
-        flex: 0 0 20%;
-        max-width: 20%;
-    }
-
-    .content-wrap {
-        flex: 0 0 60%;
-        max-width: 60%;
-        width: 60%;
     }
 }
 
 @media (width <= 992px) {
-    .sidebar-left, .sidebar-right {
-        flex: 0 0 20%;
-        max-width: 20%;
+    :root {
+        --side-width: 20%;
+        --main-width: 60%;
     }
 }
 

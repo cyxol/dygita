@@ -204,20 +204,20 @@
 }
 
 .ai-chat-model-dropdown .ai-chat-model-item {
-    margin: 0 !important;
-    padding: 0 10px !important;
-    font-size: 11px !important;
-    line-height: 1.0 !important;
-    height: 22px !important; /* 极致压缩高度 */
-    min-height: 0 !important;
-    display: flex !important;
-    align-items: center !important;
+    margin: 0;
+    padding: 0 10px;
+    font-size: 11px;
+    line-height: 1.0;
+    height: 22px; /* 极致压缩高度 */
+    min-height: 0;
+    display: flex;
+    align-items: center;
     color: var(--text-color);
     cursor: pointer;
     white-space: nowrap;
     transition: background 0.1s;
-    border: none !important;
-    list-style: none !important;
+    border: none;
+    list-style: none;
 }
 
 .ai-chat-model-item:hover { 

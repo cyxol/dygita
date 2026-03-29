@@ -169,9 +169,9 @@
 }
 
 /* Sidebar Toggle Buttons - Fixed at screen edges */
-.sidebar-toggle{
-    position: fixed !important;
-    top: 50% !important;
+.sidebar-toggle {
+    position: fixed;
+    top: 50%;
     transform: translateY(-50%);
     display: inline-flex;
     align-items: center;
@@ -190,16 +190,16 @@
 }
 
 .sidebar-toggle.left {
-    left: 0 !important;
+    left: 0;
     border-radius: 0 6px 6px 0;
 }
 
 .sidebar-toggle.right {
-    right: 0 !important;
+    right: 0;
     border-radius: 6px 0 0 6px;
 }
 
-.sidebar-toggle:hover{
+.sidebar-toggle:hover {
     background: var(--accent-hover-color, #cf3f31);
     width: 32px;
 }
@@ -210,8 +210,8 @@
 }
 
 @media (width <= 768px) {
-    .sidebar-toggle {
-        display: none !important;
+    body .sidebar-toggle {
+        display: none;
     }
 }
 

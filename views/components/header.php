@@ -20,8 +20,11 @@ endif; ?>>
     <meta name="theme-color" content="#222">
 
     <!-- 主题偏好：阻塞式初始化，防止暗色主题闪白 -->
-    <!-- 关键 CSS 抽离为外部文件，可被浏览器缓存，减少每个 HTML 页面体积 -->
-    <link rel="stylesheet" href="<?php $this->options->themeUrl('css/dark-init.css'); ?>">
+    <style>
+        html.no-transitions, html.no-transitions * { transition: none !important; }
+        html[data-theme='dark'] { color-scheme: dark; --body-bg-color: #1e1e1e; --text-color: #c9d1d9; }
+        html[data-theme='dark'], html[data-theme='dark'] body { background-color: #1e1e1e; color: #c9d1d9; }
+    </style>
     <script>
         window.DYGITA = window.DYGITA || {};
         window.DYGITA.savedTheme = <?php echo json_encode($savedTheme, JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_QUOT); ?>;

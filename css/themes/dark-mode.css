@@ -1,4 +1,38 @@
-/* Dygita CSS 层次：主题层（暗色模式覆盖） */
+/* Dygita Theme - Dark Mode Styles & Initialization */
+
+/* 1. Critical Initialization (Prevent Flash & Transitions) */
+html.no-transitions,
+html.no-transitions *,
+html.no-transitions *::before,
+html.no-transitions *::after {
+    transition: none !important;
+}
+
+/* Base Dark Theme Setup */
+[data-theme='dark'] {
+    color-scheme: dark;
+}
+
+[data-theme='dark'],
+[data-theme='dark'] body {
+    background-color: var(--body-bg-color);
+    color: var(--text-color);
+}
+
+/* Essential containers background (immediate override) */
+[data-theme='dark'] .content-wrap,
+[data-theme='dark'] .sidebar,
+[data-theme='dark'] .sidebar-left,
+[data-theme='dark'] .sidebar-right {
+    background-color: var(--content-bg-color);
+}
+
+[data-theme='dark'] .m-nav,
+[data-theme='dark'] .m-header {
+    background-color: var(--nav-bg-color);
+}
+
+/* 2. Detailed Theme Overrides */
 
 /* Merged from base/reset.css */
 [data-theme='dark'] *{

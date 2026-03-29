@@ -169,14 +169,14 @@
     justify-content: center;
 }
 
-/* 移除导航栏按钮的默认背景和边框（由全局 reset 或默认按钮样式引入） */
-.search-toggle-li .btn,
-.color-toggle-li .btn,
-.theme-toggle-li .btn,
-.lang-toggle-li .btn {
-    border: none !important;
-    background: transparent !important;
-    box-shadow: none !important;
+/* 移除导航栏按钮的默认背景和边框 */
+.m-nav-all .search-toggle-li .btn,
+.m-nav-all .color-toggle-li .btn,
+.m-nav-all .theme-toggle-li .btn,
+.m-nav-all .lang-toggle-li .btn {
+    border: none;
+    background: transparent;
+    box-shadow: none;
     padding: 0 10px;
     height: 100%;
     cursor: pointer;
@@ -191,15 +191,14 @@
 }
 
 /* 键盘焦点样式 */
-.navbar .nav li a:focus-visible,
 .m-nav .nav li a:focus-visible,
-.btn:focus-visible{
-    outline: 2px solid var(--accent-color) ;
-    outline-offset: 2px ;
+.btn:focus-visible {
+    outline: 2px solid var(--accent-color);
+    outline-offset: 2px;
 }
 
 /* 移动端固定栏 (#m-header) */
-.m-header{
+.m-header {
     display: none;
     position: fixed;
     top: 0;
@@ -215,54 +214,54 @@
     box-sizing: border-box;
 }
 
-.m-header h1{
+.m-header h1 {
     margin: 0;
     font-size: 1.2rem;
 }
 
-.m-header h1 a{
+.m-header h1 a {
     color: var(--header-text-color);
     text-decoration: none;
 }
 
 /* 移动端 Header 适配 (≤ 992px) */
 @media (width <= 992px) {
-    .l-header{
-        display: none !important;
+    body .l-header {
+        display: none;
     }
 
-    .m-header{
+    body .m-header {
         display: flex;
     }
 
-    .m-nav{
-        top: 50px !important;
-        margin-top: 0 !important;
+    body .m-nav {
+        top: 50px;
+        margin-top: 0;
     }
 
-    .m-nav-all{
-        flex-direction: row !important;
-        flex-wrap: wrap !important;
-        height: auto !important;
-        min-height: 44px !important;
-        padding: 4px 8px !important;
+    .m-nav-all {
+        flex-direction: row;
+        flex-wrap: wrap;
+        height: auto;
+        min-height: 44px;
+        padding: 4px 8px;
     }
 
-    .nav-container{
-        overflow: visible !important;
-        width: 100% !important;
-        flex-wrap: wrap !important;
+    .m-nav-all .nav-container {
+        overflow: visible;
+        width: 100%;
+        flex-wrap: wrap;
     }
 
-    .m-nav .nav{
-        flex-wrap: wrap !important;
-        width: 100% !important;
-        justify-content: center !important;
+    .m-nav-all .nav {
+        flex-wrap: wrap;
+        width: 100%;
+        justify-content: center;
     }
 
-    .m-nav .nav > li > a{
-        padding: 6px 10px !important;
-        font-size: 0.85rem !important;
+    .m-nav .nav > li > a {
+        padding: 6px 10px;
+        font-size: 0.85rem;
     }
 }
 

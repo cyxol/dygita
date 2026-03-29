@@ -1,6 +1,6 @@
 <?php if (!defined('__TYPECHO_ROOT_DIR__')) exit; ?>
 <?php $this->need('views/components/header.php'); ?>
-<link rel="stylesheet" href="<?php $this->options->themeUrl('css/links.css'); ?>">
+<link rel="stylesheet" href="<?php $this->options->themeUrl('css/components/links.css'); ?>">
 <?php $this->need('views/components/sidebar-left.php'); ?>
         <header class="archive-header">
             <h1><?php $this->title(); ?></h1>

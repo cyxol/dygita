@@ -1,35 +1,70 @@
+/* Dygita Theme - Pagination and Nav-links Styles */
+
+/* 1. Core Page Navigator (Typecho Default) */
+.page-navigator {
+    display: flex;
+    justify-content: center;
+    list-style: none;
+    margin: 40px auto;
+    padding: 0;
+    gap: 8px;
+    flex-wrap: wrap;
+}
+
+.page-navigator li {
+    margin: 0;
+}
+
+.page-navigator li a, 
+.page-navigator li span {
+    display: inline-block;
+    padding: 6px 14px;
+    background: var(--content-bg-color);
+    color: var(--text-color);
+    border: 1px solid var(--border-color);
+    border-radius: 4px;
+    text-decoration: none;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    min-width: 36px;
+    text-align: center;
+    font-size: 14px;
+    font-weight: 500;
+}
+
+/* Current active page */
+.page-navigator li.current a,
+.page-navigator li.current span {
+    background: var(--dygita-skin-color, var(--accent-color));
+    color: #fff;
+    border-color: var(--dygita-skin-color, var(--accent-color));
+    cursor: default;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+}
+
+/* Hover effects */
+.page-navigator li a:hover:not(.current) {
+    background: var(--hover-bg-color);
+    border-color: var(--dygita-skin-color, var(--accent-color));
+    color: var(--dygita-skin-color, var(--accent-color));
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.08);
+}
+
+/* Compatibility with .pagination class */
+.pagination {
+    display: flex;
+    justify-content: center;
+    margin: 30px 0;
+}
+
+.pagination ul {
+    display: flex;
+    list-style: none;
+    padding: 0;
+    gap: 5px;
+}
+
 /* Dygita CSS 层次：补丁层（小体量覆盖与兼容性修复） */
-
-#m-header .right {
-    font-size: 18px;
-}
-
-/* 修复文章标题可能出现的箭头 */
-.article-header::before, .article-header::after, .article-title::before, .article-title::after, .article-title a::before, .article-title a::after{
-    display: none ;
-    content: none ;
-}
-
-/* 确保搜索遮罩层默认完全隐藏 */
-.search-pop-overlay{
-    visibility: hidden ;
-    opacity: 0 ;
-    pointer-events: none ;
-    z-index: var(--z-overlay, 1500) ;
-}
-
-.search-pop-overlay.search-active{
-    visibility: visible ;
-    opacity: 1 ;
-    pointer-events: auto ;
-}
-
-/* 子组件透明化：确保 content-wrap 内的子区块无独立卡片外观 */
-.content-wrap .article-footer, .content-wrap .article-nav, .content-wrap .related_posts, .content-wrap .related-item, .content-wrap #respond, .content-wrap .respond, .content-wrap #comments{
-    background: transparent;
-    background-color: transparent;
-    box-shadow: none;
-}
 
 /* Archives page (archives.php) */
 .archives-list{
