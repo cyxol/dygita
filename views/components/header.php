@@ -55,10 +55,10 @@ if ($this->is('author')) {
 ?><?php $this->options->title(); ?></title>
 
     <!-- 预加载关键资源 -->
-    <link rel="stylesheet" href="<?php $this->options->themeUrl('css/style.css'); ?>?v=<?php echo DYGITA_THEME_VERSION; ?>">
+
     <link rel="stylesheet" href="<?php $this->options->themeUrl('css/vendor/font-awesome.min.css'); ?>?v=<?php echo DYGITA_THEME_VERSION; ?>">
     <noscript>
-        <link rel="stylesheet" href="<?php $this->options->themeUrl('css/style.css'); ?>">
+
         <link rel="stylesheet" href="<?php $this->options->themeUrl('css/vendor/font-awesome.min.css'); ?>">
     </noscript>
 

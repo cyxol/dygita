@@ -21,7 +21,7 @@
     </div>
 </footer>
 
-<script defer src="<?php $this->options->themeUrl('js/main.js'); ?>"></script>
+<script defer src="<?php $this->options->themeUrl('js/dist/main.js'); ?>"></script>
 <!-- Swiper.js 轮播图 - CDN + 本地备用 -->
 <?php if ($this->options->swiperEnabled == '1'):
     $swiperJsUrl = dygita_cdn_url('Swiper', '8.4.5', 'swiper-bundle.min.js');
@@ -31,11 +31,11 @@
 endif; ?>
 <!-- 粒子背景动画 -->
 <script defer src="<?php $this->options->themeUrl('js/vendor/particles.min.js'); ?>"></script>
-<script defer src="<?php $this->options->themeUrl('js/headerCanvas.js'); ?>"></script>
-<script defer src="<?php $this->options->themeUrl('js/sidebar.js'); ?>"></script>
-<script defer src="<?php $this->options->themeUrl('js/ai-chat.js'); ?>"></script>
-<script defer src="<?php $this->options->themeUrl('js/theme-switcher.js'); ?>"></script>
-<script defer src="<?php $this->options->themeUrl('js/reading-progress.js'); ?>"></script>
+<script defer src="<?php $this->options->themeUrl('js/dist/headerCanvas.js'); ?>"></script>
+<script defer src="<?php $this->options->themeUrl('js/dist/sidebar.js'); ?>"></script>
+<script defer src="<?php $this->options->themeUrl('js/dist/ai-chat.js'); ?>"></script>
+<script defer src="<?php $this->options->themeUrl('js/dist/theme-switcher.js'); ?>"></script>
+<script defer src="<?php $this->options->themeUrl('js/dist/reading-progress.js'); ?>"></script>
 <?php if ($this->options->swiperEnabled == '1'): ?>
 <script>
 window.DYGITA = window.DYGITA || {};
@@ -45,7 +45,7 @@ window.DYGITA.swiper = {
     speed: <?php echo $this->options->swiperSpeed ? intval($this->options->swiperSpeed) : 1000; ?>
 };
 </script>
-<script defer src="<?php $this->options->themeUrl('js/swiper-init.js'); ?>"></script>
+<script defer src="<?php $this->options->themeUrl('js/dist/swiper-init.js'); ?>"></script>
 <?php endif; ?>
 
 <!-- 站点统计代码 -->

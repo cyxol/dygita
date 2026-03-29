@@ -38,6 +38,7 @@ const cssFiles = [
     'css/components/toc.css',
     'css/components/pagination.css',
     'css/components/archive-pages.css',
+    'css/components/links.css',
     'css/components/toast.css',
     'css/themes/dark-mode.css'
 ];

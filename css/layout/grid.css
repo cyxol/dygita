@@ -11,8 +11,8 @@
     --side-width: 540px;
     --main-width: 1080px;
     --container-max: 2160px;
-    --side-flex: 0 0 var(--side-width);
-    --main-flex: 0 0 var(--main-width);
+    --side-flex: 0 1 var(--side-width);
+    --main-flex: 0 1 var(--main-width);
 }
 
 /* 3. Base Grid Structure */
@@ -23,7 +23,7 @@
     max-width: var(--container-max);
     margin: 0 auto;
     padding: 0 0 8px;
-    gap: 0;
+    gap: 16px;
     box-sizing: border-box;
     align-items: stretch;
 }
@@ -33,8 +33,8 @@
     max-width: var(--side-width);
     box-sizing: border-box;
     transition: flex 0.4s cubic-bezier(0.25, 0.8, 0.25, 1), 
-                max-width 0.4s cubic-bezier(0.25, 0.8, 0.25, 1), 
-                opacity 0.3s ease;
+        max-width 0.4s cubic-bezier(0.25, 0.8, 0.25, 1), 
+        opacity 0.3s ease;
 }
 
 .sidebar-left { order: 1; }
@@ -50,10 +50,11 @@
     padding: 0;
     overflow: visible;
     transition: flex 0.4s cubic-bezier(0.25, 0.8, 0.25, 1), 
-                max-width 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
+        max-width 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
 }
 
 /* 4. Column Fold (Collapsed) Logic */
+
 /* Use !important here for absolute state control, but prioritize structural variables */
 .main-container.left-collapsed .sidebar-left,
 .main-container.right-collapsed .sidebar-right {
@@ -89,8 +90,8 @@
     :root {
         --side-width: 25%;
         --main-width: 50%;
-        --side-flex: 0 0 25%;
-        --main-flex: 0 0 50%;
+        --side-flex: 0 1 25%;
+        --main-flex: 0 1 50%;
     }
 }
 
@@ -99,8 +100,8 @@
     :root {
         --side-width: 20%;
         --main-width: 60%;
-        --side-flex: 0 0 20%;
-        --main-flex: 0 0 60%;
+        --side-flex: 0 1 20%;
+        --main-flex: 0 1 60%;
     }
     
     .main-container.left-collapsed .content-wrap,
@@ -124,21 +125,19 @@
         padding: 0;
     }
 
-    .sidebar-left, .sidebar-right, .content-wrap {
-        flex: 0 0 100%;
+    .sidebar-left, .sidebar-right {
+        display: none !important;
+    }
+
+    .content-wrap {
+        flex: 1;
         width: 100%;
         max-width: 100%;
         min-width: 100%;
-    }
-
-    .sidebar-left { order: 1; }
-
-    .content-wrap { 
-        order: 2;
+        order: 1;
         padding-left: 12px;
         padding-right: 12px;
     }
-    .sidebar-right { order: 3; }
 
     .content-wrap > .content,
     .single .content,

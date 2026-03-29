@@ -68,7 +68,7 @@ if ($catalogCache !== null) {
             window.DYGITA = window.DYGITA || {};
             window.DYGITA.shareData = <?php echo json_encode($shareData, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE | JSON_HEX_TAG); ?>;
         </script>
-        <script defer src="<?php $this->options->themeUrl('js/post-share.js'); ?>"></script>
+        <script defer src="<?php $this->options->themeUrl('js/dist/post-share.js'); ?>"></script>
 
         <nav class="article-nav">
             <span class="article-nav-prev"><?php $this->thePrev('%s', _t('没有了')); ?></span>

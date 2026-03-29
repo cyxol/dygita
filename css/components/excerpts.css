@@ -3,7 +3,7 @@
 .excerpt {
     background: var(--content-bg-color);
     padding: 24px;
-    margin-bottom: 24px;
+    margin-bottom: 16px;
     position: relative;
     box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
     border-radius: 8px;
@@ -135,21 +135,55 @@
 @media (width <= 768px) {
     .excerpt {
         grid-template-areas: 
-            'header'
-            'focus'
-            'note'
-            'footer';
-        grid-template-columns: 1fr;
-        gap: 15px;
-        padding: 20px;
+            'header header'
+            'focus note'
+            'footer footer';
+        grid-template-columns: 100px 1fr; /* 侧重文字阅读 */
+        gap: 8px 12px;
+        padding: 12px;
+    }
+
+    .excerpt header h2 {
+        font-size: 1.15rem;
+        line-height: 1.25;
+    }
+
+    .excerpt .focus {
+        height: 80px; /* 控制图片高度 */
     }
 
     .excerpt .focus img {
-        height: 200px;
+        height: 80px;
     }
     
     .excerpt .note {
-        -webkit-line-clamp: 4; /* 手机端显示 4 行更协调 */
-        line-clamp: 4;
+        font-size: 13px;
+        line-height: 1.5;
+        -webkit-line-clamp: 3; /* 限制简介行数 */
+        line-clamp: 3;
+    }
+
+    .excerpt .auth-span {
+        padding-top: 10px;
+        gap: 8px;
+        font-size: 11px;
+        flex-wrap: nowrap; /* 强制元数据不换行 */
+        overflow-x: auto; /* 万一太长允许横向滚动（通常图标模式能放下） */
+        justify-content: flex-start;
+        scrollbar-width: none; /* 隐藏滚动条 */
+    }
+
+    .excerpt .auth-span::-webkit-scrollbar {
+        display: none;
+    }
+
+    .excerpt .auth-span .muted {
+        white-space: nowrap;
+        flex-shrink: 0;
+    }
+
+    /* 在极小屏幕下进一步压缩间距 */
+    .excerpt .auth-span .muted i {
+        margin-right: 3px;
     }
 }

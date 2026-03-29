@@ -25,7 +25,8 @@ const jsFiles = [
     'swiper-init.js',
     'theme-switcher.js',
     'archives-page.js',
-    'headerCanvas.js'
+    'headerCanvas.js',
+    'ai-chat.js'
 ];
 
 // Terser 配置

@@ -48,5 +48,5 @@
     ?>
 </article>
 
-<script defer src="<?php $this->options->themeUrl('js/archives-page.js'); ?>"></script>
+<script defer src="<?php $this->options->themeUrl('js/dist/archives-page.js'); ?>"></script>
 

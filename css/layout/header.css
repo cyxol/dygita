@@ -263,6 +263,25 @@
         padding: 6px 10px;
         font-size: 0.85rem;
     }
+
+    /* 强制功能图标在手机端归入第二排并居中 */
+    .m-nav-all .nav .search-toggle-li,
+    .m-nav-all .nav .color-toggle-li,
+    .m-nav-all .nav .theme-toggle-li,
+    .m-nav-all .nav .lang-toggle-li {
+        flex: 1 0 25%; /* 每个占据四分之一，强制归并整排 */
+        height: 44px;
+        justify-content: center;
+        border-top: 1px solid var(--border-color); /* 在文字菜单与图标之间加一道微弱的分隔线 */
+        margin-top: 4px;
+    }
+
+    .m-nav-all .nav .search-toggle-li .btn i,
+    .m-nav-all .nav .color-toggle-li .btn i,
+    .m-nav-all .nav .theme-toggle-li .btn i,
+    .m-nav-all .nav .lang-toggle-li .btn i {
+        font-size: 1.1rem;
+    }
 }
 
 
