@@ -4,6 +4,7 @@
     <button class="sidebar-toggle left" aria-label="折叠左侧栏" title="折叠左侧栏">
         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"></polyline></svg>
     </button>
+    <div class="sidebar-sticky-content">
 
     <!-- 文章目录（文章页置顶 + sticky） -->
     <?php if ($this->is('post') || $this->is('page')): ?>
@@ -37,22 +38,20 @@
     $aichatLoggedIn = \Typecho\Widget::widget('Widget_User')->hasLogin();
     $aichatLogin    = rtrim((string) $this->options->siteUrl, '/') . '/admin/';
     $aichatRecentPosts = [];
-    if (!$aichatIsPost) {
-        try {
-            $db = \Typecho\Db::get();
-            $rows = $db->fetchAll($db->select('cid', 'title')
-                ->from(dygita_get_table('contents'))
-                ->where('type = ?', 'post')
-                ->where('status = ?', 'publish')
-                ->order('created', \Typecho\Db::SORT_DESC)
-                ->limit(8));
-            if ($rows) {
-                foreach ($rows as $row) {
-                    $aichatRecentPosts[] = ['cid' => (int)$row['cid'], 'title' => (string)$row['title']];
-                }
+    try {
+        $db = \Typecho\Db::get();
+        $rows = $db->fetchAll($db->select('cid', 'title')
+            ->from(dygita_get_table('contents'))
+            ->where('type = ?', 'post')
+            ->where('status = ?', 'publish')
+            ->order('created', \Typecho\Db::SORT_DESC)
+            ->limit(8));
+        if ($rows) {
+            foreach ($rows as $row) {
+                $aichatRecentPosts[] = ['cid' => (int)$row['cid'], 'title' => (string)$row['title']];
             }
-        } catch (\Exception $e) {}
-    }
+        }
+    } catch (\Exception $e) {}
     ?>
     <script>
     window.DYGITA = window.DYGITA || {};
@@ -104,6 +103,7 @@
             </ul>
         </div>
     </div>
+    </div><!-- /.sidebar-sticky-content -->
 </aside>
 
 <div class="content-wrap" role="main">

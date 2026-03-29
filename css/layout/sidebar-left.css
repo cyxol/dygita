@@ -7,11 +7,10 @@
     box-sizing: border-box;
 }
 
-/* 文章/独立页：目录需要 sticky；其他页随页面滚动 */
-.sidebar-left.is-post {
+/* 文章/独立页：aside 容器拉伸至文章等高，内层内容 sticky 吸顶 */
+.sidebar-left.is-post .sidebar-sticky-content {
     position: sticky;
     top: 58px;
-    align-self: flex-start;
 }
 
 

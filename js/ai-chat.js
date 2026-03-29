@@ -195,7 +195,7 @@
 
         // ── Skill bar（首页文章选择）─────────────────────────────────────────
         function buildSkillBar() {
-            if (isPost || !recentPosts.length) return;
+            if (!recentPosts.length) return;
 
             var bar = document.createElement('div');
             bar.className = 'ai-chat-skill-bar';

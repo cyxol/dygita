@@ -93,12 +93,20 @@
 
             btn.dataset.loading = '1';
 
-            var payload = new URLSearchParams();
-            payload.append('cid', cid);
-
             var likeUrl = window.DYGITA && window.DYGITA.config && window.DYGITA.config.likeUrl
                 ? window.DYGITA.config.likeUrl
                 : '/action/dygita-like';
+
+            // 修复经常出现的 CORS (跨域) 和 HTTPS 301重定向（导致 POST 丢失参数变 GET 的问题）
+            // 确保点赞请求的域名和协议与当前浏览器地址栏保持绝对一致！
+            if (likeUrl.indexOf('http') === 0) {
+                try {
+                    var parsed = new URL(likeUrl);
+                    parsed.protocol = window.location.protocol;
+                    parsed.host = window.location.host;
+                    likeUrl = parsed.href;
+                } catch (e) {}
+            }
 
             fetch(likeUrl, {
                 method: 'POST',
@@ -107,7 +115,7 @@
                     'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8',
                     'X-Requested-With': 'XMLHttpRequest'
                 },
-                body: payload.toString()
+                body: 'cid=' + encodeURIComponent(cid)
             })
                 .then(function (res) {
                     if (!res.ok) {
@@ -568,24 +576,29 @@
 
         // 侧栏 sticky 控制：文章内容结束后取消 sticky，让侧栏随页面滚走
         var sidebarLeft = document.querySelector('.sidebar-left');
+        var sidebarStickyContent = document.querySelector('.sidebar-left .sidebar-sticky-content');
         var articleFooter = document.querySelector('.article-footer');
         var stickyObserver = null;
 
-        if (sidebarLeft && articleFooter && 'IntersectionObserver' in window) {
-            var mainContainer = sidebarLeft.parentElement;
+        if (sidebarLeft && sidebarStickyContent && articleFooter && 'IntersectionObserver' in window) {
             stickyObserver = new IntersectionObserver(function (entries) {
                 entries.forEach(function (entry) {
                     if (entry.isIntersecting) {
-                        // 文章读完：计算侧栏当前位置，切换为 absolute 保持原位然后随页面滚走
-                        var containerRect = mainContainer.getBoundingClientRect();
+                        // 文章读完：计算侧栏内容当前位置，切换为 absolute 保持原位然后随页面滚走
                         var sidebarRect = sidebarLeft.getBoundingClientRect();
-                        var absoluteTop = sidebarRect.top - containerRect.top;
-                        sidebarLeft.style.position = 'absolute';
-                        sidebarLeft.style.top = absoluteTop + 'px';
+                        var contentRect = sidebarStickyContent.getBoundingClientRect();
+                        var absoluteTop = contentRect.top - sidebarRect.top;
+                        // 如果 absoluteTop 为负或非常小，说明可能还未真正 sticky，但一般已生效
+                        sidebarLeft.style.position = 'relative';
+                        sidebarStickyContent.style.position = 'absolute';
+                        sidebarStickyContent.style.top = Math.max(0, absoluteTop) + 'px';
+                        sidebarStickyContent.style.width = contentRect.width + 'px';
                     } else {
                         // 回到文章区域：恢复 sticky
+                        sidebarStickyContent.style.position = '';
+                        sidebarStickyContent.style.top = '';
+                        sidebarStickyContent.style.width = '';
                         sidebarLeft.style.position = '';
-                        sidebarLeft.style.top = '';
                     }
                 });
             }, {
@@ -626,9 +639,13 @@
                     stickyObserver.disconnect();
                     stickyObserver = null;
                 }
+                if (sidebarStickyContent) {
+                    sidebarStickyContent.style.position = '';
+                    sidebarStickyContent.style.top = '';
+                    sidebarStickyContent.style.width = '';
+                }
                 if (sidebarLeft) {
                     sidebarLeft.style.position = '';
-                    sidebarLeft.style.top = '';
                 }
                 visibleEntries.clear();
                 // 清除 DOM 引用
@@ -654,17 +671,22 @@
                         updateCurrentSection(activeAnchor);
                     }
                     // Fallback sticky 控制
-                    if (sidebarLeft && articleFooter) {
+                    if (sidebarLeft && sidebarStickyContent && articleFooter) {
                         var footerTop = articleFooter.getBoundingClientRect().top;
-                        var mainCont = sidebarLeft.parentElement;
                         if (footerTop <= window.innerHeight) {
-                            var cRect = mainCont.getBoundingClientRect();
-                            var sRect = sidebarLeft.getBoundingClientRect();
-                            sidebarLeft.style.position = 'absolute';
-                            sidebarLeft.style.top = (sRect.top - cRect.top) + 'px';
+                            if (!sidebarStickyContent.style.position) {
+                                var sRect = sidebarLeft.getBoundingClientRect();
+                                var cRect = sidebarStickyContent.getBoundingClientRect();
+                                sidebarLeft.style.position = 'relative';
+                                sidebarStickyContent.style.position = 'absolute';
+                                sidebarStickyContent.style.top = Math.max(0, cRect.top - sRect.top) + 'px';
+                                sidebarStickyContent.style.width = cRect.width + 'px';
+                            }
                         } else {
                             sidebarLeft.style.position = '';
-                            sidebarLeft.style.top = '';
+                            sidebarStickyContent.style.position = '';
+                            sidebarStickyContent.style.top = '';
+                            sidebarStickyContent.style.width = '';
                         }
                     }
                     ticking = false;
@@ -676,9 +698,13 @@
             return function cleanup() {
                 catalogContent.removeEventListener('click', onCatalogClick);
                 window.removeEventListener('scroll', onScrollFallback);
+                if (sidebarStickyContent) {
+                    sidebarStickyContent.style.position = '';
+                    sidebarStickyContent.style.top = '';
+                    sidebarStickyContent.style.width = '';
+                }
                 if (sidebarLeft) {
                     sidebarLeft.style.position = '';
-                    sidebarLeft.style.top = '';
                 }
                 // 清除 DOM 引用
                 catalogContent = null;
