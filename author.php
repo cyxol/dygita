@@ -1,10 +1,6 @@
 <?php if (!defined('__TYPECHO_ROOT_DIR__')) exit; ?>
 <?php
-if (function_exists('dygita_content_class')) {
-    dygita_content_class('index posts-expand');
-} else {
-    $GLOBALS['dygita_content_class'] = 'index posts-expand';
-}
+$GLOBALS['dygita_content_class'] = 'index posts-expand';
 ?>
 <?php $this->need('views/components/header.php'); ?>
 <?php $this->need('views/components/sidebar-left.php'); ?>
@@ -17,20 +13,25 @@ if (function_exists('dygita_content_class')) {
                 <div class="author-about-inner">
                     <div class="author-profile">
                         <div class="author-avatar">
-                                <img src="<?php $this->options->themeUrl('img/caiya.xin.jpg'); ?>" alt="Yacine Tsai">
+                                <?php $authorPageName = htmlspecialchars(dygita_get_author_name($this->options), ENT_QUOTES, 'UTF-8'); ?>
+                                <img src="<?php echo dygita_get_author_avatar($this->options); ?>" alt="<?php echo $authorPageName; ?>">
                         </div>
-                        <h2 class="author-name">Yacine Tsai</h2>
+                        <h2 class="author-name"><?php echo $authorPageName; ?></h2>
                     </div>
                     <div class="author-lines">
-                        <p>大数据AI产品经理</p>
-                        <p>来自河南，现居南京，就职奥派</p>
-                        <p>爱生活、爱音乐、爱打羽毛球</p>
-                        <p>爱爬山、爱台球、爱世间万物</p>
-                        <p>热爱可抵岁月漫长</p>
-                        <p>乘风破浪奔赴山海</p>
-                        <p>俯首高调细心做事</p>
-                        <p>昂首低调宽心做人</p>
-                        <p>心怀猛虎 细嗅蔷薇</p>
+                        <?php
+                        $authorBioText = isset($this->options->authorBio) ? trim((string) $this->options->authorBio) : '';
+                        if ($authorBioText !== '') {
+                            foreach (preg_split('/\r?\n/', $authorBioText) as $bioLine) {
+                                $bioLine = trim($bioLine);
+                                if ($bioLine !== '') {
+                                    echo '<p>' . htmlspecialchars($bioLine, ENT_QUOTES, 'UTF-8') . '</p>';
+                                }
+                            }
+                        } else {
+                            echo '<p>' . htmlspecialchars((string) $this->options->description, ENT_QUOTES, 'UTF-8') . '</p>';
+                        }
+                        ?>
                         </div>
                 </div>
         </article>

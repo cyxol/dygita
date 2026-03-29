@@ -57,10 +57,7 @@ if ($this->is('author')) {
     <!-- 预加载关键资源 -->
 
     <link rel="stylesheet" href="<?php $this->options->themeUrl('css/vendor/font-awesome.min.css'); ?>?v=<?php echo DYGITA_THEME_VERSION; ?>">
-    <noscript>
 
-        <link rel="stylesheet" href="<?php $this->options->themeUrl('css/vendor/font-awesome.min.css'); ?>">
-    </noscript>
 
     <!-- 网站图标 -->
     <link rel="apple-touch-icon" sizes="180x180" href="<?php $this->options->siteUrl(); echo 'favicon.ico'; ?>">
@@ -142,7 +139,9 @@ endif; ?>
 
     <!-- 站点验证 -->
     <!-- 在这里添加 Google、Bing、Sogou 等站点验证代码 -->
-    <link href="https://gravatar.com/exuberant3c83335dc7" rel="me" />
+    <?php if (!empty($this->options->gravatarProfile)): ?>
+    <link href="<?php echo htmlspecialchars((string) $this->options->gravatarProfile, ENT_QUOTES, 'UTF-8'); ?>" rel="me" />
+    <?php endif; ?>
     <!-- 例如：<meta name="google-site-verification" content="your-verification-code"> -->
 
     <!-- 移动端优化 -->
@@ -260,10 +259,10 @@ endif; ?>
     ?>
     <link rel="stylesheet" href="<?php echo $prismThemeUrl; ?>" onerror="this.onerror=null;this.href='https://unpkg.com/prismjs@1/themes/prism-tomorrow.min.css'">
     <link rel="stylesheet" href="<?php echo $prismToolbarUrl; ?>" onerror="this.onerror=null;this.href='https://unpkg.com/prismjs@1/plugins/toolbar/prism-toolbar.min.css'">
-    <script src="<?php echo $prismCoreUrl; ?>" onerror="this.onerror=null;this.src='https://unpkg.com/prismjs@1/prism.min.js'"></script>
-    <script src="<?php echo $prismToolbarJsUrl; ?>" onerror="this.onerror=null;this.src='https://unpkg.com/prismjs@1/plugins/toolbar/prism-toolbar.min.js'"></script>
-    <script src="<?php echo $prismAutoloaderUrl; ?>" onerror="this.onerror=null;this.src='https://unpkg.com/prismjs@1/plugins/autoloader/prism-autoloader.min.js'"></script>
-    <script src="<?php echo $prismCopyUrl; ?>" onerror="this.onerror=null;this.src='https://unpkg.com/prismjs@1/plugins/copy-to-clipboard/prism-copy-to-clipboard.min.js'"></script>
+    <script defer src="<?php echo $prismCoreUrl; ?>" onerror="this.onerror=null;this.src='https://unpkg.com/prismjs@1/prism.min.js'"></script>
+    <script defer src="<?php echo $prismToolbarJsUrl; ?>" onerror="this.onerror=null;this.src='https://unpkg.com/prismjs@1/plugins/toolbar/prism-toolbar.min.js'"></script>
+    <script defer src="<?php echo $prismAutoloaderUrl; ?>" onerror="this.onerror=null;this.src='https://unpkg.com/prismjs@1/plugins/autoloader/prism-autoloader.min.js'"></script>
+    <script defer src="<?php echo $prismCopyUrl; ?>" onerror="this.onerror=null;this.src='https://unpkg.com/prismjs@1/plugins/copy-to-clipboard/prism-copy-to-clipboard.min.js'"></script>
     <?php endif; ?>
 
     <!-- 合并后的主题样式（由分层 CSS 源文件构建生成） -->
@@ -280,7 +279,8 @@ endif; ?>
         <div class="m-about">
             <div class="widget-profile">
                 <div class="profile-avatar">
-                    <img src="<?php $this->options->themeUrl('img/caiya.xin.jpg'); ?>" alt="Yacine Tsai">
+                    <?php $headerAuthorName = htmlspecialchars(dygita_get_author_name($this->options), ENT_QUOTES, 'UTF-8'); ?>
+                    <img src="<?php echo dygita_get_author_avatar($this->options); ?>" alt="<?php echo $headerAuthorName; ?>">
                 </div>
                 <div class="profile-info">
                     <h1 class="tit" itemprop="headline"><a href="<?php $this->options->siteUrl(); ?>" aria-label="返回首页"><?php $this->options->title(); ?></a></h1>

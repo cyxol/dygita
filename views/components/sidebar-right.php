@@ -13,12 +13,14 @@
         <div class="widget-content">
             <div class="widget-profile">
                 <div class="profile-avatar">
-                    <img src="<?php $this->options->themeUrl('img/caiya.xin.jpg'); ?>" alt="Yacine Tsai">
+                    <?php $sidebarAuthorName = htmlspecialchars(dygita_get_author_name($this->options), ENT_QUOTES, 'UTF-8'); ?>
+                    <img src="<?php echo dygita_get_author_avatar($this->options); ?>" alt="<?php echo $sidebarAuthorName; ?>">
                 </div>
                 <div class="profile-info">
-                    <p>Yacine Tsai</p>
-                    <p>大数据产品经理</p>
-                    <p>Vibe Coding</p>
+                    <p><?php echo $sidebarAuthorName; ?></p>
+                    <?php if (!empty($this->options->authorTitle)): ?>
+                    <p><?php echo htmlspecialchars((string) $this->options->authorTitle, ENT_QUOTES, 'UTF-8'); ?></p>
+                    <?php endif; ?>
                     <?php $profileStat = dygita_get_stat(); ?>
                     <div class="profile-stats" aria-label="站点统计">
                         <div class="profile-stats-item">

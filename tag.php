@@ -7,11 +7,7 @@
 
 if (!defined('__TYPECHO_ROOT_DIR__')) exit;
 
-if (function_exists('dygita_content_class')) {
-    dygita_content_class('index posts-expand');
-} else {
-    $GLOBALS['dygita_content_class'] = 'index posts-expand';
-}
+$GLOBALS['dygita_content_class'] = 'index posts-expand';
 
 $this->need('views/components/header.php');
 $this->need('views/components/sidebar-left.php');

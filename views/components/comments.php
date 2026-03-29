@@ -37,13 +37,13 @@
         <script src="<?php echo $gitalkJsUrl; ?>"></script>
         <!--
             安全提示：Gitalk 需要在前端暴露 clientSecret，这是 GitHub OAuth App 的已知限制。
-            建议：1) 使用 GitHub OAuth App（非 GitHub App），其 clientSecret 泄露风险较低
-                  2) 或改用 Valine/默认评论系统以避免此问题
+            建议使用 GitHub OAuth App（非 GitHub App），其 clientSecret 泄露风险较低。
+            如需更高安全性，可改用 Valine 或默认评论系统。
         -->
         <script>
         var gitalk = new Gitalk({
             clientID: <?php echo json_encode($this->options->gitalkClientID, JSON_HEX_TAG); ?>,
-            // 出于安全考虑，建议仅在服务端使用 clientSecret，不再在前端输出
+            clientSecret: <?php echo json_encode($this->options->gitalkClientSecret, JSON_HEX_TAG); ?>,
             repo: <?php echo json_encode($this->options->gitalkRepo, JSON_HEX_TAG); ?>,
             owner: <?php echo json_encode($this->options->gitalkOwner, JSON_HEX_TAG); ?>,
             admin: [<?php echo json_encode($this->options->gitalkOwner, JSON_HEX_TAG); ?>],

@@ -12,7 +12,7 @@ if (!defined('__TYPECHO_ROOT_DIR__'))
  */
 
 // 主题版本
-define('DYGITA_THEME_VERSION', '1.0.0');
+define('DYGITA_THEME_VERSION', '1.1.0');
 
 /**
  * 注册主题自定义路由（统一入口，避免重复定义）
@@ -51,11 +51,12 @@ function dygita_bootstrap_runtime() {
     dygita_register_search_action();
 
     // 注册文章目录缓存钩子：文章发布/更新时自动生成 TOC 缓存
-    $catalogPlugin = \Typecho\Plugin::factory('Widget_Abstract_Contents');
+    // Typecho 1.2+ 使用命名空间类名
+    $catalogPlugin = \Typecho\Plugin::factory('Widget\\Contents\\Post\\Edit');
     $catalogPlugin->finishPublish = [Dygita_Catalog_Cache::class, 'onFinishPublish'];
 
     // 注册搜索索引重建钩子：文章发布/更新时自动重建搜索索引
-    $searchPlugin = \Typecho\Plugin::factory('Widget_Abstract_Contents');
+    $searchPlugin = \Typecho\Plugin::factory('Widget\\Contents\\Post\\Edit');
     $searchPlugin->finishPublish = [Dygita_Search_Index::class, 'onArticleChange'];
 
     $bootstrapped = true;
@@ -509,19 +510,12 @@ function themeConfig($form)
 {
     // 获取全局配置（注意：在函数上下文中不能使用 $this->options）
     $options = Typecho\Widget::widget('Widget_Options');
-    // 站点Logo
-    $logoUrl = new Typecho\Widget\Helper\Form\Element\Text('logoUrl', NULL, NULL, _t('站点LOGO地址'), _t('在这里填入一个图片URL地址, 以在网站标题前显示一个LOGO'));
-    $form->addInput($logoUrl);
-
-    // 侧边栏
+    // 侧边栏显示控制
     $sidebarBlock = new Typecho\Widget\Helper\Form\Element\Checkbox('sidebarBlock',
-        array('ShowRecentPosts' => _t('显示最新文章'),
-        'ShowRecentComments' => _t('显示最近回复'),
+        array(
         'ShowCategory' => _t('显示分类'),
-        'ShowArchive' => _t('显示归档'),
-        'ShowLinks' => _t('显示友情链接'),
-        'ShowOther' => _t('显示其它杂项')),
-        array('ShowRecentPosts', 'ShowRecentComments', 'ShowCategory', 'ShowArchive', 'ShowLinks', 'ShowOther'), _t('侧边栏显示'));
+        ),
+        array('ShowCategory'), _t('侧边栏显示'));
 
     $form->addInput($sidebarBlock->multiMode());
 
@@ -555,14 +549,6 @@ function themeConfig($form)
     );
     $form->addInput($colorSchema);
 
-    // 幻灯片 dygita_sticky_b（兼容 git_sticky_b）
-    $stickyCur = dygita_opt($options, 'dygita_sticky_b', 'git_sticky_b') ?: '0';
-    $dygita_sticky_b = new Typecho\Widget\Helper\Form\Element\Radio('dygita_sticky_b',
-        array('0' => _t('关闭'), '1' => _t('开启')),
-        $stickyCur, _t('开启置顶推荐'), _t('是否开启首页置顶推荐(需要配合幻灯片插件或手动修改代码)')
-        );
-    $form->addInput($dygita_sticky_b);
-    
     // Swiper.js 幻灯片配置
     $swiperEnabled = new Typecho\Widget\Helper\Form\Element\Radio('swiperEnabled',
         array('0' => _t('关闭'), '1' => _t('开启')),
@@ -653,24 +639,29 @@ function themeConfig($form)
         '0', _t('开启站点统计'), _t('是否开启站点访问统计功能')
     );
     $form->addInput($enableStatistics);
-    
-    // 联系方式设置
-    $contactEmail = new Typecho\Widget\Helper\Form\Element\Text('contactEmail', NULL, 'admin@example.com', _t('联系邮箱'), _t('设置侧边栏显示的联系邮箱'));
-    $form->addInput($contactEmail);
-    
-    $contactQQ = new Typecho\Widget\Helper\Form\Element\Text('contactQQ', NULL, '12345678', _t('联系QQ'), _t('设置侧边栏显示的联系QQ号'));
-    $form->addInput($contactQQ);
-    
-    // 广告位设置
-    $adImageUrl = new Typecho\Widget\Helper\Form\Element\Text('adImageUrl', NULL, NULL, _t('广告图片URL'), _t('设置侧边栏赞助商广告位的图片URL，留空则使用默认图片'));
-    $form->addInput($adImageUrl);
-    
-    $adLinkUrl = new Typecho\Widget\Helper\Form\Element\Text('adLinkUrl', NULL, NULL, _t('广告链接URL'), _t('设置侧边栏赞助商广告位的链接URL，留空则不添加链接'));
-    $form->addInput($adLinkUrl);
-    
+
     // 页脚版权（留空则显示：© 年份 站点标题）
     $copyright = new Typecho\Widget\Helper\Form\Element\Textarea('copyright', NULL, NULL, _t('页脚版权信息'), _t('留空则显示默认：© 年份 + 站点标题。可填自定义版权文字（纯文本）'));
     $form->addInput($copyright);
+
+    // 博主信息配置
+    $authorAvatar = new Typecho\Widget\Helper\Form\Element\Text('authorAvatar', NULL, NULL, _t('博主头像URL'), _t('博主头像图片地址，留空使用主题默认头像 img/caiya.xin.jpg'));
+    $form->addInput($authorAvatar);
+
+    $authorName = new Typecho\Widget\Helper\Form\Element\Text('authorName', NULL, 'Yacine Tsai', _t('博主昵称'), _t('显示在侧边栏和关于页面的昵称，留空使用站点标题'));
+    $form->addInput($authorName);
+
+    $authorTitle = new Typecho\Widget\Helper\Form\Element\Text('authorTitle', NULL, '大数据产品经理', _t('博主职位/标语'), _t('显示在侧边栏简介中的一行描述'));
+    $form->addInput($authorTitle);
+
+    $authorBio = new Typecho\Widget\Helper\Form\Element\Textarea('authorBio', NULL, "大数据AI产品经理\n来自河南，现居南京，就职奥派\n爱生活、爱音乐、爱打羽毛球\n爱爬山、爱台球、爱世间万物\n热爱可抵岁月漫长\n乘风破浪奔赴山海\n俯首高调细心做事\n昂首低调宽心做人\n心怀猛虎 细嗅蔷薇", _t('博主个人简介'), _t('每行一条，显示在关于页面'));
+    $form->addInput($authorBio);
+
+    $gravatarProfile = new Typecho\Widget\Helper\Form\Element\Text('gravatarProfile', NULL, 'https://gravatar.com/exuberant3c83335dc7', _t('Gravatar 个人主页'), _t('Gravatar rel=me 链接，留空则不输出'));
+    $form->addInput($gravatarProfile);
+
+    $resourceLinks = new Typecho\Widget\Helper\Form\Element\Textarea('resourceLinks', NULL, "🤗 Hugging Face|https://huggingface.co/|AI 模型/数据集平台\n📊 Kaggle|https://www.kaggle.com/|数据科学竞赛与数据集\n📄 Papers With Code|https://paperswithcode.com/|AI 论文与代码\n✍️ Towards Data Science|https://towardsdatascience.com/|数据科学博客\n🎓 fast.ai|https://www.fast.ai/|深度学习课程\n🧠 OpenAI|https://openai.com/|ChatGPT / GPT-4\n✦ Anthropic|https://www.anthropic.com/|Claude AI\n🔍 Google AI|https://ai.google/|Gemini / DeepMind\n🏕️ DataCamp|https://www.datacamp.com/|数据科学在线学习\n📈 Analytics Vidhya|https://www.analyticsvidhya.com/|数据分析社区", _t('侧边栏资源链接'), _t('左侧栏链接分享区域，格式：名称|链接|描述，每行一个'));
+    $form->addInput($resourceLinks);
     
     // 投稿功能设置（dygita_* 兼容 git_*）
     $tougaoCur = dygita_opt($options, 'dygita_tougao_b', 'git_tougao_b') ?: '0';
@@ -1070,7 +1061,7 @@ function dygita_get_related_post_thumbnail($post)
     $db = Typecho\Db::get();
     $options = Typecho\Widget::widget('Widget_Options');
     $cid = is_array($post) ? intval($post['cid'] ?? 0) : intval($post->cid ?? 0);
-    $content = is_array($post) ? (string)($post['text'] ?? '') : (string)($post->text ?? '');
+    $rawText = is_array($post) ? (string)($post['text'] ?? '') : (string)($post->text ?? '');
     if ($cid <= 0) {
         return dygita_get_random_placeholder_url($options);
     }
@@ -1084,7 +1075,13 @@ function dygita_get_related_post_thumbnail($post)
         $thumbValue = $thumb['str_value'];
     }
 
-    return dygita_resolve_thumbnail_url($thumbValue, $content, $options);
+    // 将 Markdown 源文本转换为 HTML，以便正则能匹配 <img> 标签
+    $contentHtml = $rawText;
+    if (strpos($rawText, '<!--markdown-->') === 0) {
+        $contentHtml = \Utils\Markdown::convert(substr($rawText, 15));
+    }
+
+    return dygita_resolve_thumbnail_url($thumbValue, $contentHtml, $options);
 }
 
 /* 增加: 浏览量统计 */
@@ -1290,6 +1287,47 @@ function dygita_get_links() {
         $url  = htmlspecialchars($link['url'],  ENT_QUOTES, 'UTF-8');
         $desc = htmlspecialchars($link['description'], ENT_QUOTES, 'UTF-8');
         echo '<li><a href="' . $url . '" title="' . $desc . '" target="_blank" rel="noopener">' . $name . '</a></li>';
+    }
+}
+
+/**
+ * 获取博主头像 URL（优先使用后台配置，回退到默认图片）
+ * @param object $options
+ * @return string
+ */
+function dygita_get_author_avatar($options) {
+    $avatar = isset($options->authorAvatar) && $options->authorAvatar !== '' ? trim((string) $options->authorAvatar) : '';
+    if ($avatar !== '' && preg_match('/^https?:\/\//i', $avatar)) {
+        return htmlspecialchars($avatar, ENT_QUOTES, 'UTF-8');
+    }
+    return rtrim($options->themeUrl, '/') . '/img/caiya.xin.jpg';
+}
+
+/**
+ * 获取博主显示名称（优先使用后台配置，回退到站点标题）
+ * @param object $options
+ * @return string
+ */
+function dygita_get_author_name($options) {
+    $name = isset($options->authorName) && $options->authorName !== '' ? trim((string) $options->authorName) : '';
+    return $name !== '' ? $name : (string) $options->title;
+}
+
+/**
+ * 获取侧边栏资源链接列表（从后台配置读取，未配置时使用默认值）
+ */
+function dygita_get_resource_links() {
+    $options = Typecho\Widget::widget('Widget_Options');
+    $text = isset($options->resourceLinks) ? (string) $options->resourceLinks : '';
+    // 兜底：未配置时使用默认链接（主题已激活但未重新保存设置时）
+    if ($text === '') {
+        $text = "🤗 Hugging Face|https://huggingface.co/|AI 模型/数据集平台\n📊 Kaggle|https://www.kaggle.com/|数据科学竞赛与数据集\n📄 Papers With Code|https://paperswithcode.com/|AI 论文与代码\n🧠 OpenAI|https://openai.com/|ChatGPT / GPT-4\n✦ Anthropic|https://www.anthropic.com/|Claude AI\n🔍 Google AI|https://ai.google/|Gemini / DeepMind";
+    }
+    foreach (dygita_parse_links($text) as $link) {
+        $name = htmlspecialchars($link['name'], ENT_QUOTES, 'UTF-8');
+        $url  = htmlspecialchars($link['url'],  ENT_QUOTES, 'UTF-8');
+        $desc = htmlspecialchars($link['description'], ENT_QUOTES, 'UTF-8');
+        echo '<li><a href="' . $url . '" target="_blank" rel="noopener" title="' . $desc . '">' . $name . '</a></li>';
     }
 }
 
@@ -1620,5 +1658,14 @@ function dygita_cdn_url($package, $version, $path) {
  * 主题停用时清理事件和路由
  */
 function themeDeactivate() {
+    // 清理所有注册的 Action
     \Utils\Helper::removeAction('dygita-search-index');
+    \Utils\Helper::removeAction('dygita-like');
+
+    // 清理所有注册的自定义路由
+    \Utils\Helper::removeRoute('tags_cloud');
+    \Utils\Helper::removeRoute('tags_cloud_tag_plain');
+    \Utils\Helper::removeRoute('tags_cloud_page');
+    \Utils\Helper::removeRoute('archives_list');
+    \Utils\Helper::removeRoute('categories_page');
 }

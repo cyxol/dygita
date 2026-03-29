@@ -90,16 +90,7 @@
         <div class="title"><h2><?php dygita_e('链接分享'); ?></h2></div>
         <div class="widget-content">
             <ul class="link-list">
-                <li><a href="https://huggingface.co/" target="_blank" rel="noopener" title="Hugging Face — AI 模型/数据集平台">🤗 Hugging Face</a></li>
-                <li><a href="https://www.kaggle.com/" target="_blank" rel="noopener" title="Kaggle — 数据科学竞赛与数据集">📊 Kaggle</a></li>
-                <li><a href="https://paperswithcode.com/" target="_blank" rel="noopener" title="Papers With Code — AI 论文与代码">📄 Papers With Code</a></li>
-                <li><a href="https://towardsdatascience.com/" target="_blank" rel="noopener" title="Towards Data Science — 数据科学博客">✍️ Towards Data Science</a></li>
-                <li><a href="https://www.fast.ai/" target="_blank" rel="noopener" title="fast.ai — 深度学习课程">🎓 fast.ai</a></li>
-                <li><a href="https://openai.com/" target="_blank" rel="noopener" title="OpenAI — ChatGPT / GPT-4">🧠 OpenAI</a></li>
-                <li><a href="https://www.anthropic.com/" target="_blank" rel="noopener" title="Anthropic — Claude AI">✦ Anthropic</a></li>
-                <li><a href="https://ai.google/" target="_blank" rel="noopener" title="Google AI — Gemini / DeepMind">🔍 Google AI</a></li>
-                <li><a href="https://www.datacamp.com/" target="_blank" rel="noopener" title="DataCamp — 数据科学在线学习">🏕️ DataCamp</a></li>
-                <li><a href="https://www.analyticsvidhya.com/" target="_blank" rel="noopener" title="Analytics Vidhya — 数据分析社区">📈 Analytics Vidhya</a></li>
+                <?php dygita_get_resource_links(); ?>
             </ul>
         </div>
     </div>
