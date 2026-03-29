@@ -83,7 +83,8 @@ body > *:first-child, body > header:first-of-type{
 }
 
 .l-header .about{
-    font-size: 0.9rem;
+    color: var(--header-text-color);
+    font-size: 1.05rem;
     margin-bottom: 10px;
 }
 

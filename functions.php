@@ -1365,6 +1365,22 @@ function dygita_e($key) {
 // 主题初始化函数
 function themeInit($archive) {
     dygita_bootstrap_runtime();
+
+    // 一键切换语言：?dygita_lang=zh_CN 或 ?dygita_lang=en_US → 写 cookie 并重定向到当前页（去掉参数）
+    // 直接读 $_GET 而非 $archive->request->get()，避免 Typecho sandbox 路由注入导致 $_GET 被跳过
+    $langParam = $_GET[DYGITA_LANG_COOKIE] ?? null;
+    if ($langParam === 'zh_CN' || $langParam === 'en_US') {
+        Typecho\Cookie::set(DYGITA_LANG_COOKIE, $langParam);
+        $url = $archive->request->getRequestUrl();
+        $url = preg_replace('#[?&]dygita_lang=(?:zh_CN|en_US)(?=&|$)#', '', $url);
+        if (preg_match('#^([^?]*)\&(.+)$#', $url, $m)) {
+            $url = $m[1] . '?' . $m[2];
+        }
+        $url = rtrim($url, '?');
+        $archive->response->redirect($url);
+        exit;
+    }
+
     $routeType = '';
     if (isset($archive->parameter)) {
         if (is_object($archive->parameter) && isset($archive->parameter->type)) {
@@ -1405,20 +1421,6 @@ function themeInit($archive) {
     if ($pathInfo === 'category' || $pathInfo === 'categories') {
         $archive->setThemeFile('category.php');
         return;
-    }
-
-    // 一键切换语言：?dygita_lang=zh_CN 或 ?dygita_lang=en_US → 写 cookie 并重定向到当前页（去掉参数）
-    $langParam = $archive->request->get('dygita_lang');
-    if ($langParam === 'zh_CN' || $langParam === 'en_US') {
-        Typecho\Cookie::set(DYGITA_LANG_COOKIE, $langParam, 0, $archive->options->rootUrl);
-        $url = $archive->request->getRequestUrl();
-        $url = preg_replace('#[?&]dygita_lang=(?:zh_CN|en_US)(?=&|$)#', '', $url);
-        if (preg_match('#^([^?]*)\&(.+)$#', $url, $m)) {
-            $url = $m[1] . '?' . $m[2];
-        }
-        $url = rtrim($url, '?');
-        $archive->response->redirect($url);
-        exit;
     }
 
     // 处理主题偏好保存请求（仅限管理员，低风险操作无需 CSRF）

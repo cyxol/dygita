@@ -33,6 +33,7 @@ endif; ?>
 <script defer src="<?php $this->options->themeUrl('js/vendor/particles.min.js'); ?>"></script>
 <script defer src="<?php $this->options->themeUrl('js/headerCanvas.js'); ?>"></script>
 <script defer src="<?php $this->options->themeUrl('js/sidebar.js'); ?>"></script>
+<script defer src="<?php $this->options->themeUrl('js/ai-chat.js'); ?>"></script>
 <script defer src="<?php $this->options->themeUrl('js/theme-switcher.js'); ?>"></script>
 <script defer src="<?php $this->options->themeUrl('js/reading-progress.js'); ?>"></script>
 <?php if ($this->options->swiperEnabled == '1'): ?>

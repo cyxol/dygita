@@ -161,4 +161,11 @@ return array(
     // Language switch
     '切换语言' => 'Switch language',
     '中文' => '中文',
+
+    // AI agent chat widget
+    'AI 智能体问答' => 'AI Agent Q&A',
+    'AI 对话' => 'AI Chat',
+    '问点什么...' => 'Ask something...',
+    '发送' => 'Send',
+    '链接分享' => 'Useful Links',
 );

@@ -31,7 +31,23 @@
 
         function moveToggle(toggle, sidebar, isCollapsed) {
             if (!toggle || !sidebar) return;
-            // 按钮始终留在侧栏内部
+            if (isCollapsed) {
+                if (toggle.parentNode !== document.body) {
+                    document.body.appendChild(toggle);
+                }
+            } else {
+                if (toggle.parentNode !== sidebar) {
+                    sidebar.insertBefore(toggle, sidebar.firstChild);
+                }
+            }
+        }
+
+        function updateCollapsedTogglePositions() {
+            if (window.innerWidth <= 768) return;
+            var leftCollapsed = sidebarLeft && sidebarLeft.classList.contains('collapsed');
+            var rightCollapsed = sidebarRight && sidebarRight.classList.contains('collapsed');
+            moveToggle(leftToggle, sidebarLeft, leftCollapsed);
+            moveToggle(rightToggle, sidebarRight, rightCollapsed);
         }
 
         function updateIcon(toggle, side, isCollapsed) {
