@@ -10,3 +10,7 @@ Never commit `.env`, `config.inc.php`, database dumps or database storage.
 
 Validate with HEAD requests: `/.env`, `/docker-compose.yml`, `/data/typecho/typecho_users.ibd`
 and `/usr/themes/dygita/.git/config` must return 404; public CSS must return 200.
+
+After placing the theme, run: php usr/themes/dygita/tools/install-runtime.php
+This installs the DygitaRuntime plugin and registers routes explicitly. Re-run after theme updates.
+

@@ -45,17 +45,7 @@ function themeActivate() {
  * 运行期兜底注册（仅首次执行），兼容老站点未重新激活主题的场景
  */
 function dygita_bootstrap_runtime() {
-    static $bootstrapped = false;
-    if ($bootstrapped) return;
-    dygita_register_routes();
-    dygita_register_actions();
-    dygita_register_search_action();
-
-    // 注册搜索索引重建钩子：文章发布/更新时自动重建搜索索引
-    $searchPlugin = \Typecho\Plugin::factory('Widget\\Contents\\Post\\Edit');
-    $searchPlugin->finishPublish = [Dygita_Search_Index::class, 'onArticleChange'];
-
-    $bootstrapped = true;
+    // Initialization is installed by tools/install-runtime.php, never during reads.
 }
 
 /**
