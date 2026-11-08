@@ -13,6 +13,7 @@ if (!defined('__TYPECHO_ROOT_DIR__'))
 
 // 主题版本
 define('DYGITA_THEME_VERSION', '1.1.0');
+require_once __DIR__ . '/lib/Assets.php';
 
 /**
  * 注册主题自定义路由（统一入口，避免重复定义）
