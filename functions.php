@@ -16,6 +16,7 @@ define('DYGITA_THEME_VERSION', '1.1.0');
 require_once __DIR__ . '/lib/Assets.php';
 require_once __DIR__ . '/lib/Repository.php';
 require_once __DIR__ . '/lib/Search.php';
+require_once __DIR__ . '/lib/Preference.php';
 
 /**
  * 注册主题自定义路由（统一入口，避免重复定义）
@@ -41,6 +42,7 @@ function themeActivate() {
     dygita_register_routes();
     dygita_register_actions();
     dygita_register_search_action();
+    \Utils\Helper::addAction('dygita-preference', 'Dygita_Action_Preference');
 }
 
 /**
@@ -451,13 +453,13 @@ function dygita_get_saved_theme_prefs() {
     }
 
     // 访客兜底：从 Cookie 读取，避免仅 localStorage 导致首屏主题闪烁
-    if ($theme === '' && isset($_COOKIE['dygita_theme_pref'])) {
+    if (isset($_COOKIE['dygita_theme_pref'])) {
         $cookieTheme = trim((string) $_COOKIE['dygita_theme_pref']);
         if ($cookieTheme === 'light' || $cookieTheme === 'dark') {
             $theme = $cookieTheme;
         }
     }
-    if ($headerColor === '' && isset($_COOKIE['dygita_header_color'])) {
+    if (isset($_COOKIE['dygita_header_color'])) {
         $cookieHeaderColor = trim((string) $_COOKIE['dygita_header_color']);
         if (preg_match('/^#[0-9a-fA-F]{6}$/', $cookieHeaderColor)) {
             $headerColor = $cookieHeaderColor;
@@ -476,6 +478,9 @@ function dygita_get_config_array($options) {
     $hostname = $options->siteUrl;
     return array(
         'hostname' => $hostname,
+        'preferenceUrl' => \Typecho\Router::url('do', ['action' => 'dygita-preference'], $options->index),
+        'preferenceToken' => \Widget\Security::alloc()->getToken('dygita-preference'),
+        'canSavePreference' => \Widget\User::alloc()->pass('administrator', true),
         'likeUrl' => \Typecho\Router::url('do', array('action' => 'dygita-like'), $options->index),
         'root' => '/',
         'exturl' => false,
@@ -982,43 +987,7 @@ function themeInit($archive) {
         return;
     }
 
-    // 处理主题偏好保存请求（仅限管理员，低风险操作无需 CSRF）
-    if ($archive->request->isAjax() && $archive->request->isPost() && $archive->request->get('action') == 'savePreference') {
-        $type = $archive->request->get('type');
-        $value = $archive->request->get('value');
 
-        if (!in_array($type, ['theme', 'headerColor'])) {
-            echo 'invalid_type';
-            exit;
-        }
-
-        $user = Typecho\Widget::widget('Widget_User');
-        if (!$user->hasLogin() || !$user->pass('administrator', true)) {
-            echo 'client_only';
-            exit;
-        }
-
-        $db = Typecho\Db::get();
-        $optionsTable = dygita_get_table('options');
-
-        $existing = $db->fetchRow($db->select()->from($optionsTable)
-            ->where('name = ?', 'dygita_' . $type));
-
-        if ($existing) {
-            $db->query($db->update($optionsTable)
-                ->rows(array('value' => $value))
-                ->where('name = ?', 'dygita_' . $type));
-        } else {
-            $db->query($db->insert($optionsTable)->rows(array(
-                'name' => 'dygita_' . $type,
-                'value' => $value,
-                'user' => 0
-            )));
-        }
-
-        echo 'success';
-        exit;
-    }
 }
 
 /**
@@ -1076,6 +1045,7 @@ function themeDeactivate() {
     // 清理所有注册的 Action
     \Utils\Helper::removeAction('dygita-search-index');
     \Utils\Helper::removeAction('dygita-like');
+    \Utils\Helper::removeAction('dygita-preference');
 
     // 清理所有注册的自定义路由
     \Utils\Helper::removeRoute('tags_cloud');

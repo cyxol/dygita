@@ -20,14 +20,23 @@
     }
 
     function dygitaSavePreference(type, value) {
-        var baseUrl = (window.DYGITA && window.DYGITA.config && window.DYGITA.config.hostname) ? window.DYGITA.config.hostname : (window.location.origin + '/');
+        var config = (window.DYGITA && window.DYGITA.config) || {};
+        if (!config.canSavePreference) return;
         var xhr = new XMLHttpRequest();
-        xhr.open('POST', baseUrl, true);
+        xhr.open('POST', config.preferenceUrl, true);
         xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
         xhr.timeout = 5000;
-        xhr.onerror = function() {};
-        xhr.ontimeout = function() {};
-        xhr.send('action=savePreference&type=' + encodeURIComponent(type) + '&value=' + encodeURIComponent(value));
+        function failed() {
+            if (window.DYGITA.showToast) window.DYGITA.showToast('本地设置已保存，站点默认设置同步失败', 'error');
+        }
+        xhr.onerror = failed;
+        xhr.ontimeout = failed;
+        xhr.onload = function() {
+            if (xhr.status < 200 || xhr.status >= 300) { failed(); return; }
+            try { if (!JSON.parse(xhr.responseText).ok) failed(); } catch (e) { failed(); }
+        };
+        xhr.send('type=' + encodeURIComponent(type) + '&value=' + encodeURIComponent(value)
+            + '&_=' + encodeURIComponent(config.preferenceToken));
     }
 
     function initThemeToggle() {
