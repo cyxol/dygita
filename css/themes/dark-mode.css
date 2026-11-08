@@ -189,10 +189,6 @@ html.no-transitions *::after {
 }
 
 @media (prefers-color-scheme: dark) {
-    .l-header #logo img{
-        border-color: var(--border-color);
-    }
-
     .m-nav .nav li a,
     .m-nav .nav li a:link,
     .m-nav .nav li a:visited{

@@ -277,16 +277,8 @@ endif; ?>
     <header id="l-header" class="l-header">
         <div class="hdbg skin-bg"></div>
         <div class="m-about">
-            <div class="widget-profile">
-                <div class="profile-avatar">
-                    <?php $headerAuthorName = htmlspecialchars(dygita_get_author_name($this->options), ENT_QUOTES, 'UTF-8'); ?>
-                    <img src="<?php echo dygita_get_author_avatar($this->options); ?>" alt="<?php echo $headerAuthorName; ?>">
-                </div>
-                <div class="profile-info">
-                    <h1 class="tit" itemprop="headline"><a href="<?php $this->options->siteUrl(); ?>" aria-label="返回首页"><?php $this->options->title(); ?></a></h1>
-                    <div class="about" itemprop="description"><?php $this->options->description(); ?></div>
-                </div>
-            </div>
+            <h1 class="tit" itemprop="headline"><a href="<?php $this->options->siteUrl(); ?>" aria-label="返回首页"><?php $this->options->title(); ?></a></h1>
+            <div class="about" itemprop="description"><?php $this->options->description(); ?></div>
         </div>
         <canvas id="header-canvas"></canvas>
     </header>
@@ -510,4 +502,4 @@ endif; ?>
         <h1><a href="<?php $this->options->siteUrl(); ?>"><?php $this->options->title(); ?></a></h1>
         <div id="search-trigger" class="right m-header-search"></div>
     </div>
-    <section id="main-content" class="container-inner"> 
+    <section id="main-content" class="container-inner">

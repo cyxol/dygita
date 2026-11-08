@@ -140,7 +140,7 @@ function themeConfig($form)
     $form->addInput($copyright);
 
     // 博主信息配置
-    $authorAvatar = new Typecho\Widget\Helper\Form\Element\Text('authorAvatar', NULL, NULL, _t('博主头像URL'), _t('博主头像图片地址，留空使用主题默认头像 img/caiya.xin.jpg'));
+    $authorAvatar = new Typecho\Widget\Helper\Form\Element\Text('authorAvatar', NULL, NULL, _t('侧边栏及关于页头像URL'), _t('仅用于侧边栏和关于博主页面，标题栏不显示头像。留空使用主题默认头像 img/caiya.xin.jpg'));
     $form->addInput($authorAvatar);
 
     $authorName = new Typecho\Widget\Helper\Form\Element\Text('authorName', NULL, 'Yacine Tsai', _t('博主昵称'), _t('显示在侧边栏和关于页面的昵称，留空使用站点标题'));

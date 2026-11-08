@@ -2,8 +2,9 @@
 
 /* 标题栏样式 */
 .l-header{
-    padding: 30px 0 20px;
-    min-height: 120px;
+    box-sizing: border-box;
+    padding: 24px 20px;
+    min-height: 96px;
     margin-top: 0;
     border-top: none;
     background: var(--header-bg-color, #e74c3c);
@@ -14,26 +15,22 @@
 }
 
 .l-header .m-about{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 24px;
+    min-height: 48px;
     margin-top: 0;
-    padding-top: 24px;
+    padding-top: 0;
     position: relative;
     z-index: var(--z-header-content, 1);
 }
 
-.l-header #logo{
-    margin-top: 30px;
-    margin-bottom: 10px;
-}
-
-.l-header #logo img{
-    width: 50px;
-    height: 50px;
-    object-fit: cover;
-}
-
 .l-header .tit{
+    flex-shrink: 0;
     font-size: 1.8rem;
-    margin: 5px 0;
+    line-height: 1.4;
+    margin: 0;
 }
 
 .l-header .tit a{
@@ -43,9 +40,13 @@
 }
 
 .l-header .about{
+    min-width: 0;
     color: var(--header-text-color);
     font-size: 1.05rem;
-    margin-bottom: 10px;
+    line-height: 1.6;
+    text-align: left;
+    overflow-wrap: anywhere;
+    margin: 0;
 }
 
 .l-header #header-canvas, .l-header .hdbg{
@@ -227,15 +228,29 @@
 /* 移动端 Header 适配 (≤ 992px) */
 @media (width <= 992px) {
     body .l-header {
-        display: none;
+        display: block;
+        padding: 16px;
+        min-height: 80px;
+    }
+
+    .l-header .m-about {
+        gap: 16px;
+    }
+
+    .l-header .tit {
+        font-size: 1.5rem;
+    }
+
+    .l-header .about {
+        font-size: 0.9rem;
     }
 
     body .m-header {
-        display: flex;
+        display: none;
     }
 
     body .m-nav {
-        top: 50px;
+        top: 0;
         margin-top: 0;
     }
 
