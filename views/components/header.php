@@ -204,7 +204,7 @@ endif; ?>
         );
         ?>
         <script type="application/ld+json">
-            <?php echo json_encode($ldArticle, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT); ?>
+            <?php echo json_encode($ldArticle, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT | JSON_HEX_TAG); ?>
         </script>
     <?php
 endif; ?>
@@ -228,13 +228,13 @@ endif; ?>
     );
     ?>
     <script type="application/ld+json">
-        <?php echo json_encode($ldWebsite, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT); ?>
+        <?php echo json_encode($ldWebsite, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT | JSON_HEX_TAG); ?>
     </script>
 
     <!-- 主题配置 -->
     <script id="dygita-configurations">
         window.DYGITA = window.DYGITA || {};
-        window.DYGITA.config = <?php echo json_encode(dygita_get_config_array($this->options), JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE); ?>;
+        window.DYGITA.config = <?php echo json_encode(dygita_get_config_array($this->options), JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE | JSON_HEX_TAG); ?>;
     </script>
 
     <!-- 通过自有函数输出HTML头部信息 -->
