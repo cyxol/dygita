@@ -228,3 +228,38 @@
     color: var(--accent-color); 
     font-weight: 600; 
 }
+
+.ai-chat-skill-bar {
+    margin: 12px 0;
+}
+
+.ai-chat-skill-label {
+    display: block;
+    margin-bottom: 8px;
+    color: var(--text-color);
+    font-size: 12px;
+}
+
+.ai-chat-skill-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+}
+
+.ai-chat-skill-chip {
+    max-width: 100%;
+    padding: 5px 9px;
+    border: 1px solid var(--border-color);
+    border-radius: 12px;
+    background: var(--content-bg-color);
+    color: var(--text-color);
+    font-size: 12px;
+    overflow-wrap: anywhere;
+    cursor: pointer;
+}
+
+.ai-chat-skill-chip:hover,
+.ai-chat-skill-chip.active {
+    border-color: var(--link-hover-color);
+    color: var(--link-hover-color);
+}

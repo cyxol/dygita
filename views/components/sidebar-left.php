@@ -47,7 +47,7 @@
     };
     </script>
     <div class="widget widget-ai-chat">
-        <div class="title"><h2><i class="fa fa-comments" aria-hidden="true"></i> <?php dygita_e('AI 智能体问答'); ?></h2></div>
+        <div class="title"><h2><i class="fa fa-comments" aria-hidden="true"></i> <?php dygita_e('AI 智能体问答'); ?> <small>演示</small></h2></div>
         <div class="widget-content">
             <div class="ai-chat-messages" id="ai-chat-messages"
                  aria-live="polite" aria-label="<?php dygita_e('AI 对话'); ?>"></div>

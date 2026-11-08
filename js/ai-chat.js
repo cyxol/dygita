@@ -23,7 +23,7 @@
     var MODEL_KEY = 'dygita_ai_model_idx';
 
     function loadModelIdx() {
-        try { var v = parseInt(localStorage.getItem(MODEL_KEY), 10); return isNaN(v) ? 0 : v % MODELS.length; } catch (e) { return 0; }
+        try { var v = parseInt(localStorage.getItem(MODEL_KEY), 10); return isNaN(v) ? 0 : ((v % MODELS.length) + MODELS.length) % MODELS.length; } catch (e) { return 0; }
     }
     function saveModelIdx(i) {
         try { localStorage.setItem(MODEL_KEY, String(i)); } catch (e) { /* ignore */ }
@@ -275,7 +275,7 @@
 
         // 欢迎语 + skill bar
         var ctx = (isPost && postTitle) ? '《' + postTitle + '》' : '博客';
-        bubble('你好！我是 AI 智能体，有关 ' + ctx + ' 的问题，尽管问我 😊', 'ai');
+        bubble('当前为演示模式，回复由预设内容生成，尚未连接 AI 服务。可试问有关 ' + ctx + ' 的问题。', 'ai');
         buildSkillBar();
     }
 
