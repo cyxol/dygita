@@ -51,7 +51,8 @@ $this->need('views/components/sidebar-left.php'); ?>
             <?php endif; ?>
 
             <!-- 文章列表 -->
-            <?php while ($this->next()): ?>
+            <?php $counterIds = []; while ($this->next()) { $counterIds[] = $this->cid; } Dygita_Repository::preload($counterIds); ?>
+<?php while ($this->next()): ?>
                 <?php $this->need('views/components/post-card.php'); ?>
             <?php endwhile; ?>
             <?php $this->pageNav('&laquo; ' . _t('前一页'), _t('后一页') . ' &raquo;'); ?>

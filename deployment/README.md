@@ -18,3 +18,6 @@ This installs the DygitaRuntime plugin and registers routes explicitly. Re-run a
 Build frontend assets after pulling: npm ci; npm run build. js/dist is generated and is not tracked.
 Search now accepts GET /action/dygita-search-index?q=keyword and returns at most 40 public articles; responses are not cached.
 
+
+After backing up the database, run php usr/themes/dygita/tools/migrate-counters.php once (idempotent). It preserves legacy displayed counts and adds supporting indexes. Counters require MariaDB/MySQL.
+

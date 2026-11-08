@@ -1,6 +1,7 @@
 <?php if (!defined('__TYPECHO_ROOT_DIR__')) exit; ?>
 
 <?php $hasPosts = false; ?>
+<?php $counterIds = []; while ($this->next()) { $counterIds[] = $this->cid; } Dygita_Repository::preload($counterIds); ?>
 <?php while ($this->next()): ?>
     <?php $hasPosts = true; ?>
     <?php $this->need('views/components/post-card.php'); ?>

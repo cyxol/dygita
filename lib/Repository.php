@@ -5,6 +5,37 @@ if (!defined('__TYPECHO_ROOT_DIR__')) exit;
 final class Dygita_Repository
 {
 
+    private static array $counts = [];
+
+    public static function preload(array $cids): void {
+        $cids = array_values(array_filter(array_unique(array_map('intval', $cids))));
+        $missing = array_values(array_filter($cids, fn($id) => !isset(self::$counts[$id])));
+        if (!$missing) return;
+        foreach ($missing as $id) self::$counts[$id] = ['likes' => 0, 'views' => 0];
+        $db = \Typecho\Db::get();
+        foreach ($db->fetchAll($db->select('cid','name','int_value')->from('table.fields')
+            ->where('cid IN ?', $missing)->where('name IN ?', ['likes','views'])) as $row) {
+            self::$counts[(int) $row['cid']][$row['name']] = (int) $row['int_value'];
+        }
+    }
+
+    public static function counter(int $cid, string $name): int {
+        self::preload([$cid]);
+        return self::$counts[$cid][$name] ?? 0;
+    }
+
+    public static function increment(int $cid, string $name): int {
+        if ($cid < 1 || !in_array($name, ['likes','views'], true)) throw new \InvalidArgumentException('Invalid counter');
+        $db = \Typecho\Db::get();
+        $table = $db->getPrefix() . 'fields';
+        // MariaDB/MySQL atomic upsert; all interpolated values are validated above.
+        $db->query("INSERT INTO `{$table}` (`cid`,`name`,`type`,`int_value`,`str_value`,`float_value`)
+            VALUES ({$cid},'{$name}','int',1,'1',0)
+            ON DUPLICATE KEY UPDATE int_value=int_value+1, str_value=CAST(int_value AS CHAR), type='int'", \Typecho\Db::WRITE);
+        unset(self::$counts[$cid]);
+        return self::counter($cid, $name);
+    }
+
     public static function publicPosts() {
         $db = \Typecho\Db::get();
         return $db->select()->from('table.contents')->where('type = ?', 'post')

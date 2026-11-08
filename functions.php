@@ -53,80 +53,7 @@ function dygita_bootstrap_runtime() {
 /**
  * 点赞 Action — 通过 /action/dygita-like 路由处理 AJAX 点赞请求
  */
-class Dygita_Action_Like extends \Typecho\Widget implements \Widget\ActionInterface
-{
-    public function execute() {}
-
-    public function action()
-    {
-        if (!$this->request->isPost()) {
-            $this->response->setStatus(405);
-            exit;
-        }
-
-        $cid = intval($this->request->get('cid'));
-        if (!$cid) {
-            $this->response->setStatus(400);
-            echo 'invalid';
-            exit;
-        }
-
-        $db = \Typecho\Db::get();
-        $contentsTable = dygita_get_table('contents');
-
-        $postExists = $db->fetchRow($db->select('cid')->from($contentsTable)
-            ->where('cid = ?', $cid)
-            ->where('type = ?', 'post')
-            ->where('status = ?', 'publish')
-            ->limit(1));
-
-        if (!$postExists) {
-            $this->response->setStatus(404);
-            echo 'not_found';
-            exit;
-        }
-
-        $fieldsTable = dygita_get_table('fields');
-
-        $likes = \Typecho\Cookie::get('extend_contents_likes');
-        $likes = $likes ? explode(',', $likes) : array();
-        $cidStr = (string)$cid;
-
-        if (!in_array($cidStr, $likes)) {
-            $row = $db->fetchRow($db->select('str_value')->from($fieldsTable)
-                ->where('cid = ?', $cid)
-                ->where('name = ?', 'likes'));
-
-            if (!$row) {
-                $db->query($db->insert($fieldsTable)->rows(array(
-                    'cid'         => $cid,
-                    'name'        => 'likes',
-                    'type'        => 'str',
-                    'str_value'   => 1,
-                    'int_value'   => 1,
-                    'float_value' => 0
-                )));
-                $count = 1;
-            } else {
-                $count = intval($row['str_value']) + 1;
-                $db->query($db->update($fieldsTable)
-                    ->rows(array('str_value' => $count, 'int_value' => $count))
-                    ->where('cid = ?', $cid)
-                    ->where('name = ?', 'likes'));
-            }
-
-            $likes[] = $cidStr;
-            if (count($likes) > 100) {
-                $likes = array_slice($likes, -100);
-            }
-            \Typecho\Cookie::set('extend_contents_likes', implode(',', $likes));
-            echo $count;
-        } else {
-            echo 'already_liked';
-        }
-        exit;
-    }
-}
+require_once __DIR__ . '/lib/Like.php';
 
 /**
  * 注册点赞 Action（仅在未注册时写库，避免每次请求都写 DB）
@@ -722,63 +649,20 @@ function dygita_get_related_post_thumbnail($post)
 }
 
 /* 增加: 浏览量统计 */
-function dygita_get_post_view($archive)
-{
-    $cid    = $archive->cid;
-    $db     = Typecho\Db::get();
-    $fieldsTable = dygita_get_table('fields');
-
-    $row = $db->fetchRow($db->select('str_value')->from($fieldsTable)
-        ->where('cid = ?', $cid)
-        ->where('name = ?', 'views'));
-
-    if (!$row) {
-        $db->query($db->insert($fieldsTable)->rows(array(
-            'cid' => $cid,
-            'name' => 'views',
-            'type' => 'str',
-            'str_value' => 0,
-            'int_value' => 0,
-            'float_value' => 0
-        )));
-        $views = 0;
-    } else {
-        $views = intval($row['str_value']);
-    }
-
-    if ($archive->is('single')) {
-         $viewed = Typecho\Cookie::get('extend_contents_views');
-         $viewed = $viewed ? explode(',', $viewed) : array();
-
-         if (!in_array($cid, $viewed)) {
-             $views++;
-             $db->query($db->update($fieldsTable)
-                ->rows(array('str_value' => $views, 'int_value' => $views))
-                ->where('cid = ?', $cid)
-                ->where('name = ?', 'views'));
-
-             $viewed[] = $cid;
-             if (count($viewed) > 100) {
-                 $viewed = array_slice($viewed, -100);
-             }
-             Typecho\Cookie::set('extend_contents_views', implode(',', $viewed));
-         }
+function dygita_get_post_view($archive) {
+    $cid = (int) $archive->cid;
+    $views = Dygita_Repository::counter($cid, 'views');
+    if ($archive->is('single') && !$archive->hidden) {
+        $seen = array_filter(explode(',', (string) \Typecho\Cookie::get('extend_contents_views')));
+        if (!in_array((string) $cid, $seen, true)) {
+            $views = Dygita_Repository::increment($cid, 'views');
+            $seen[] = (string) $cid;
+            \Typecho\Cookie::set('extend_contents_views', implode(',', array_slice($seen, -100)));
+        }
     }
     echo $views;
 }
-
-/* 增加: 点赞数量获取 */
-function dygita_agree_num($cid) {
-    $db = Typecho\Db::get();
-    $fieldsTable = dygita_get_table('fields');
-    $row = $db->fetchRow($db->select('str_value')->from($fieldsTable)
-        ->where('cid = ?', $cid)
-        ->where('name = ?', 'likes'));
-    if (!$row) {
-        return 0;
-    }
-    return intval($row['str_value']);
-}
+function dygita_agree_num($cid) { return Dygita_Repository::counter((int) $cid, 'likes'); }
 
 /* 增加: 处理点赞请求和自定义路由 */
 // 此函数已移至文件末尾，与标签云页面处理逻辑合并
