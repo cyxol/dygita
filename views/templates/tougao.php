@@ -8,7 +8,7 @@ if (empty(dygita_opt($this->options, 'dygita_tougao_b', 'git_tougao_b')) || dygi
 
 $csrfToken = Typecho\Cookie::get('dygita_tougao_token');
 if (empty($csrfToken)) {
-    $csrfToken = md5(uniqid((string) mt_rand(), true));
+    $csrfToken = bin2hex(random_bytes(32));
     Typecho\Cookie::set('dygita_tougao_token', $csrfToken);
 }
 
@@ -31,7 +31,7 @@ if (isset($_POST['tougao_form']) && $_POST['tougao_form'] == 'send') {
     // 过滤 HTML 标签防止 XSS
     $name = strip_tags($name);
     $title = strip_tags($title);
-    $content = strip_tags($content, '<p><br><strong><em><ul><ol><li><blockquote><code><pre><h2><h3><h4>');
+    $content = Dygita_Submission::sanitize($content);
     
     // 表单项数据验证
     if (empty($name) || mb_strlen($name) > 20) {
@@ -48,28 +48,9 @@ if (isset($_POST['tougao_form']) && $_POST['tougao_form'] == 'send') {
     $post_content = $content . '<br />感谢来自:' . $safeName . '的投稿';
     
     // 创建新文章
-    $db = Typecho\Db::get();
-    $insertId = $db->query($db->insert('table.contents')
-        ->rows(array(
-            'title'         => $title,
-            'text'          => $post_content,
-            'created'       => time(),
-            'modified'      => time(),
-            'authorId'      => 1, // 默认作者ID
-            'status'        => 'draft', // 默认为草稿状态
-            'type'          => 'post',
-            'password'      => '',
-            'slug'          => '',
-            'parent'        => 0,
-            'order'         => 0,
-            'template'      => '',
-            'commentsNum'   => 0,
-            'allowComment'  => 1,
-            'allowPing'     => 1,
-            'allowFeed'     => 1,
-            'keywords'      => ''
-        )));
-    
+    $insertId = Dygita_Submission::create($title, $content, $name);
+    Typecho\Cookie::delete('dygita_tougao_token');
+
     if ($insertId) {
         // 投稿成功给博主发送邮件（需要服务器支持邮件功能）
         if ($tomail) {

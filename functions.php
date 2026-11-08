@@ -17,6 +17,7 @@ require_once __DIR__ . '/lib/Assets.php';
 require_once __DIR__ . '/lib/Repository.php';
 require_once __DIR__ . '/lib/Search.php';
 require_once __DIR__ . '/lib/Preference.php';
+require_once __DIR__ . '/lib/Submission.php';
 
 /**
  * 注册主题自定义路由（统一入口，避免重复定义）
