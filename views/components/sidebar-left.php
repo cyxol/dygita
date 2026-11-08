@@ -14,13 +14,7 @@
         </div>
         <div class="widget-content">
             <?php
-                $catalogCache = Dygita_Catalog_Cache::getCache($this->cid);
-                if ($catalogCache !== null) {
-                    $catalogHtml = $catalogCache['catalog'];
-                } else {
-                    $catalog = Dygita_ArticleCatalog::instance();
-                    $catalogHtml = $catalog->renderCatalogHtml();
-                }
+                $catalogHtml = Dygita_Catalog_Cache::render($this)['catalog'];
                 if (!empty($catalogHtml)) {
                     echo '<div class="catalog-content">' . $catalogHtml . '</div>';
                 } else {

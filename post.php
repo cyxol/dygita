@@ -1,13 +1,8 @@
 <?php if (!defined('__TYPECHO_ROOT_DIR__')) exit;
 $GLOBALS['dygita_content_class'] = 'posts-expand'; ?>
 <?php
-$catalog = Dygita_ArticleCatalog::instance();
-$catalogCache = Dygita_Catalog_Cache::getCache($this->cid);
-if ($catalogCache !== null) {
-    $parsedContent = $catalogCache['parsed'];
-} else {
-    $parsedContent = $catalog->renderHtml($this->content);
-}
+$catalogCache = Dygita_Catalog_Cache::render($this);
+$parsedContent = $catalogCache['parsed'];
 ?>
 <?php $this->need('views/components/header.php'); ?>
 <?php $this->need('views/components/sidebar-left.php'); ?>
