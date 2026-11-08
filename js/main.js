@@ -152,363 +152,89 @@
     }
 
     function initSearch() {
-        var searchOverlay = null;
-        var searchPopup = null;
-        var searchForm = null;
-        var searchInput = null;
-        var resultContent = null;
-        var liveSearchLimit = 8;
-        var searchDebounceTimer = null;
-
-        // 性能优化：预建立搜索索引，避免每次搜索都遍历全部数据
-        var searchIndexCache = null;
-        var searchIndexReady = false;
-
-        // PJAX 内存泄漏修复：存储清理函数
-        var cleanupFunctions = [];
-
-        var buildSearchIndexPromise = null;
-
-        function buildSearchIndex() {
-            if (searchIndexReady) return Promise.resolve();
-            if (buildSearchIndexPromise) return buildSearchIndexPromise;
-
-            buildSearchIndexPromise = getSearchIndex().then(function(rawIndex) {
-                if (!rawIndex || !rawIndex.length) {
-                    searchIndexCache = [];
-                    searchIndexReady = true;
-                    return;
-                }
-
-                // 预处理：将标题和摘要转为小写，建立倒排索引
-                searchIndexCache = rawIndex.map(function(item) {
-                    var title = String(item.title || '');
-                    var excerpt = String(item.excerpt || '');
-                    return {
-                        title: title,
-                        excerpt: excerpt,
-                        url: item.url || '#',
-                        date: item.date || '',
-                        // 预先转换为小写，避免搜索时重复转换
-                        searchText: (title + ' ' + excerpt).toLowerCase(),
-                        // 计算权重：标题匹配权重更高
-                        titleLower: title.toLowerCase()
-                    };
-                });
-
-                searchIndexReady = true;
-            });
-
-            return buildSearchIndexPromise;
+        var overlay = null;
+        var input = null;
+        var result = null;
+        var timer = null;
+        var controller = null;
+        var sequence = 0;
+        var cleanup = [];
+        function listen(node, event, fn) {
+            node.addEventListener(event, fn);
+            cleanup.push(function() { node.removeEventListener(event, fn); });
         }
-
-        function ensureSearchPopup() {
-            if (searchOverlay && searchPopup) {
-                // 检查 DOM 是否仍然存在（防止 PJAX 导致的 detached DOM）
-                if (!document.body.contains(searchOverlay)) {
-                    searchOverlay = null;
-                    searchPopup = null;
-                    searchForm = null;
-                    searchInput = null;
-                    resultContent = null;
-                }
-            }
-
-            if (searchOverlay && searchPopup) return;
-
-            var existedOverlay = document.querySelector('.search-pop-overlay');
-            if (existedOverlay) {
-                searchOverlay = existedOverlay;
-                searchPopup = searchOverlay.querySelector('.search-popup');
-            }
-
-            if (!searchOverlay) {
-                searchOverlay = document.createElement('div');
-                searchOverlay.className = 'search-pop-overlay';
-                document.body.appendChild(searchOverlay);
-            }
-
-            if (!searchPopup) {
-                searchPopup = document.createElement('div');
-                searchPopup.className = 'search-popup';
-                var tpl = document.getElementById('tpl-search-popup');
-                if (tpl) {
-                    searchPopup.appendChild(tpl.content.cloneNode(true));
-                }
-                searchOverlay.appendChild(searchPopup);
-            }
-
-            searchForm = document.getElementById('search-form-popup');
-            if (searchForm && window.DYGITA && window.DYGITA.config && window.DYGITA.config.hostname) {
-                searchForm.action = String(window.DYGITA.config.hostname).replace(/\/$/, '');
-            }
-
-            var closeBtn = searchPopup.querySelector('.popup-btn-close');
-            if (closeBtn && !closeBtn.dataset.bound) {
-                var closeBtnHandler = function(e) {
-                    e.stopPropagation();
-                    searchOverlay.classList.remove('search-active');
-                };
-                closeBtn.addEventListener('click', closeBtnHandler);
-                closeBtn.dataset.bound = '1';
-
-                // 注册清理函数
-                cleanupFunctions.push(function() {
-                    closeBtn.removeEventListener('click', closeBtnHandler);
-                    delete closeBtn.dataset.bound;
+        function close() { if (overlay) overlay.classList.remove('search-active'); }
+        function search() {
+            var query = input.value.trim();
+            var current = ++sequence;
+            if (controller) controller.abort();
+            if (!query) { result.textContent = '输入关键词搜索文章'; return; }
+            controller = new AbortController();
+            var url = new URL((window.DYGITA && window.DYGITA.searchIndexUrl) || '/action/dygita-search-index', window.location.origin);
+            url.protocol = window.location.protocol;
+            url.host = window.location.host;
+            url.searchParams.set('q', query);
+            result.textContent = '正在搜索…';
+            fetch(url.href, { credentials: 'same-origin', cache: 'no-store', signal: controller.signal })
+                .then(function(response) {
+                    if (!response.ok) throw new Error('HTTP ' + response.status);
+                    return response.json();
+                }).then(function(rows) {
+                    if (current !== sequence || !result) return;
+                    if (!Array.isArray(rows)) throw new Error('Invalid response');
+                    if (!rows.length) { result.textContent = '未找到相关文章，按回车尝试完整搜索。'; return; }
+                    result.innerHTML = rows.slice(0, 8).map(function(row) {
+                        var link = new URL(row.url, window.location.origin);
+                        if (link.protocol !== 'http:' && link.protocol !== 'https:') return '';
+                        return '<p class="search-result"><a href="' + escapeHtml(link.href) + '">'
+                            + '<strong>' + escapeHtml(row.title) + '</strong><br>'
+                            + '<small>' + escapeHtml(row.date) + '</small><br>'
+                            + '<span>' + escapeHtml(row.excerpt) + '</span></a></p>';
+                    }).join('');
+                }).catch(function(error) {
+                    if (error.name === 'AbortError' || current !== sequence || !result) return;
+                    result.textContent = '搜索暂时不可用，请重试或按回车使用完整搜索。';
+                });
+        }
+        function open(event) {
+            event.preventDefault();
+            if (!overlay) {
+                var template = document.getElementById('tpl-search-popup');
+                if (!template) return;
+                overlay = document.createElement('div');
+                overlay.className = 'search-pop-overlay';
+                var popup = document.createElement('div');
+                popup.className = 'search-popup';
+                popup.appendChild(template.content.cloneNode(true));
+                overlay.appendChild(popup);
+                document.body.appendChild(overlay);
+                input = overlay.querySelector('.search-input');
+                result = overlay.querySelector('#search-result');
+                listen(overlay.querySelector('.popup-btn-close'), 'click', close);
+                listen(overlay, 'click', function(e) { if (e.target === overlay) close(); });
+                listen(input, 'input', function() {
+                    // Immediately invalidate an older request, including during debounce.
+                    sequence++;
+                    if (controller) controller.abort();
+                    clearTimeout(timer);
+                    timer = setTimeout(search, 200);
                 });
             }
-
-            if (!searchOverlay.dataset.bound) {
-                var overlayHandler = function(e) {
-                    if (e.target === searchOverlay) searchOverlay.classList.remove('search-active');
-                };
-                searchOverlay.addEventListener('click', overlayHandler);
-                searchOverlay.dataset.bound = '1';
-
-                // 注册清理函数
-                cleanupFunctions.push(function() {
-                    searchOverlay.removeEventListener('click', overlayHandler);
-                    delete searchOverlay.dataset.bound;
-                });
-            }
-
-            searchInput = searchPopup.querySelector('.search-input');
-            resultContent = document.getElementById('search-result');
-
-            if (searchInput && resultContent && !searchInput.dataset.bound) {
-                var inputHandler = function() {
-                    if (searchDebounceTimer) window.clearTimeout(searchDebounceTimer);
-                    searchDebounceTimer = window.setTimeout(function () {
-                        renderLiveSearch(searchInput.value.trim());
-                    }, 120);
-                };
-
-                var keypressHandler = function(e) {
-                    if (e.key !== 'Enter') return;
-                    var keyword = searchInput.value.trim();
-                    if (!keyword) return;
-                    if (searchForm) searchForm.submit();
-                };
-
-                searchInput.addEventListener('input', inputHandler);
-                searchInput.addEventListener('keypress', keypressHandler);
-                searchInput.dataset.bound = '1';
-
-                // 注册清理函数
-                cleanupFunctions.push(function() {
-                    searchInput.removeEventListener('input', inputHandler);
-                    searchInput.removeEventListener('keypress', keypressHandler);
-                    delete searchInput.dataset.bound;
-                });
-            }
+            overlay.classList.add('search-active');
+            input.focus();
+            search();
         }
-
-        function openSearch(e) {
-            if (e) {
-                e.stopPropagation();
-                e.preventDefault();
-            }
-
-            ensureSearchPopup();
-            searchOverlay.classList.add('search-active');
-            var input = searchPopup ? searchPopup.querySelector('.search-input') : null;
-            if (input) {
-                input.focus();
-            }
-
-            // 延迟构建索引，只在首次打开搜索时构建
-            buildSearchIndex().then(function() {
-                if (input) {
-                    renderLiveSearch(input.value.trim());
-                }
-            });
-        }
-
-        var triggers = [
-            document.getElementById('search-trigger-nav'),
-            document.getElementById('search-trigger'),
-            document.querySelector('.search-toggle')
-        ];
-        triggers.forEach(function (node) {
-            if (!node || node.dataset.searchBound === '1') return;
-            node.addEventListener('click', openSearch);
-            node.dataset.searchBound = '1';
-
-            // 注册清理函数
-            cleanupFunctions.push(function() {
-                node.removeEventListener('click', openSearch);
-                delete node.dataset.searchBound;
-            });
-        });
-
-        if (!window.__dygitaSearchEscBound) {
-            var escHandler = function(e) {
-                if (e.key === 'Escape' && searchOverlay) searchOverlay.classList.remove('search-active');
-            };
-            document.addEventListener('keydown', escHandler);
-            window.__dygitaSearchEscBound = true;
-
-            // 注册清理函数
-            cleanupFunctions.push(function() {
-                document.removeEventListener('keydown', escHandler);
-                window.__dygitaSearchEscBound = false;
-            });
-        }
-
-        function escapeHtml(str) {
-            return str.replace(/[&<>"']/g, function (ch) {
-                return {
-                    '&': '&amp;',
-                    '<': '&lt;',
-                    '>': '&gt;',
-                    '"': '&quot;',
-                    "'": '&#39;'
-                }[ch];
-            });
-        }
-
-        var searchIndexPromise = null;
-
-        function fetchSearchIndex() {
-            if (searchIndexPromise) return searchIndexPromise;
-
-            var searchIndexUrl = window.DYGITA && window.DYGITA.searchIndexUrl
-                ? window.DYGITA.searchIndexUrl
-                : '/action/dygita-search-index';
-
-            searchIndexPromise = fetch(searchIndexUrl, {
-                credentials: 'same-origin'
-            })
-                .then(function(res) {
-                    if (!res.ok) throw new Error('HTTP ' + res.status);
-                    return res.json();
-                })
-                .then(function(data) {
-                    window.DYGITA = window.DYGITA || {};
-                    window.DYGITA.searchIndex = data;
-                    return data;
-                })
-                .catch(function() {
-                    return [];
-                });
-
-            return searchIndexPromise;
-        }
-
-        function getSearchIndex() {
-            if (window.DYGITA && Array.isArray(window.DYGITA.searchIndex)) {
-                return Promise.resolve(window.DYGITA.searchIndex);
-            }
-            return fetchSearchIndex();
-        }
-
-        function renderLiveSearch(keyword) {
-            if (!resultContent) return;
-
-            if (!keyword) {
-                resultContent.innerHTML = '<div id="no-result"><i class="fa fa-search fa-5x"></i></div>';
-                return;
-            }
-
-            // 确保索引已构建（异步）
-            buildSearchIndex().then(function() {
-                var normalizedKeyword = keyword.toLowerCase();
-                var matched = [];
-
-                // 性能优化：使用预处理的索引，避免重复转换小写
-                // 同时实现优先级排序：标题匹配 > 内容匹配
-                var titleMatches = [];
-                var contentMatches = [];
-
-                for (var i = 0; i < searchIndexCache.length; i++) {
-                    var item = searchIndexCache[i];
-
-                    // 检查是否匹配
-                    var matchIndex = item.searchText.indexOf(normalizedKeyword);
-                    if (matchIndex === -1) continue;
-
-                    // 区分标题匹配和内容匹配，标题匹配优先级更高
-                    var titleMatchIndex = item.titleLower.indexOf(normalizedKeyword);
-                    if (titleMatchIndex !== -1) {
-                        titleMatches.push({
-                            item: item,
-                            matchIndex: titleMatchIndex
-                        });
-                    } else {
-                        contentMatches.push({
-                            item: item,
-                            matchIndex: matchIndex
-                        });
-                    }
-                }
-
-                // 排序：标题匹配靠前，同类型按匹配位置排序（越靠前越相关）
-                titleMatches.sort(function(a, b) {
-                    return a.matchIndex - b.matchIndex;
-                });
-                contentMatches.sort(function(a, b) {
-                    return a.matchIndex - b.matchIndex;
-                });
-
-                // 合并结果，标题匹配优先
-                matched = titleMatches.concat(contentMatches).slice(0, liveSearchLimit);
-
-                if (!matched.length) {
-                    resultContent.innerHTML = '<div id="no-result"><p style="color:#999;font-size:14px;"><i class="fa fa-frown-o"></i> 未找到与 "<strong>' + escapeHtml(keyword) + '</strong>" 相关的内容，按回车尝试全站搜索</p></div>';
-                    return;
-                }
-
-                var html = '';
-                for (var j = 0; j < matched.length; j++) {
-                    var row = matched[j].item;
-                    var rowTitle = escapeHtml(row.title || '无标题');
-                    var rowUrl = escapeHtml(row.url);
-                    var rowExcerpt = escapeHtml(row.excerpt);
-                    var rowDate = escapeHtml(row.date);
-                    html += '<p class="search-result">'
-                        + '<a href="' + rowUrl + '" style="display:block;color:inherit;text-decoration:none;">'
-                        + '<strong style="display:block;margin-bottom:4px;">' + rowTitle + '</strong>'
-                        + '<span style="display:block;font-size:12px;color:#999;margin-bottom:4px;">' + rowDate + '</span>'
-                        + '<span style="display:block;font-size:13px;line-height:1.6;color:inherit;">' + rowExcerpt + '</span>'
-                        + '</a>'
-                        + '</p>';
-                }
-                html += '<p class="search-result" style="color:#999;font-size:12px;"><i class="fa fa-keyboard-o"></i> 回车可使用完整搜索页查看更多结果</p>';
-                resultContent.innerHTML = html;
-            });
-        }
-
-        // PJAX 内存泄漏修复：返回清理函数
-        return function cleanup() {
-            // 清理所有事件监听器
-            cleanupFunctions.forEach(function(fn) {
-                try {
-                    fn();
-                } catch (e) {
-                    // 忽略清理错误
-                }
-            });
-            cleanupFunctions = [];
-
-            // 清理 debounce timer
-            if (searchDebounceTimer) {
-                window.clearTimeout(searchDebounceTimer);
-                searchDebounceTimer = null;
-            }
-
-            // 清除 DOM 引用，帮助垃圾回收
-            searchOverlay = null;
-            searchPopup = null;
-            searchForm = null;
-            searchInput = null;
-            resultContent = null;
-
-            // 清除搜索索引缓存，确保 PJAX 跳转后使用新页面的 searchIndex 数据
-            searchIndexCache = null;
-            searchIndexReady = false;
-            buildSearchIndexPromise = null;
-            searchIndexPromise = null;
+        var triggers = [document.getElementById('search-trigger-nav'), document.getElementById('search-trigger'), document.querySelector('.search-toggle')];
+        triggers.filter(function(node, index) { return node && triggers.indexOf(node) === index; })
+            .forEach(function(node) { listen(node, 'click', open); });
+        listen(document, 'keydown', function(e) { if (e.key === 'Escape') close(); });
+        return function() {
+            sequence++;
+            clearTimeout(timer);
+            if (controller) controller.abort();
+            cleanup.forEach(function(fn) { fn(); });
+            if (overlay) overlay.remove();
+            overlay = input = result = null;
         };
     }
 

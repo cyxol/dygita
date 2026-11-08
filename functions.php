@@ -14,6 +14,8 @@ if (!defined('__TYPECHO_ROOT_DIR__'))
 // 主题版本
 define('DYGITA_THEME_VERSION', '1.1.0');
 require_once __DIR__ . '/lib/Assets.php';
+require_once __DIR__ . '/lib/Repository.php';
+require_once __DIR__ . '/lib/Search.php';
 
 /**
  * 注册主题自定义路由（统一入口，避免重复定义）
@@ -1138,112 +1140,6 @@ function themeInit($archive) {
 /**
  * 全站搜索索引生成与管理
  */
-class Dygita_Search_Index {
-    const OPTION_KEY = 'dygita_search_index';
-
-    public static function generate() {
-        $db = Typecho\Db::get();
-        $contentsTable = dygita_get_table('contents');
-
-        $posts = $db->fetchAll($db->select('cid', 'title', 'text', 'created')
-            ->from($contentsTable)
-            ->where('type = ?', 'post')
-            ->where('status = ?', 'publish')
-            ->order('created', Typecho\Db::SORT_DESC));
-
-        $index = [];
-        foreach ($posts as $post) {
-            $index[] = self::buildItem($post);
-        }
-
-        $json = json_encode($index, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
-        self::saveToOptions($json);
-        return $json;
-    }
-    
-    private static function buildItem($post) {
-        $text = $post['text'];
-        if (strpos($text, '<!--markdown-->') === 0) {
-            $text = substr($text, 15);
-            $text = \Utils\Markdown::convert($text);
-        }
-        $excerpt = trim(strip_tags($text));
-        $excerpt = mb_substr($excerpt, 0, 120, 'UTF-8');
-        $permalink = Typecho\Router::url('post', $post, Typecho\Widget::widget('Widget_Options')->index);
-        return [
-            'cid' => $post['cid'],
-            'title' => $post['title'],
-            'url' => $permalink,
-            'excerpt' => $excerpt,
-            'date' => date('Y-m-d', $post['created'])
-        ];
-    }
-
-    public static function updateSingle($post) {
-        if ($post['type'] !== 'post' || $post['status'] !== 'publish') return;
-        $db = Typecho\Db::get();
-        $row = $db->fetchRow($db->select('value')->from(dygita_get_table('options'))->where('name = ?', self::OPTION_KEY));
-        $index = $row ? json_decode($row['value'], true) : [];
-        if (!is_array($index)) $index = [];
-        
-        $item = self::buildItem($post);
-        $found = false;
-        foreach ($index as &$idx) {
-            if (isset($idx['cid']) && $idx['cid'] == $post['cid']) {
-                $idx = $item;
-                $found = true;
-                break;
-            }
-        }
-        if (!$found) {
-            array_unshift($index, $item);
-        }
-        self::saveToOptions(json_encode($index, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES));
-    }
-
-    private static function saveToOptions($json) {
-        $db = Typecho\Db::get();
-        $optionsTable = dygita_get_table('options');
-
-        $existing = $db->fetchRow($db->select()->from($optionsTable)->where('name = ?', self::OPTION_KEY));
-        if ($existing) {
-            $db->query($db->update($optionsTable)->rows(['value' => $json])->where('name = ?', self::OPTION_KEY));
-        } else {
-            $db->query($db->insert($optionsTable)->rows(['name' => self::OPTION_KEY, 'value' => $json, 'user' => 0]));
-        }
-    }
-
-    public static function get() {
-        $db = Typecho\Db::get();
-        $optionsTable = dygita_get_table('options');
-        $row = $db->fetchRow($db->select('value')->from($optionsTable)->where('name = ?', self::OPTION_KEY));
-        return $row ? $row['value'] : '[]';
-    }
-
-    public static function onArticleChange($contents, $widget) {
-        try {
-            self::updateSingle($contents);
-        } catch (\Throwable $e) {
-            // 静默失败，绝不影响文章保存流程，但记录日志便于排查问题
-            error_log('[Dygita_Search_Index] onArticleChange failed: ' . $e->getMessage());
-        }
-    }
-}
-
-/**
- * 搜索索引 Action — 通过 /action/dygita-search-index 路由提供搜索索引
- */
-class Dygita_Action_Search_Index extends \Typecho\Widget implements \Widget\ActionInterface {
-    public function execute() {}
-
-    public function action() {
-        header('Content-Type: application/json; charset=utf-8');
-        header('Cache-Control: public, max-age=3600');
-        echo Dygita_Search_Index::get();
-        exit;
-    }
-}
-
 /**
  * 注册搜索索引 Action
  */
