@@ -11,13 +11,13 @@ $options = Typecho\Widget::widget('Widget_Options');
 
 $total = $db->fetchObject($db->select(array('COUNT(*)' => 'num'))->from($contentsTable)
     ->where('type = ?', 'post')
-    ->where('status = ?', 'publish'))->num;
+    ->where('status = ?', 'publish')->where("password IS NULL OR password = ''")->where('created <= ?', time()))->num;
 $totalPages = $total ? max(1, (int) ceil($total / $pageSize)) : 1;
 $page = min($page, $totalPages);
 
 $rows = $db->fetchAll($db->select()->from($contentsTable)
     ->where('type = ?', 'post')
-    ->where('status = ?', 'publish')
+    ->where('status = ?', 'publish')->where("password IS NULL OR password = ''")->where('created <= ?', time())
     ->order('created', Typecho\Db::SORT_DESC)
     ->page($page, $pageSize));
 

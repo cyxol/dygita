@@ -351,8 +351,7 @@ function dygita_get_archives_url($options) {
  */
 function dygita_get_download_data($pid) {
     $db = Typecho\Db::get();
-    $post = $db->fetchRow($db->select()->from(dygita_get_table('contents'))
-        ->where('cid = ?', intval($pid))->where('type = ?', 'post')->where('status = ?', 'publish'));
+    $post = Dygita_Repository::publicPost((int) $pid);
     if (!$post) return null;
 
     $fields = $db->fetchAll($db->select()->from(dygita_get_table('fields'))->where('cid = ?', intval($pid)));
@@ -382,20 +381,11 @@ function dygita_get_download_data($pid) {
  * @param int $pageSize 每页数量
  * @return array
  */
-function dygita_get_archive_posts($page = 1, $pageSize = 1000) {
-    $db = Typecho\Db::get();
-    $table = dygita_get_table('contents');
-    
-    $page = max(1, intval($page));
-    $pageSize = max(1, intval($pageSize));
-    $offset = ($page - 1) * $pageSize;
-
-    return $db->fetchAll($db->select()->from($table)
-        ->where('type = ?', 'post')
-        ->where('status = ?', 'publish')
-        ->order('created', Typecho\Db::SORT_DESC)
-        ->offset($offset)
-        ->limit($pageSize));
+function dygita_get_archive_posts($page = 1, $pageSize = 50) {
+    return \Typecho\Db::get()->fetchAll(Dygita_Repository::publicPosts()
+        ->select('cid','title','slug','created','type','status','password')
+        ->order('created', \Typecho\Db::SORT_DESC)->order('cid', \Typecho\Db::SORT_DESC)
+        ->page(max(1, (int) $page), min(100, max(1, (int) $pageSize))));
 }
 
 /**
@@ -678,11 +668,10 @@ function dygita_get_hot_posts($limit = 5) {
     $db = Typecho\Db::get();
     $contentsTable = dygita_get_table('contents');
     $fieldsTable = dygita_get_table('fields');
-    $result = $db->fetchAll($db->select()->from($contentsTable)
-        ->where($contentsTable . '.status = ?', 'publish')
+    $result = $db->fetchAll($db->select($contentsTable . '.*')->from($contentsTable)
+        ->where($contentsTable . '.status = ?', 'publish')->where($contentsTable . ".password IS NULL OR " . $contentsTable . ".password = ''")->where($contentsTable . '.created <= ?', time())
         ->where($contentsTable . '.type = ?', 'post')
-        ->join($fieldsTable, $contentsTable . '.cid = ' . $fieldsTable . '.cid', Typecho\Db::LEFT_JOIN)
-        ->where($fieldsTable . '.name = ?', 'views')
+        ->join($fieldsTable, $contentsTable . '.cid = ' . $fieldsTable . ".cid AND " . $fieldsTable . ".name = 'views'", Typecho\Db::LEFT_JOIN)
         ->order($fieldsTable . '.int_value', Typecho\Db::SORT_DESC)
         ->limit($limit));
 
@@ -704,7 +693,7 @@ function dygita_get_random_posts($limit = 5) {
     // 同时避免使用 ORDER BY RAND() 导致的全表扫描和临时表创建
     $poolSize = 1000;
     $allCids = $db->fetchAll($db->select('cid')->from($contentsTable)
-        ->where('status = ?', 'publish')
+        ->where('status = ?', 'publish')->where("password IS NULL OR password = ''")->where('created <= ?', time())
         ->where('type = ?', 'post')
         ->order('created', Typecho\Db::SORT_DESC)
         ->limit($poolSize));
@@ -737,7 +726,7 @@ function dygita_get_random_posts($limit = 5) {
     // 使用 IN 查询获取选中文章的详细信息
     $result = $db->fetchAll($db->select()->from($contentsTable)
         ->where('cid IN ?', $selectedCids)
-        ->where('status = ?', 'publish')
+        ->where('status = ?', 'publish')->where("password IS NULL OR password = ''")->where('created <= ?', time())
         ->where('type = ?', 'post')
         ->order('created', Typecho\Db::SORT_DESC));
     

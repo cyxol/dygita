@@ -9,7 +9,11 @@ $GLOBALS['dygita_content_class'] = 'posts-expand'; ?>
 
                 <article class="archives-timeline">
                         <?php
-                        $posts = dygita_get_archive_posts();
+                        $archivePage = max(1, (int) $this->request->get('archive_page', 1));
+                        $archiveTotal = Dygita_Repository::countPublic();
+                        $archivePages = max(1, (int) ceil($archiveTotal / 50));
+                        $archivePage = min($archivePage, $archivePages);
+                        $posts = dygita_get_archive_posts($archivePage, 50);
 
                         if (!empty($posts)) {
                                 $currentYear = '';
@@ -41,6 +45,11 @@ $GLOBALS['dygita_content_class'] = 'posts-expand'; ?>
                         }
                         ?>
                 </article>
+                <nav class="pagination" aria-label="文章列表分页">
+                <?php if ($archivePage > 1): ?><a href="?archive_page=<?php echo $archivePage - 1; ?>">上一页</a><?php endif; ?>
+                <span><?php echo $archivePage . ' / ' . $archivePages; ?></span>
+                <?php if ($archivePage < $archivePages): ?><a href="?archive_page=<?php echo $archivePage + 1; ?>">下一页</a><?php endif; ?>
+                </nav>
 
 <?php $this->need('views/components/sidebar-right.php'); ?>
 <?php $this->need('views/components/footer.php'); ?>

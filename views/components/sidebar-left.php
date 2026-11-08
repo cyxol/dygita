@@ -32,20 +32,7 @@
     $aichatLoggedIn = \Typecho\Widget::widget('Widget_User')->hasLogin();
     $aichatLogin    = rtrim((string) $this->options->siteUrl, '/') . '/admin/';
     $aichatRecentPosts = [];
-    try {
-        $db = \Typecho\Db::get();
-        $rows = $db->fetchAll($db->select('cid', 'title')
-            ->from(dygita_get_table('contents'))
-            ->where('type = ?', 'post')
-            ->where('status = ?', 'publish')
-            ->order('created', \Typecho\Db::SORT_DESC)
-            ->limit(8));
-        if ($rows) {
-            foreach ($rows as $row) {
-                $aichatRecentPosts[] = ['cid' => (int)$row['cid'], 'title' => (string)$row['title']];
-            }
-        }
-    } catch (\Exception $e) {}
+    $aichatRecentPosts = Dygita_Repository::recentTitles(8);
     ?>
     <script>
     window.DYGITA = window.DYGITA || {};
