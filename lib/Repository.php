@@ -75,7 +75,7 @@ final class Dygita_Repository
             $pos = mb_stripos($text, $query, 0, 'UTF-8');
             $items[] = ['cid' => (int) $row['cid'], 'title' => html_entity_decode($row['title'], ENT_QUOTES, 'UTF-8'),
                 'url' => $post->permalink, 'excerpt' => mb_substr($text, $pos === false ? 0 : max(0, $pos - 30), 180, 'UTF-8'),
-                'date' => date('Y-m-d', $row['created'])];
+                'date' => (new \Typecho\Date($row['created']))->format('Y-m-d')];
         }
         return $items;
     }

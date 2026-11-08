@@ -20,7 +20,8 @@ $GLOBALS['dygita_content_class'] = 'posts-expand'; ?>
                                 $options = Typecho\Widget::widget('Widget_Options');
 
                                 foreach ($posts as $post) {
-                                        $year = date('Y', $post['created']);
+                                        $postDate = new \Typecho\Date($post['created']);
+                                        $year = $postDate->format('Y');
 
                                         if ($year !== $currentYear) {
                                                 if ($currentYear !== '') echo '</ul>';
@@ -29,7 +30,7 @@ $GLOBALS['dygita_content_class'] = 'posts-expand'; ?>
                                                 $currentYear = $year;
                                         }
 
-                                        $monthDay = date('m-d', $post['created']);
+                                        $monthDay = $postDate->format('m-d');
                                         $permalink = Typecho\Router::url('post', $post, $options->index);
                                         $title = htmlspecialchars((string) $post['title'], ENT_QUOTES, 'UTF-8');
 
